@@ -1022,19 +1022,9 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
           <div style="font-weight:900">Saídas</div>
           <div class="muted small" id="previewHint">Gere o e-mail e/ou copie o código pro RF.</div>
         </div>
-        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end">
-          <select id="outModeSel" aria-label="Modo de saída">
-            <option value="all">Tudo</option>
-            <option value="agency">Agência</option>
-            <option value="rent">Rent</option>
-            <option value="cco">CCO</option>
-            <option value="crr">CRR</option>
-          </select>
-          <span class="pill" id="subjectPill">Assunto: —</span>
-        </div>
+        <span class="pill" id="subjectPill">Assunto: —</span>
       </div>
       <div class="bd">
-        <div id="outAgencySection">
         <div class="muted small outTitle" style="margin-bottom:6px"><span class="tag tag--agency">AGÊNCIA</span> <b>1) Preview do e-mail (agência)</b> — isso é o que você cola no Outlook.</div>
         <div id="preview" class="preview" contenteditable="true" aria-label="Pré-visualização do e-mail"></div>
 
@@ -1044,8 +1034,6 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
         </div>
 
         <div class="hr"></div>
-
-        </div>
 
         <div id="outRentSicaSection">
         <div class="muted small outTitle" style="margin-bottom:6px"><span class="tag tag--rent">RENT</span> <b>2) Formulário de rentabilidade (SICA)</b> — copie e cole no e-mail para o time de Rentabilização lançar no SICA.</div>
@@ -1059,7 +1047,6 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
         <div class="hr"></div>
         </div>
 
-        <div id="outCcoSection">
         <div class="muted small outTitle" style="margin-bottom:6px"><span class="tag tag--cco">CCO</span> <b>3) Código para OBS (OP no RF)</b> — cole direto na observação pra equipe de reemissão (CCO) ver a tabela.</div>
         <textarea id="obsCode" class="codebox" style="display:none" spellcheck="false" aria-label="Código para Observação no RF"></textarea>
 
@@ -1072,18 +1059,12 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
 
         <div class="hr"></div>
 
-        </div>
-
-        <div id="outCrrSection">
         <div class="muted small outTitle" style="margin-bottom:6px"><span class="tag tag--sys">CRR</span> <b>4) CRR (código de registro de reemissão)</b> — copie/cole este código na OP (RF) ou no Teams/e-mail. Depois, cole aqui e clique em “Carregar”.</div>
         <textarea id="raCode" class="codebox" style="min-height:96px" spellcheck="false" aria-label="CRR para reabrir cálculo"></textarea>
         <div class="btns" style="margin-top:10px">
                     <button class="action" id="btnCarregarRACode">Carregar CRR</button>
 </div>
         <div class="muted small" style="margin-top:8px">Se você colar um texto maior (ex.: a observação inteira do RF), o sistema tenta achar automaticamente o trecho <b>CRR2-...</b> (ou <b>CRR1/RA1</b> antigos).</div>
-
-
-        </div>
 
       </div>
     </section>
@@ -1101,124 +1082,7 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
       t.classList.add("show");
       setTimeout(()=>t.classList.remove("show"), 1400);
     }
-    
-    // ---------- state snapshot (reduz dependência do DOM) ----------
-    // Ideia: durante um ciclo de cálculo (updateAll/gerar/copiar) tiramos um "print" do DOM
-    // e as funções leem do snapshot, evitando bug bobo por leitura inconsistente.
-    let __STATE = null;
-
-    function readStateFromDOM(){
-      const fields = {};
-      const checks = {};
-      for(const el of document.querySelectorAll("input, select, textarea")){
-        if(!el.id) continue;
-        if(el.type === "checkbox"){
-          checks[el.id] = !!el.checked;
-          fields[el.id] = el.checked ? "1" : "0";
-        }else if(el.type === "radio"){
-          if(el.checked) fields[el.id] = String(el.value ?? "");
-        }else{
-          fields[el.id] = String(el.value ?? "");
-        }
-      }
-      return { fields, checks, mode: getActiveMode() };
-    }
-    function setStateSnapshot(){
-      __STATE = readStateFromDOM();
-      return __STATE;
-    }
-    function getField(id){
-      if(__STATE && __STATE.fields && Object.prototype.hasOwnProperty.call(__STATE.fields, id)){
-        const v = __STATE.fields[id];
-        return (v === undefined || v === null) ? "" : String(v);
-      }
-      const el = document.getElementById(id);
-      if(!el) return "";
-      if(el.type === "checkbox") return el.checked ? "1" : "0";
-      if(el.type === "radio") return el.checked ? String(el.value ?? "") : "";
-      return String(el.value ?? "");
-    }
-    function getChecked(id){
-      if(__STATE && __STATE.checks && Object.prototype.hasOwnProperty.call(__STATE.checks, id)){
-        return !!__STATE.checks[id];
-      }
-      const el = document.getElementById(id);
-      return !!(el && el.type === "checkbox" && el.checked);
-    }
-
-    function debounce(fn, wait){
-      let t = null;
-      return function(...args){
-        if(t) clearTimeout(t);
-        t = setTimeout(()=>fn.apply(this, args), wait);
-      };
-    }
-
-    function normalizeBagText(s){
-      const t = String(s || "").trim();
-      if(!t) return "";
-      const u = t.toUpperCase().replace(/\s+/g,"");
-      // padrões comuns que aparecem no GDS
-      if(u === "NIL" || u === "0P" || u === "0PC" || u === "0PCS" || u === "0PCES" || u === "0PC1" || u === "0PC0") return "Sem Bag";
-      if(u.startsWith("0P") || u.startsWith("0PC")) return "Sem Bag";
-      return t;
-    }
-
-    function applyOutputMode(){
-      const sel = document.getElementById("outModeSel");
-      if(!sel) return;
-      const mode = sel.value || "all";
-      const is = (m)=> (mode === "all" || mode === m);
-      const show = (id, on)=>{
-        const el = document.getElementById(id);
-        if(!el) return;
-        el.style.display = on ? "" : "none";
-      };
-      show("outAgencySection", is("agency"));
-      show("outRentSicaSection", is("rent"));
-      show("outCcoSection", is("cco"));
-      show("outCrrSection", is("crr"));
-
-      const hint = document.getElementById("previewHint");
-      if(hint){
-        const map = {
-          all: "Gere o e-mail e/ou copie o código pro RF.",
-          agency: "Saída: E-mail para Agência (Outlook).",
-          rent: "Saída: Formulário de Rentabilização (SICA).",
-          cco: "Saída: Código OBS (RF) para CCO.",
-          crr: "Saída: CRR para reabrir o cálculo."
-        };
-        hint.textContent = map[mode] || map.all;
-      }
-    }
-
-    function getCopyWarnings(){
-      // Avisos (não-bloqueantes) para evitar erro operacional.
-      const warns = [];
-      const cia = String(getField("cia") || "").trim();
-      const loc = String(getField("loc") || "").trim();
-      if(!cia) warns.push("Cia Aérea está vazia.");
-      if(!loc) warns.push("LOC do cálculo está vazio.");
-
-      // Aviso de números negativos (pode ser correto, mas é onde mais dá susto no CCO)
-      try{
-        const mode = getActiveMode();
-        const calc = (mode === "NAC") ? calcNac() : calcInter();
-        const rows = (calc && Array.isArray(calc.rows)) ? calc.rows : [];
-        const hasNeg = rows.some(r => Object.values(r).some(v => typeof v === "number" && v < 0));
-        if(hasNeg) warns.push("Existe valor negativo no cálculo — confirme se é abatimento/reembolso e se está correto.");
-      }catch(e){}
-
-      return warns;
-    }
-    function confirmWarnings(actionLabel){
-      const warns = getCopyWarnings();
-      if(!warns.length) return true;
-      return window.confirm(
-        `Antes de ${actionLabel}, revise:\\n\\n- ${warns.join("\\n- ")}\\n\\nContinuar mesmo assim?`
-      );
-    }
-// ---- Rentabilização (uso interno): controla campos e gera bloco para OBS (RF) ----
+    // ---- Rentabilização (uso interno): controla campos e gera bloco para OBS (RF) ----
     function getRentData(){
       const enabled = !!document.getElementById("rentab")?.checked;
       const multa = enabled && !!document.getElementById("rent_tipo_multa")?.checked;
@@ -1368,7 +1232,7 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
       const rows = (calc && calc.rows) ? calc.rows : [];
       for(const r of rows){ byType[r.t] = r; }
 
-      const paidNum = (cat, pax)=> parseBRNumber((getField(`rent_pago_cia_${cat}_${pax}`) || "").trim());
+      const paidNum = (cat, pax)=> parseBRNumber((document.getElementById(`rent_pago_cia_${cat}_${pax}`)?.value || "").trim());
       const paidTotals = {
         multa: { ADT: paidNum("multa","adt"), CHD: paidNum("multa","chd"), INF: paidNum("multa","inf") },
         diftar: { ADT: paidNum("diftar","adt"), CHD: paidNum("diftar","chd"), INF: paidNum("diftar","inf") },
@@ -1564,7 +1428,7 @@ function updateRentComputed(mode, calc){
       setOrClear(rd.diftax, "rent_cobrar_ag_diftax", fmtNumPT(auto.diftax));
 
       // Pago na CIA é informado POR PAX (ADT/CHD/INF). Total = valor_por_pax * quantidade_do_tipo.
-      const paidRaw = (cat, pax)=> (getField(`rent_pago_cia_${cat}_${pax}`) || "").trim();
+      const paidRaw = (cat, pax)=> (document.getElementById(`rent_pago_cia_${cat}_${pax}`)?.value || "").trim();
       const paidPer = (cat, pax)=> parseBRNumber(paidRaw(cat, pax));
 
       const qtyByType = (()=>{
@@ -1701,44 +1565,14 @@ function updateRentComputed(mode, calc){
       // normaliza diferentes caracteres de sinal (ex.: U+2212) para o hífen padrão
       s = s.replace(/[\u2212\u2013\u2014]/g, "-");
       if(!s) return 0;
-
-      // negativo por parênteses: (1.234,56)
-      let neg = false;
-      if(/^\(.*\)$/.test(s)){
-        neg = true;
-        s = s.slice(1,-1).trim();
-      }
-
-      s = s.replace(/\s+/g,"");
-      let x = s.replace(/[^\d,\.\-\+]/g, "");
-      // mantém só o primeiro sinal (+/-)
-      x = x.replace(/(?!^)[\+\-]/g,"");
-
+      let x = s.replace(/[^\d,.\-]/g, "");
       if(x.includes(".") && x.includes(",")){
         x = x.replace(/\./g,"").replace(",",".");
       }else{
         x = x.replace(",",".");
       }
-
-      if(!x || x === "-" || x === "+") return 0;
       const n = parseFloat(x);
-      const out = Number.isFinite(n) ? n : 0;
-      return neg ? -Math.abs(out) : out;
-    }
-
-    // Camada única para números/moedas (base)
-    function round2(n){ return Math.round((Number(n)||0) * 100) / 100; }
-    function toCents(n){ return Math.round((Number(n)||0) * 100); }
-    function fromCents(c){ return (Number(c)||0) / 100; }
-    function parseMoney(str){ return parseBRNumber(str); }
-    function formatMoney(value, currency, locale){
-      const cur = safeCurrency(currency || "USD");
-      const loc = locale || (cur === "BRL" ? "pt-BR" : "en-US");
-      try{
-        return new Intl.NumberFormat(loc, {style:"currency", currency: cur}).format(Number(value)||0);
-      }catch(e){
-        return `${cur} ${round2(value||0).toFixed(2)}`;
-      }
+      return Number.isFinite(n) ? n : 0;
     }
     function fmtBRL(n){
       return new Intl.NumberFormat("pt-BR", {style:"currency", currency:"BRL"}).format(n || 0);
@@ -1748,9 +1582,9 @@ function updateRentComputed(mode, calc){
       return c.length === 3 ? c : "USD";
     }
     function getInterCurrency(){
-      const sel = String(getField("inter_cur") || "").trim();
+      const sel = document.getElementById("inter_cur").value;
       if(sel === "OTHER"){
-        return safeCurrency(getField("inter_cur_other"));
+        return safeCurrency(document.getElementById("inter_cur_other").value);
       }
       return safeCurrency(sel);
     }
@@ -1779,10 +1613,10 @@ function fmtNumPT(n){
     }
 
     function intVal(id){
-      const v = parseInt(String(getField(id) || "0").replace(/[^\\d\\-]/g,""),10);
+      const v = parseInt(String(document.getElementById(id).value||"0").replace(/[^\d\-]/g,""),10);
       return Number.isFinite(v) ? v : 0;
     }
-    function val(id){ return parseBRNumber(getField(id)); }
+    function val(id){ return parseBRNumber(document.getElementById(id).value); }
     function getActiveMode(){
       if(document.getElementById("tabNac").getAttribute("aria-selected")==="true") return "NAC";
       return "INTER";
@@ -2673,21 +2507,22 @@ function buildCRRCode(){
 // ---------- common ----------
     function getCommon(){
       return {
-        cia: (getField("cia") || "").trim(),
-        prazo: (getField("prazo") || "Imediato").trim() || "Imediato",
-        loc: (getField("loc") || "").trim().toUpperCase(),
-        novo_loc: (getField("novo_loc") || "").trim().toUpperCase(),
-        pax: (getField("pax") || "").trim(),
-        tks: (getField("tks") || "").trim(),
-        oac: (getField("oac") || "").trim().toUpperCase(),
-        familia: (getField("familia") || "").trim().toUpperCase(),
-        bag: normalizeBagText(getField("bag")),
-        parcelamento: (getField("parcelamento") || "").trim(),
-        rentab: getChecked("rentab"),
+        cia: document.getElementById("cia").value.trim(),
+        prazo: (document.getElementById("prazo") ? document.getElementById("prazo").value.trim() : "Imediato"),
+        loc: document.getElementById("loc").value.trim().toUpperCase(),
+        novo_loc: (document.getElementById("novo_loc") ? document.getElementById("novo_loc").value.trim().toUpperCase() : ""),
+        pax: document.getElementById("pax").value.trim(),
+        tks: document.getElementById("tks").value.trim(),
+        oac: (document.getElementById("oac") ? document.getElementById("oac").value.trim().toUpperCase() : ""),
+        familia: document.getElementById("familia").value.trim().toUpperCase(),
+        bag: document.getElementById("bag").value.trim(),
+        parcelamento: document.getElementById("parcelamento").value.trim(),
+        rentab: !!(document.getElementById("rentab") && document.getElementById("rentab").checked),
       };
     }
 
-     function buildPaxTicketPairsHtml(common){
+    
+    function buildPaxTicketPairsHtml(common){
       // Preferir o cadastro por PAX (Nome/Bilhete) para vincular corretamente.
       const store = getPaxStore();
       const ciaRaw = String(common?.cia || "");      const isNoTicket = /(^|[\s,\/])(?:AD|AZUL)($|[\s,\/])/i.test(ciaRaw.trim());
@@ -2730,10 +2565,10 @@ function buildCRRCode(){
       const calc = calcNac();
       const crr = buildCRRCode();
       const crrEmailHtml = escapeHtml(crr) + (common.rentab ? "<br/>@#" : "");
-      const fp = getField("nac_fp");
-      const link = (getField("nac_link") || "").trim();
-      const voos = (getField("nac_voos") || "").trim();
-      const regrasUserRaw = (getField("nac_regras") || "").trim();
+      const fp = document.getElementById("nac_fp").value;
+      const link = document.getElementById("nac_link").value.trim();
+      const voos = document.getElementById("nac_voos").value.trim();
+      const regrasUserRaw = document.getElementById("nac_regras").value.trim();
       const isAzul = /(^|[\s,\/])(?:AD|AZUL)($|[\s,\/])/i.test(String(common.cia||"").trim());
       const isLatamGol = /(^|[\s,\/])(?:LA|LATAM|G3|GOL)($|[\s,\/])/i.test(String(common.cia||"").trim());
       const regrasUser = (function(){
@@ -2850,14 +2685,14 @@ const regrasExtra = regrasUser ? `<p style="margin:8px 0 0"><b>Observações:</b
       const calc = calcInter();
       const crr = buildCRRCode();
       const crrEmailHtml = escapeHtml(crr) + (common.rentab ? "<br/>@#" : "");
-      const incentivo = getField("inter_incentivo");
-      const tipo = getField("inter_tipo");
-      const fp = getField("inter_fp");
-      const link = (getField("inter_link") || "").trim();
+      const incentivo = document.getElementById("inter_incentivo").value;
+      const tipo = document.getElementById("inter_tipo").value;
+      const fp = document.getElementById("inter_fp").value;
+      const link = document.getElementById("inter_link").value.trim();
 
-      const original = (getField("inter_original") || "").trim();
-      const voos = (getField("inter_voos") || "").trim();
-      const interno = (getField("inter_interno") || "").trim();
+      const original = document.getElementById("inter_original").value.trim();
+      const voos = document.getElementById("inter_voos").value.trim();
+      const interno = document.getElementById("inter_interno").value.trim();
       const isAzul = /(^|[\s,\/])(?:AD|AZUL)($|[\s,\/])/i.test(String(common.cia||"").trim());
       const azulMsg = "";
 
@@ -2964,7 +2799,7 @@ function rfHeader(mode){
       const c = getCommon();
       const calc = calcNac();
 
-      const fp = getField("nac_fp");
+      const fp = document.getElementById("nac_fp").value;
       const pay = (fp === "Link de pagamento") ? "Link de pagamento (enviado à agência)" : "Faturado";
 
       let valueRows = "";
@@ -3000,7 +2835,7 @@ function rfHeader(mode){
       const rentTipos = [rd.multa ? "Multa" : "", rd.diftar ? "Dif. tarifa" : "", rd.diftax ? "Dif. taxa" : ""].filter(Boolean).join("; ");
       const autoRent = calcRentAutoTotals("NAC", calc);
 
-      const paidRaw = (cat, pax)=> (getField(`rent_pago_cia_${cat}_${pax}`) || "").trim();
+      const paidRaw = (cat, pax)=> (document.getElementById(`rent_pago_cia_${cat}_${pax}`)?.value || "").trim();
       const paidNum = (cat, pax)=> parseBRNumber(paidRaw(cat, pax));
 
       const qtyByType = (()=>{
@@ -3132,13 +2967,13 @@ ${c.novo_loc ? `<tr><td style="padding:6px;"><strong>Novo LOC:</strong></td><td 
     function buildRfObsInter(){
       const c = getCommon();
       const calc = calcInter();
-      const incentivo = getField("inter_incentivo");
-      const tipo = getField("inter_tipo");
+      const incentivo = document.getElementById("inter_incentivo").value;
+      const tipo = document.getElementById("inter_tipo").value;
 
-      const internoRF = (document.getElementById("inter_interno") ? (getField("inter_interno") || "").trim() : "");
+      const internoRF = (document.getElementById("inter_interno") ? document.getElementById("inter_interno").value.trim() : "");
       const internoHtml = internoRF ? escAttr(maskRFText(internoRF)).split("\n").join("<br>") : "";
 
-      const fp = getField("inter_fp");
+      const fp = document.getElementById("inter_fp").value;
       const pay = (fp === "Link de pagamento") ? "Link de pagamento (enviado à agência)" : "Faturado";
 
       const fxText = (calc.fx > 0) ? `1 ${calc.cur} = ${calc.fx.toFixed(4).replace(".",",")} BRL` : `Câmbio não informado`;
@@ -3172,7 +3007,7 @@ ${c.novo_loc ? `<tr><td style="padding:6px;"><strong>Novo LOC:</strong></td><td 
       const rentTipos = [rd.multa ? "Multa" : "", rd.diftar ? "Dif. tarifa" : "", rd.diftax ? "Dif. taxa" : ""].filter(Boolean).join("; ");
       const autoRent = calcRentAutoTotals("INTER", calc);
 
-      const paidRaw = (cat, pax)=> (getField(`rent_pago_cia_${cat}_${pax}`) || "").trim();
+      const paidRaw = (cat, pax)=> (document.getElementById(`rent_pago_cia_${cat}_${pax}`)?.value || "").trim();
       const paidNum = (cat, pax)=> parseBRNumber(paidRaw(cat, pax));
 
       const qtyByType = (()=>{
@@ -3328,7 +3163,7 @@ ${c.novo_loc ? `<tr><td style="padding:6px;"><strong>Novo LOC:</strong></td><td 
       const cur = (mode === "INTER") ? getInterCurrency() : "BRL";
       const hasVal = (n)=> Math.abs(Number(n || 0)) > 0.000001;
 
-      const paidRaw = (cat, pax)=> (getField(`rent_pago_cia_${cat}_${pax}`) || "").trim();
+      const paidRaw = (cat, pax)=> (document.getElementById(`rent_pago_cia_${cat}_${pax}`)?.value || "").trim();
       const paidNum = (cat, pax)=> parseBRNumber(paidRaw(cat, pax));
 
       // Pago na CIA é informado POR PAX (ADT/CHD/INF). Total = valor_por_pax * quantidade_do_tipo.
@@ -3458,8 +3293,8 @@ ${c.novo_loc ? `<tr><td style="padding:6px;"><strong>Novo LOC:</strong></td><td 
     // ---------- subject ----------
     function suggestedSubject(){
       const mode = getActiveMode();
-      const loc = (getField("loc") || "").trim();
-      const cia = (getField("cia") || "").trim();
+      const loc = (document.getElementById("loc").value || "").trim();
+      const cia = (document.getElementById("cia").value || "").trim();
       if(mode === "NAC") return `Cálculo de reemissão NAC${loc ? " — " + loc : ""}${cia ? " — " + cia : ""}`.trim();
       const cur = getInterCurrency();
       return `Cálculo de reemissão INTER (${cur})${loc ? " — " + loc : ""}${cia ? " — " + cia : ""}`.trim();
@@ -3638,12 +3473,7 @@ function updateAll(arg){
       const _folWrap = document.getElementById("nac_folio_wrap");
       if(_folOn && _folWrap){ _folWrap.style.display = _folOn.checked ? "block" : "none"; }
 
-            applyOutputMode();
-
-      // tira snapshot após ajustes de UI (para leituras consistentes)
-      setStateSnapshot();
-
-const mode = getActiveMode();
+      const mode = getActiveMode();
       if(mode === "NAC"){
         const c = calcNac();
         setPill(true, `NAC • Total: ${fmtBRL(c.totalBRL)}`);
@@ -3688,11 +3518,9 @@ const mode = getActiveMode();
         }
       }
 
-      // formulário SICA (rentabilização) — atualiza somente quando estiver visível
+      // formulário SICA (rentabilização) — só atualiza o preview se existir
       const rfp = document.getElementById("rentFormPreview");
-      const outRent = document.getElementById("outRentSicaSection");
-      const rentVisible = !!(outRent && outRent.style.display !== "none");
-      if(rfp && rentVisible && document.activeElement !== rfp){
+      if(rfp && document.activeElement !== rfp){
         rfp.innerHTML = buildSicaFormHtml();
       }
 
@@ -3814,19 +3642,15 @@ function clearAll(silent){
     document.getElementById("btnGerar").addEventListener("click", ()=>{ lastEmailHtml = generateEmail(); });
 
     document.getElementById("btnCopiarHtml").addEventListener("click", async ()=>{
-      setStateSnapshot();
       if(!lastEmailHtml) lastEmailHtml = generateEmail();
       if(!lastEmailHtml){ return; }
-       if(!confirmWarnings("copiar o e-mail")) return;
       const ok = await copyHtmlToClipboard(lastEmailHtml);
       if(!ok) showToast("Não deu pra copiar automático. Copie pelo preview.");
     });
 
     document.getElementById("btnCopiarObs").addEventListener("click", async ()=>{
-      setStateSnapshot();
       const errs = validateBeforeGenerate();
       if(errs.length){ setPill(false, "Atenção: revisar dados"); showToast(errs[0]); return; }
-       if(!confirmWarnings("copiar o código OBS")) return;
       const code = buildRfObsCode();
       document.getElementById("obsCode").value = code;
       try{
@@ -3837,14 +3661,11 @@ function clearAll(silent){
       }
     });
     document.getElementById("btnCopiarRentForm").addEventListener("click", async ()=>{
-      setStateSnapshot();
       const htmlForm = buildSicaFormHtml();
       if(!htmlForm){
         showToast("Nada para copiar no formulário de rentabilização.");
         return;
       }
-
-      if(!confirmWarnings("copiar o formulário de rentabilização")) return;
       const rfp = document.getElementById("rentFormPreview");
       if(rfp && document.activeElement !== rfp) rfp.innerHTML = htmlForm;
 
@@ -3877,11 +3698,10 @@ document.getElementById("btnCarregarRACode").addEventListener("click", ()=>{
         try{ el.setSelectionRange(start, end); }catch(e){}
       }
     }
-// reactive calc (debounce no input para aliviar PCs mais lentos)
-    const scheduleUpdateAll = debounce(()=>updateAll(), 160);
+// reactive calc
     for(const el of document.querySelectorAll("input, select, textarea")){
       if(el.id === "obsCode" || el.id === "raCode") continue;
-      el.addEventListener("input", scheduleUpdateAll);
+      el.addEventListener("input", updateAll);
       el.addEventListener("change", updateAll);
     }
 
@@ -3894,10 +3714,6 @@ document.getElementById("btnCarregarRACode").addEventListener("click", ()=>{
     }
 
     // init
-
-    const outModeSel = document.getElementById("outModeSel");
-    if(outModeSel) outModeSel.addEventListener("change", ()=>{ applyOutputMode(); });
-
 
     // dica aleatória (a cada abertura)
     const tipEl = document.getElementById("tipBox");
