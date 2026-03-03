@@ -1062,10 +1062,9 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
         <div class="muted small outTitle" style="margin-bottom:6px"><span class="tag tag--sys">CRR</span> <b>4) CRR (código de registro de reemissão)</b> — copie/cole este código na OP (RF) ou no Teams/e-mail. Depois, cole aqui e clique em “Carregar”.</div>
         <textarea id="raCode" class="codebox" style="min-height:96px" spellcheck="false" aria-label="CRR para reabrir cálculo"></textarea>
         <div class="btns" style="margin-top:10px">
-          <button class="action good" id="btnGerarCRR5">Gerar CRR curto (CRR5)</button>
-          <button class="action" id="btnCarregarRACode">Carregar CRR</button>
-        </div>
-        <div class="muted small" style="margin-top:8px">Se você colar um texto maior (ex.: a observação inteira do RF), o sistema tenta achar automaticamente o trecho <b>CRR5-...</b> ou <b>CRR4-...</b> (e também <b>CRR3/CRR2/CRR1/RA1</b> antigos).</div>
+                    <button class="action" id="btnCarregarRACode">Carregar CRR</button>
+</div>
+        <div class="muted small" style="margin-top:8px">Se você colar um texto maior (ex.: a observação inteira do RF), o sistema tenta achar automaticamente o trecho <b>CRR2-...</b> (ou <b>CRR1/RA1</b> antigos).</div>
 
       </div>
     </section>
@@ -2323,24 +2322,21 @@ function buildCRRCode(){
       return "CRR4-" + packed;
     }
 
-    // ===== CRR5 (curto via Cloudflare Worker + KV) =====
-    // (mantemos o CRR4 local como fallback/offline)
-    const CRR5_API = "https://crr-api.rexturfacilita.workers.dev/".replace(/\/+$/,"");
 
-    function extractCRR5(text){
-      const compact = String(text || "").replace(/\s+/g,"");
-      const mm = compact.match(/CRR5-[A-Za-z0-9]{6,64}/i);
-      return mm ? mm[0] : null;
-    }
+
+    // ===== CRR5 (curto via Worker + Upstash) =====
+    const CRR5_API = "https://crr-api.rexturfacilita.workers.dev/".replace(/\/+$/,"");
 
     async function saveCRR5FromCRR4(crr4){
       const r = await fetch(`${CRR5_API}/save`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ payload: String(crr4 || "") }),
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ payload: crr4 })
       });
-      if(!r.ok) throw new Error("Falha ao salvar CRR curto");
-      const data = await r.json().catch(()=>null);
+      const txt = await r.text();
+      if(!r.ok) throw new Error(txt || `Falha ao salvar (HTTP ${r.status})`);
+      let data = null;
+      try{ data = JSON.parse(txt); }catch(e){ throw new Error("Resposta inválida do servidor"); }
       if(!data || !data.id) throw new Error("Resposta inválida do servidor");
       return `CRR5-${data.id}`;
     }
@@ -2348,28 +2344,81 @@ function buildCRRCode(){
     async function loadCRR5ToCRR4(crr5){
       const id = String(crr5 || "").trim().replace(/^CRR5-/i,"");
       const r = await fetch(`${CRR5_API}/load?id=${encodeURIComponent(id)}`);
-      if(!r.ok) throw new Error("CRR curto não encontrado (ou expirou)");
-      const data = await r.json().catch(()=>null);
+      const txt = await r.text();
+      if(!r.ok) throw new Error(txt || `Não encontrado (HTTP ${r.status})`);
+      let data = null;
+      try{ data = JSON.parse(txt); }catch(e){ throw new Error("Resposta inválida do servidor"); }
       if(!data || typeof data.payload !== "string") throw new Error("Resposta inválida do servidor");
-      return data.payload;
+      return data.payload; // deve ser CRR4-...
     }
 
-    // ===== CRR no e-mail (AGÊNCIA): usa CRR5 ao copiar o HTML =====
-    // Preview pode continuar com CRR4; ao "Copiar E-mail (HTML)" geramos CRR5 e o e-mail sai curto.
-    let __emailCrrOverride = "";
-    function resetEmailCrr(){ __emailCrrOverride = ""; }
-    function emailCrrCode(){ return __emailCrrOverride || buildCRRCode(); }
-    async function ensureEmailCrr5(){
-      if(__emailCrrOverride && /^CRR5-/i.test(__emailCrrOverride)) return __emailCrrOverride;
-      const crr4 = buildCRRCode();
-      const crr5 = await saveCRR5FromCRR4(crr4);
-      __emailCrrOverride = crr5;
-      return crr5;
+    function extractCRR5(text){
+      const compact = String(text || "").replace(/\s+/g,"");
+      const mm = compact.match(/CRR5-[A-Za-z0-9]{6,32}/i);
+      return mm ? mm[0] : null;
     }
 
+    // ===== CRR5 no e-mail (reuso para evitar duplicar no Upstash) =====
+    let __agencyCRR5 = "";
+    let __agencyCRR4Sig = "";       // CRR4 usado quando gerou/validou o CRR5
+    let __agencyCRR5Promise = null; // evita gerar 2x em clique duplo
 
+    function getAgencyCRRCode(){
+      const sig = buildCRRCode();
+      if(__agencyCRR5 && __agencyCRR4Sig === sig) return __agencyCRR5;
 
+      // Se o campo CRR estiver com CRR5, mostra no preview (sem criar novo)
+      const ta = document.getElementById("raCode");
+      const fromField = ta ? extractCRR5(ta.value) : null;
+      return fromField || sig; // fallback CRR4
+    }
 
+    async function ensureAgencyCRR5(){
+      const sig = buildCRRCode();
+
+      // já tenho CRR5 válido pro estado atual
+      if(__agencyCRR5 && __agencyCRR4Sig === sig) return __agencyCRR5;
+
+      // se já tem uma geração em andamento pro mesmo estado, reaproveita
+      if(__agencyCRR5Promise && __agencyCRR4Sig === sig) return await __agencyCRR5Promise;
+
+      // tenta reaproveitar CRR5 do campo (sem criar novo) — valida se bate com o estado atual
+      const ta = document.getElementById("raCode");
+      const crr5Field = ta ? extractCRR5(ta.value) : null;
+      if(crr5Field){
+        try{
+          const stored = await loadCRR5ToCRR4(crr5Field);
+          if(String(stored || "").trim() === String(sig || "").trim()){
+            __agencyCRR5 = crr5Field;
+            __agencyCRR4Sig = sig;
+            return __agencyCRR5;
+          }
+        }catch(e){
+          // ignora e segue para gerar outro
+        }
+      }
+
+      // gera um novo CRR5 (salva o CRR4 atual no Upstash)
+      __agencyCRR4Sig = sig;
+      __agencyCRR5Promise = (async ()=>{
+        const c5 = await saveCRR5FromCRR4(sig);
+        __agencyCRR5 = c5;
+        return c5;
+      })();
+
+      try{
+        return await __agencyCRR5Promise;
+      } finally {
+        __agencyCRR5Promise = null;
+      }
+    }
+
+    function invalidateAgencyCRR5(){
+      __agencyCRR5 = "";
+      __agencyCRR4Sig = "";
+      __agencyCRR5Promise = null;
+      lastEmailHtml = ""; // força regenerar e-mail
+    }
     function loadCRRCode(code){
       // aceita CRR colado puro, dentro de texto maior (OBS RF / e-mail), com quebras de linha, etc.
       let full = String(code || "");
@@ -2610,7 +2659,7 @@ function buildCRRCode(){
     function buildEmailHtmlNac(){
       const common = getCommon();
       const calc = calcNac();
-      const crr = emailCrrCode();
+      const crr = getAgencyCRRCode();
       const crrEmailHtml = escapeHtml(crr) + (common.rentab ? "<br/>@#" : "");
       const fp = document.getElementById("nac_fp").value;
       const link = document.getElementById("nac_link").value.trim();
@@ -2730,7 +2779,7 @@ const regrasExtra = regrasUser ? `<p style="margin:8px 0 0"><b>Observações:</b
     function buildEmailHtmlInter(){
       const common = getCommon();
       const calc = calcInter();
-      const crr = emailCrrCode();
+      const crr = getAgencyCRRCode();
       const crrEmailHtml = escapeHtml(crr) + (common.rentab ? "<br/>@#" : "");
       const incentivo = document.getElementById("inter_incentivo").value;
       const tipo = document.getElementById("inter_tipo").value;
@@ -3466,8 +3515,38 @@ function isLatamOrGolCia(v){
 
 let __lastCiaForAutoRules = "";
 function maybeInjectAutoRuleFromCia(){
-  // DESATIVADO: não preencher automaticamente o campo "Regras / observações".
-  // As regras padrão por cia (AZUL / LATAM / GOL) aparecem somente no e-mail.
+  // Injeta regra padrão (Azul ou LATAM/GOL) no campo Regras (NAC) apenas quando a CIA muda
+  const ciaEl = document.getElementById("cia");
+  const regrasEl = document.getElementById("nac_regras");
+  if(!ciaEl || !regrasEl) return;
+  if(getActiveMode() !== "NAC") return;
+
+  const ciaVal = normalizeCia(ciaEl.value);
+  if(ciaVal === __lastCiaForAutoRules) return;
+  __lastCiaForAutoRules = ciaVal;
+
+  const t = (regrasEl.value || "").trim();
+  const lines = t ? t.split(/\r?\n/).map(s => s.trim()).filter(Boolean) : [];
+
+  // Remove as regras automáticas antigas (pra não acumular ao trocar de cia)
+  const cleaned = lines.filter(l => {
+    const n = l.toLowerCase();
+    const isAz = n.includes("reemiss") && n.includes("azul") && (n.includes("crédito") || n.includes("credito"));
+    const isLG = n.includes("novo loc") && n.includes("localizador original") && n.includes("cancel");
+    return !(isAz || isLG);
+  });
+
+  // Define qual regra automática aplicar
+  let autoRule = "";
+  if(isAzulCia(ciaVal)) autoRule = AZUL_RULE_TEXT;
+  else if(isLatamOrGolCia(ciaVal)) autoRule = LATAM_GOL_RULE_TEXT;
+
+  if(autoRule){
+    // Coloca a regra automática no topo, pra aparecer antes do no-show no e-mail
+    cleaned.unshift(autoRule);
+  }
+
+  regrasEl.value = cleaned.join("\n").trim();
 }
 
 function updateAll(arg){
@@ -3475,7 +3554,8 @@ function updateAll(arg){
       const silent = (arg === true) || (arg && arg.silent === true);
 
       syncCiaNacSelector();
-      // regras automáticas por cia aparecem apenas no e-mail (não preencher textarea)
+      maybeInjectAutoRuleFromCia();
+
       toggleRentUI();
       setRentCurrencyLabels();
 
@@ -3577,8 +3657,8 @@ function updateAll(arg){
     }
 
 function clearAll(silent){
-      resetEmailCrr();
-      lastEmailHtml = "";
+      
+      invalidateAgencyCRR5();
       const ids = Array.from(document.querySelectorAll("input, textarea")).map(e=>e.id);
       for(const id of ids){
         const el = document.getElementById(id);
@@ -3660,22 +3740,23 @@ function clearAll(silent){
     document.getElementById("btnGerar").addEventListener("click", ()=>{ lastEmailHtml = generateEmail(); });
 
     document.getElementById("btnCopiarHtml").addEventListener("click", async ()=>{
-      // Na hora de enviar para a agência, gera CRR5 e injeta no e-mail (em vez do CRR4 gigante).
+      // Gera/garante CRR5 apenas na hora de copiar o e-mail (evita gastar storage a cada digitação)
       try{
-        await ensureEmailCrr5();
+        await ensureAgencyCRR5(); // reusa CRR5 existente se estado não mudou
       }catch(e){
-        resetEmailCrr(); // fallback: vai com CRR4
         console.error(e);
-        showToast((e && e.message) ? e.message : "Não consegui gerar CRR5. Enviando com CRR4.");
+        showToast("Não consegui gerar CRR5 — vai com CRR4 mesmo.");
+        invalidateAgencyCRR5();
       }
 
+      // sempre regen para refletir o CRR5 (ou fallback CRR4)
       lastEmailHtml = generateEmail();
       if(!lastEmailHtml){ return; }
       const ok = await copyHtmlToClipboard(lastEmailHtml);
       if(!ok) showToast("Não deu pra copiar automático. Copie pelo preview.");
     });
 
-    document.getElementById("btnCopiarObs").addEventListener("click", async ()=>{
+document.getElementById("btnCopiarObs").addEventListener("click", async ()=>{
       const errs = validateBeforeGenerate();
       if(errs.length){ setPill(false, "Atenção: revisar dados"); showToast(errs[0]); return; }
       const code = buildRfObsCode();
@@ -3702,36 +3783,16 @@ function clearAll(silent){
 // CRR
     // (botão "Copiar CRR" removido)
 
-
-document.getElementById("btnGerarCRR5") && document.getElementById("btnGerarCRR5").addEventListener("click", async ()=>{
-      const ta = document.getElementById("raCode");
-      try{
-        const crr4 = buildCRRCode();
-        const crr5 = await saveCRR5FromCRR4(crr4);
-        if(ta){
-          ta.dataset.manual = "1"; // impede updateAll de sobrescrever
-          ta.value = crr5;
-        }
-        try{
-          await navigator.clipboard.writeText(crr5);
-          showToast("CRR curto (CRR5) copiado!");
-        }catch(e){
-          showToast("CRR5 gerado. Copie do campo.");
-        }
-      }catch(e){
-        showToast((e && e.message) ? e.message : "Falha ao gerar CRR curto.");
-      }
-    });
-
 document.getElementById("btnCarregarRACode").addEventListener("click", async ()=>{
-      const code = (document.getElementById("raCode").value || "").trim();
+      invalidateAgencyCRR5();
+      const raw = (document.getElementById("raCode").value || "").trim();
       try{
-        const c5 = extractCRR5(code);
-        if(c5){
-          const crr4 = await loadCRR5ToCRR4(c5);
+        const maybe5 = extractCRR5(raw);
+        if(maybe5){
+          const crr4 = await loadCRR5ToCRR4(maybe5);
           loadCRRCode(crr4);
         }else{
-          loadCRRCode(code);
+          loadCRRCode(raw);
         }
         const rc = document.getElementById("raCode");
         if(rc){ rc.dataset.manual = "0"; rc.value = buildCRRCode(); }
@@ -3755,8 +3816,8 @@ document.getElementById("btnLimpar").addEventListener("click", clearAll);
 // reactive calc
     for(const el of document.querySelectorAll("input, select, textarea")){
       if(el.id === "obsCode" || el.id === "raCode") continue;
-      el.addEventListener("input", ()=>{ resetEmailCrr(); lastEmailHtml = ""; updateAll(); });
-      el.addEventListener("change", ()=>{ resetEmailCrr(); lastEmailHtml = ""; updateAll(); });
+      el.addEventListener("input", ()=>{ invalidateAgencyCRR5(); updateAll(); });
+      el.addEventListener("change", ()=>{ invalidateAgencyCRR5(); updateAll(); });
     }
 
     // uppercase automático em campos-chave
@@ -3788,8 +3849,8 @@ document.getElementById("btnLimpar").addEventListener("click", clearAll);
     for(const id of ["rent_tipo_multa","rent_tipo_diftar","rent_tipo_diftax","rent_pago_cia","rent_cobrar_ag"]){
       const el = document.getElementById(id);
       if(!el) continue;
-      el.addEventListener("input", ()=>{ resetEmailCrr(); lastEmailHtml = ""; updateAll(); });
-      el.addEventListener("change", ()=>{ resetEmailCrr(); lastEmailHtml = ""; updateAll(); });
+      el.addEventListener("input", ()=>{ invalidateAgencyCRR5(); updateAll(); });
+      el.addEventListener("change", ()=>{ invalidateAgencyCRR5(); updateAll(); });
     }
 
     updateAll();
