@@ -2354,6 +2354,20 @@ function buildCRRCode(){
       return data.payload;
     }
 
+    // ===== CRR no e-mail (AGÊNCIA): usa CRR5 ao copiar o HTML =====
+    // Preview pode continuar com CRR4; ao "Copiar E-mail (HTML)" geramos CRR5 e o e-mail sai curto.
+    let __emailCrrOverride = "";
+    function resetEmailCrr(){ __emailCrrOverride = ""; }
+    function emailCrrCode(){ return __emailCrrOverride || buildCRRCode(); }
+    async function ensureEmailCrr5(){
+      if(__emailCrrOverride && /^CRR5-/i.test(__emailCrrOverride)) return __emailCrrOverride;
+      const crr4 = buildCRRCode();
+      const crr5 = await saveCRR5FromCRR4(crr4);
+      __emailCrrOverride = crr5;
+      return crr5;
+    }
+
+
 
 
     function loadCRRCode(code){
@@ -2596,7 +2610,7 @@ function buildCRRCode(){
     function buildEmailHtmlNac(){
       const common = getCommon();
       const calc = calcNac();
-      const crr = buildCRRCode();
+      const crr = emailCrrCode();
       const crrEmailHtml = escapeHtml(crr) + (common.rentab ? "<br/>@#" : "");
       const fp = document.getElementById("nac_fp").value;
       const link = document.getElementById("nac_link").value.trim();
@@ -2716,7 +2730,7 @@ const regrasExtra = regrasUser ? `<p style="margin:8px 0 0"><b>Observações:</b
     function buildEmailHtmlInter(){
       const common = getCommon();
       const calc = calcInter();
-      const crr = buildCRRCode();
+      const crr = emailCrrCode();
       const crrEmailHtml = escapeHtml(crr) + (common.rentab ? "<br/>@#" : "");
       const incentivo = document.getElementById("inter_incentivo").value;
       const tipo = document.getElementById("inter_tipo").value;
@@ -3563,6 +3577,8 @@ function updateAll(arg){
     }
 
 function clearAll(silent){
+      resetEmailCrr();
+      lastEmailHtml = "";
       const ids = Array.from(document.querySelectorAll("input, textarea")).map(e=>e.id);
       for(const id of ids){
         const el = document.getElementById(id);
@@ -3644,7 +3660,16 @@ function clearAll(silent){
     document.getElementById("btnGerar").addEventListener("click", ()=>{ lastEmailHtml = generateEmail(); });
 
     document.getElementById("btnCopiarHtml").addEventListener("click", async ()=>{
-      if(!lastEmailHtml) lastEmailHtml = generateEmail();
+      // Na hora de enviar para a agência, gera CRR5 e injeta no e-mail (em vez do CRR4 gigante).
+      try{
+        await ensureEmailCrr5();
+      }catch(e){
+        resetEmailCrr(); // fallback: vai com CRR4
+        console.error(e);
+        showToast((e && e.message) ? e.message : "Não consegui gerar CRR5. Enviando com CRR4.");
+      }
+
+      lastEmailHtml = generateEmail();
       if(!lastEmailHtml){ return; }
       const ok = await copyHtmlToClipboard(lastEmailHtml);
       if(!ok) showToast("Não deu pra copiar automático. Copie pelo preview.");
@@ -3730,8 +3755,8 @@ document.getElementById("btnLimpar").addEventListener("click", clearAll);
 // reactive calc
     for(const el of document.querySelectorAll("input, select, textarea")){
       if(el.id === "obsCode" || el.id === "raCode") continue;
-      el.addEventListener("input", updateAll);
-      el.addEventListener("change", updateAll);
+      el.addEventListener("input", ()=>{ resetEmailCrr(); lastEmailHtml = ""; updateAll(); });
+      el.addEventListener("change", ()=>{ resetEmailCrr(); lastEmailHtml = ""; updateAll(); });
     }
 
     // uppercase automático em campos-chave
@@ -3763,8 +3788,8 @@ document.getElementById("btnLimpar").addEventListener("click", clearAll);
     for(const id of ["rent_tipo_multa","rent_tipo_diftar","rent_tipo_diftax","rent_pago_cia","rent_cobrar_ag"]){
       const el = document.getElementById(id);
       if(!el) continue;
-      el.addEventListener("input", updateAll);
-      el.addEventListener("change", updateAll);
+      el.addEventListener("input", ()=>{ resetEmailCrr(); lastEmailHtml = ""; updateAll(); });
+      el.addEventListener("change", ()=>{ resetEmailCrr(); lastEmailHtml = ""; updateAll(); });
     }
 
     updateAll();
