@@ -1062,9 +1062,10 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
         <div class="muted small outTitle" style="margin-bottom:6px"><span class="tag tag--sys">CRR</span> <b>4) CRR (código de registro de reemissão)</b> — copie/cole este código na OP (RF) ou no Teams/e-mail. Depois, cole aqui e clique em “Carregar”.</div>
         <textarea id="raCode" class="codebox" style="min-height:96px" spellcheck="false" aria-label="CRR para reabrir cálculo"></textarea>
         <div class="btns" style="margin-top:10px">
-                    <button class="action" id="btnCarregarRACode">Carregar CRR</button>
-</div>
-        <div class="muted small" style="margin-top:8px">Se você colar um texto maior (ex.: a observação inteira do RF), o sistema tenta achar automaticamente o trecho <b>CRR2-...</b> (ou <b>CRR1/RA1</b> antigos).</div>
+          <button class="action good" id="btnGerarCRR5">Gerar CRR curto (CRR5)</button>
+          <button class="action" id="btnCarregarRACode">Carregar CRR</button>
+        </div>
+        <div class="muted small" style="margin-top:8px">Se você colar um texto maior (ex.: a observação inteira do RF), o sistema tenta achar automaticamente o trecho <b>CRR5-...</b> ou <b>CRR4-...</b> (e também <b>CRR3/CRR2/CRR1/RA1</b> antigos).</div>
 
       </div>
     </section>
@@ -2322,6 +2323,38 @@ function buildCRRCode(){
       return "CRR4-" + packed;
     }
 
+    // ===== CRR5 (curto via Cloudflare Worker + KV) =====
+    // (mantemos o CRR4 local como fallback/offline)
+    const CRR5_API = "https://crr-api.rexturfacilita.workers.dev/".replace(/\/+$/,"");
+
+    function extractCRR5(text){
+      const compact = String(text || "").replace(/\s+/g,"");
+      const mm = compact.match(/CRR5-[A-Za-z0-9]{6,64}/i);
+      return mm ? mm[0] : null;
+    }
+
+    async function saveCRR5FromCRR4(crr4){
+      const r = await fetch(`${CRR5_API}/save`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ payload: String(crr4 || "") }),
+      });
+      if(!r.ok) throw new Error("Falha ao salvar CRR curto");
+      const data = await r.json().catch(()=>null);
+      if(!data || !data.id) throw new Error("Resposta inválida do servidor");
+      return `CRR5-${data.id}`;
+    }
+
+    async function loadCRR5ToCRR4(crr5){
+      const id = String(crr5 || "").trim().replace(/^CRR5-/i,"");
+      const r = await fetch(`${CRR5_API}/load?id=${encodeURIComponent(id)}`);
+      if(!r.ok) throw new Error("CRR curto não encontrado (ou expirou)");
+      const data = await r.json().catch(()=>null);
+      if(!data || typeof data.payload !== "string") throw new Error("Resposta inválida do servidor");
+      return data.payload;
+    }
+
+
 
     function loadCRRCode(code){
       // aceita CRR colado puro, dentro de texto maior (OBS RF / e-mail), com quebras de linha, etc.
@@ -3419,38 +3452,8 @@ function isLatamOrGolCia(v){
 
 let __lastCiaForAutoRules = "";
 function maybeInjectAutoRuleFromCia(){
-  // Injeta regra padrão (Azul ou LATAM/GOL) no campo Regras (NAC) apenas quando a CIA muda
-  const ciaEl = document.getElementById("cia");
-  const regrasEl = document.getElementById("nac_regras");
-  if(!ciaEl || !regrasEl) return;
-  if(getActiveMode() !== "NAC") return;
-
-  const ciaVal = normalizeCia(ciaEl.value);
-  if(ciaVal === __lastCiaForAutoRules) return;
-  __lastCiaForAutoRules = ciaVal;
-
-  const t = (regrasEl.value || "").trim();
-  const lines = t ? t.split(/\r?\n/).map(s => s.trim()).filter(Boolean) : [];
-
-  // Remove as regras automáticas antigas (pra não acumular ao trocar de cia)
-  const cleaned = lines.filter(l => {
-    const n = l.toLowerCase();
-    const isAz = n.includes("reemiss") && n.includes("azul") && (n.includes("crédito") || n.includes("credito"));
-    const isLG = n.includes("novo loc") && n.includes("localizador original") && n.includes("cancel");
-    return !(isAz || isLG);
-  });
-
-  // Define qual regra automática aplicar
-  let autoRule = "";
-  if(isAzulCia(ciaVal)) autoRule = AZUL_RULE_TEXT;
-  else if(isLatamOrGolCia(ciaVal)) autoRule = LATAM_GOL_RULE_TEXT;
-
-  if(autoRule){
-    // Coloca a regra automática no topo, pra aparecer antes do no-show no e-mail
-    cleaned.unshift(autoRule);
-  }
-
-  regrasEl.value = cleaned.join("\n").trim();
+  // DESATIVADO: não preencher automaticamente o campo "Regras / observações".
+  // As regras padrão por cia (AZUL / LATAM / GOL) aparecem somente no e-mail.
 }
 
 function updateAll(arg){
@@ -3458,8 +3461,7 @@ function updateAll(arg){
       const silent = (arg === true) || (arg && arg.silent === true);
 
       syncCiaNacSelector();
-      maybeInjectAutoRuleFromCia();
-
+      // regras automáticas por cia aparecem apenas no e-mail (não preencher textarea)
       toggleRentUI();
       setRentCurrencyLabels();
 
@@ -3675,10 +3677,37 @@ function clearAll(silent){
 // CRR
     // (botão "Copiar CRR" removido)
 
-document.getElementById("btnCarregarRACode").addEventListener("click", ()=>{
+
+document.getElementById("btnGerarCRR5") && document.getElementById("btnGerarCRR5").addEventListener("click", async ()=>{
+      const ta = document.getElementById("raCode");
+      try{
+        const crr4 = buildCRRCode();
+        const crr5 = await saveCRR5FromCRR4(crr4);
+        if(ta){
+          ta.dataset.manual = "1"; // impede updateAll de sobrescrever
+          ta.value = crr5;
+        }
+        try{
+          await navigator.clipboard.writeText(crr5);
+          showToast("CRR curto (CRR5) copiado!");
+        }catch(e){
+          showToast("CRR5 gerado. Copie do campo.");
+        }
+      }catch(e){
+        showToast((e && e.message) ? e.message : "Falha ao gerar CRR curto.");
+      }
+    });
+
+document.getElementById("btnCarregarRACode").addEventListener("click", async ()=>{
       const code = (document.getElementById("raCode").value || "").trim();
       try{
-        loadCRRCode(code);
+        const c5 = extractCRR5(code);
+        if(c5){
+          const crr4 = await loadCRR5ToCRR4(c5);
+          loadCRRCode(crr4);
+        }else{
+          loadCRRCode(code);
+        }
         const rc = document.getElementById("raCode");
         if(rc){ rc.dataset.manual = "0"; rc.value = buildCRRCode(); }
         // refresh preview as well
@@ -3687,7 +3716,7 @@ document.getElementById("btnCarregarRACode").addEventListener("click", ()=>{
         showToast((e && e.message) ? e.message : "Código inválido.");
       }
     });
-    document.getElementById("btnLimpar").addEventListener("click", clearAll);
+document.getElementById("btnLimpar").addEventListener("click", clearAll);
     function forceUpperKeepCursor(el){
       if(!el || typeof el.value !== "string") return;
       const start = el.selectionStart;
