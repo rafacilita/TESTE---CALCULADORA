@@ -3782,17 +3782,18 @@ function clearAll(silent){
 
     // buttons
     let lastEmailHtml = "";
-    document.getElementById("btnGerar").addEventListener("click", ()=>{
-      // Preview NÃO gera CRR5 automaticamente (economia de storage).
-      // Se já existir um CRR5 válido, o e-mail usa ele; senão, mostra um aviso no rodapé.
-      try{ renderCRR5Status(); }catch(e){}
-      lastEmailHtml = generateEmail();
-
-      let sig = "";
-      try{ sig = buildCRRCode(); }catch(e){}
-      if(!(__agencyCRR5 && sig && __agencyCRR4Sig === sig)){
-        showToast("Preview sem CRR5. Gere CRR5 ou use 'Copiar E-mail' para gerar.");
+    document.getElementById("btnGerar").addEventListener("click", async ()=>{
+      // Preview: gera/garante CRR5 (1x por estado) e REUSA se já existir.
+      // Se falhar (sem internet), ainda mostra o preview, mas não deixa "Copiar E-mail" enviar sem CRR5.
+      try{
+        await ensureAgencyCRR5();
+        renderCRR5Status();
+      }catch(e){
+        console.error(e);
+        showToast("Não consegui gerar CRR5 para o preview — verifique conexão.");
+        try{ renderCRR5Status(); }catch(_e){}
       }
+      lastEmailHtml = generateEmail();
     });
 
 document.getElementById("btnCopiarHtml").addEventListener("click", async ()=>{
