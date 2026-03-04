@@ -1062,8 +1062,10 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
         <div class="muted small outTitle" style="margin-bottom:6px"><span class="tag tag--sys">CRR</span> <b>4) CRR (código de registro de reemissão)</b> — copie/cole este código na OP (RF) ou no Teams/e-mail. Depois, cole aqui e clique em “Carregar”.</div>
         <textarea id="raCode" class="codebox" style="min-height:96px" spellcheck="false" aria-label="CRR para reabrir cálculo"></textarea>
         <div class="btns" style="margin-top:10px">
-                    <button class="action" id="btnCarregarRACode">Carregar CRR</button>
-</div>
+          <button class="action good" id="btnGerarCRR5">Gerar CRR curto (CRR5)</button>
+          <button class="action" id="btnCarregarRACode">Carregar CRR</button>
+        </div>
+        <div id="crr5Status" class="muted small" style="margin-top:6px"></div>
         <div class="muted small" style="margin-top:8px">Se você colar um texto maior (ex.: a observação inteira do RF), o sistema tenta achar automaticamente o trecho <b>CRR2-...</b> (ou <b>CRR1/RA1</b> antigos).</div>
 
       </div>
@@ -2363,14 +2365,22 @@ function buildCRRCode(){
     let __agencyCRR4Sig = "";       // CRR4 usado quando gerou/validou o CRR5
     let __agencyCRR5Promise = null; // evita gerar 2x em clique duplo
 
-    function getAgencyCRRCode(){
+    function setCRRFieldToCRR5(crr5){
+      const ta = document.getElementById("raCode");
+      if(!ta) return;
+      // trava para não sobrescrever com CRR4 no updateAll
+      if(ta.dataset) ta.dataset.manual = "1";
+      if(document.activeElement !== ta) ta.value = crr5;
+    }
+
+function getAgencyCRRCode(){
       const sig = buildCRRCode();
       if(__agencyCRR5 && __agencyCRR4Sig === sig) return __agencyCRR5;
 
       // Se o campo CRR estiver com CRR5, mostra no preview (sem criar novo)
       const ta = document.getElementById("raCode");
       const fromField = ta ? extractCRR5(ta.value) : null;
-      return fromField || sig; // fallback CRR4
+      return fromField || "CRR5-(gerar antes de enviar)"; // sem vazar CRR4 no e-mail
     }
 
     async function ensureAgencyCRR5(){
@@ -2391,6 +2401,7 @@ function buildCRRCode(){
           if(String(stored || "").trim() === String(sig || "").trim()){
             __agencyCRR5 = crr5Field;
             __agencyCRR4Sig = sig;
+            setCRRFieldToCRR5(__agencyCRR5);
             return __agencyCRR5;
           }
         }catch(e){
@@ -2403,6 +2414,7 @@ function buildCRRCode(){
       __agencyCRR5Promise = (async ()=>{
         const c5 = await saveCRR5FromCRR4(sig);
         __agencyCRR5 = c5;
+        setCRRFieldToCRR5(__agencyCRR5);
         return c5;
       })();
 
@@ -2418,7 +2430,39 @@ function buildCRRCode(){
       __agencyCRR4Sig = "";
       __agencyCRR5Promise = null;
       lastEmailHtml = ""; // força regenerar e-mail
+
+      // libera o campo para voltar a mostrar CRR4 automaticamente
+      const ta = document.getElementById("raCode");
+      if(ta && ta.dataset){
+        ta.dataset.manual = "0";
+        if(document.activeElement !== ta){
+          try{ ta.value = buildCRRCode(); }catch(e){}
+        }
+      }
     }
+      try{ renderCRR5Status(); }catch(e){}
+
+    function renderCRR5Status(){
+      const el = document.getElementById("crr5Status");
+      if(!el) return;
+      let sig = "";
+      try{ sig = buildCRRCode(); }catch(e){ sig = ""; }
+
+      if(__agencyCRR5 && __agencyCRR4Sig && sig && __agencyCRR4Sig === sig){
+        el.textContent = "CRR5 pronto: " + __agencyCRR5;
+        return;
+      }
+
+      const ta = document.getElementById("raCode");
+      const fromField = ta ? extractCRR5(ta.value) : null;
+      if(fromField){
+        el.textContent = "CRR5 no campo (a validar): " + fromField;
+        return;
+      }
+
+      el.textContent = "CRR5 pendente — gere pelo botão (ou ao copiar o e-mail).";
+    }
+
     function loadCRRCode(code){
       // aceita CRR colado puro, dentro de texto maior (OBS RF / e-mail), com quebras de linha, etc.
       let full = String(code || "");
@@ -3682,7 +3726,8 @@ function clearAll(silent){
       document.getElementById("pax_json").value = "";
       const _fol = document.getElementById("nac_folio_on"); if(_fol) _fol.checked = false;
       updateAll();
-      renderPaxFields();
+    renderPaxFields();
+    try{ renderCRR5Status(); }catch(e){}
       if(!silent) showToast("Limpo!");
     }
 
@@ -3737,19 +3782,31 @@ function clearAll(silent){
 
     // buttons
     let lastEmailHtml = "";
-    document.getElementById("btnGerar").addEventListener("click", ()=>{ lastEmailHtml = generateEmail(); });
+    document.getElementById("btnGerar").addEventListener("click", ()=>{
+      // Preview NÃO gera CRR5 automaticamente (economia de storage).
+      // Se já existir um CRR5 válido, o e-mail usa ele; senão, mostra um aviso no rodapé.
+      try{ renderCRR5Status(); }catch(e){}
+      lastEmailHtml = generateEmail();
 
-    document.getElementById("btnCopiarHtml").addEventListener("click", async ()=>{
-      // Gera/garante CRR5 apenas na hora de copiar o e-mail (evita gastar storage a cada digitação)
+      let sig = "";
+      try{ sig = buildCRRCode(); }catch(e){}
+      if(!(__agencyCRR5 && sig && __agencyCRR4Sig === sig)){
+        showToast("Preview sem CRR5. Gere CRR5 ou use 'Copiar E-mail' para gerar.");
+      }
+    });
+
+document.getElementById("btnCopiarHtml").addEventListener("click", async ()=>{
+      // Para envio: sempre usar CRR5. Se não existir, gera agora (1x por estado).
       try{
-        await ensureAgencyCRR5(); // reusa CRR5 existente se estado não mudou
+        await ensureAgencyCRR5();
+        renderCRR5Status();
       }catch(e){
         console.error(e);
-        showToast("Não consegui gerar CRR5 — vai com CRR4 mesmo.");
-        invalidateAgencyCRR5();
+        showToast("Não consegui gerar CRR5 — verifique conexão.");
+        return; // não envia com CRR4 por engano
       }
 
-      // sempre regen para refletir o CRR5 (ou fallback CRR4)
+      // sempre regen para refletir o CRR5
       lastEmailHtml = generateEmail();
       if(!lastEmailHtml){ return; }
       const ok = await copyHtmlToClipboard(lastEmailHtml);
@@ -3783,19 +3840,46 @@ document.getElementById("btnCopiarObs").addEventListener("click", async ()=>{
 // CRR
     // (botão "Copiar CRR" removido)
 
+    document.getElementById("btnGerarCRR5").addEventListener("click", async ()=>{
+      try{
+        const c5 = await ensureAgencyCRR5();
+        renderCRR5Status();
+        try{ await navigator.clipboard.writeText(c5); showToast("CRR5 gerado e copiado!"); }
+        catch(e){ showToast("CRR5 gerado!"); }
+        // atualiza preview também
+        lastEmailHtml = generateEmail();
+      }catch(e){
+        console.error(e);
+        showToast("Falha ao gerar CRR5.");
+      }
+    });
+
 document.getElementById("btnCarregarRACode").addEventListener("click", async ()=>{
-      invalidateAgencyCRR5();
+      // Lê primeiro o campo, para não perder CRR5 colado (invalidação pode sobrescrever)
       const raw = (document.getElementById("raCode").value || "").trim();
       try{
         const maybe5 = extractCRR5(raw);
+
         if(maybe5){
+          // CRR5 -> busca no servidor -> aplica como CRR4
           const crr4 = await loadCRR5ToCRR4(maybe5);
+          invalidateAgencyCRR5(); // limpa estado/cache anterior
           loadCRRCode(crr4);
+
+          // Mantém o mesmo CRR5 no campo e no cache (não gera um novo)
+          const sig = buildCRRCode();
+          __agencyCRR5 = maybe5;
+          __agencyCRR4Sig = sig;
+          __agencyCRR5Promise = null;
+          setCRRFieldToCRR5(maybe5);
         }else{
+          // CRR4/CRR3/CRR2/CRR1/RA1 -> carrega. CRR5 é gerado sob demanda (botão / copiar e-mail)
+          invalidateAgencyCRR5();
           loadCRRCode(raw);
+          renderCRR5Status();
+          showToast("Carregado. Clique em ‘Gerar CRR curto (CRR5)’ para criar o código curto.");
         }
-        const rc = document.getElementById("raCode");
-        if(rc){ rc.dataset.manual = "0"; rc.value = buildCRRCode(); }
+
         // refresh preview as well
         lastEmailHtml = generateEmail();
       }catch(e){
@@ -3855,6 +3939,7 @@ document.getElementById("btnLimpar").addEventListener("click", clearAll);
 
     updateAll();
     renderPaxFields();
+    try{ renderCRR5Status(); }catch(e){}
 
     // PAX listeners
     for(const id of ["paxq_adt","paxq_chd","paxq_inf"]){
