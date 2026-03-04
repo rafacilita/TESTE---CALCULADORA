@@ -806,9 +806,9 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
             <div>
               <label>Forma de pagamento</label>
               <select id="nac_fp">
-                <option>Faturado</option>
-                <option>Link de pagamento</option>
-              </select>
+                <option value="Faturado" selected>Faturado ou Cartão de Crédito</option>
+                <option value="Link de pagamento">Link de pagamento</option>
+</select>
             </div>
             <div>
               <label>Link de pagamento (se aplicável)</label>
@@ -935,9 +935,9 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
             <div>
               <label>Forma de pagamento</label>
               <select id="inter_fp">
-                <option>Faturado</option>
-                <option>Link de pagamento</option>
-              </select>
+                <option value="Faturado" selected>Faturado ou Cartão de Crédito</option>
+                <option value="Link de pagamento">Link de pagamento</option>
+</select>
             </div>
             <div style="grid-column: 1 / -1;">
               <label>Link de pagamento (se aplicável)</label>
@@ -2752,11 +2752,13 @@ const servicesRow = (calc.servicesBRL && calc.servicesBRL > 0)
         </tr>
       `);
 
-      const linkLine = (fp === "Link de pagamento" && link)
-        ? `<p style="margin:8px 0 0">Para pagamento via cartão, preencha os dados no link e nos responda com a quantidade de parcelas caso seja parcelado: <b><a href="${escapeHtml((/^https?:\/\//i.test(link)?link:`https://${link}`))}" target="_blank" rel="noopener">${escapeHtml(link)}</a></b></p>`
-        : `<p style="margin:8px 0 0">Forma de pagamento: <b>${escapeHtml(fp)}</b></p>`;
-
-      const azulRuleLi = isAzul ? `<li>${escapeHtml(AZUL_RULE_TEXT)}</li>` : "";
+      const linkLine = (() => {
+        const payText = "Faturado ou Cartão de Crédito";
+        const base = `<p style="margin:8px 0 0">Forma de pagamento: <b>${escapeHtml(payText)}</b></p>`;
+        if(!link) return base;
+        const href = escapeHtml((/^https?:\/\//i.test(link)?link:`https://${link}`));
+        return base + `<p style="margin:6px 0 0">Link de pagamento: <b><a href="${href}" target="_blank" rel="noopener">${escapeHtml(link)}</a></b></p>`;
+      })();const azulRuleLi = isAzul ? `<li>${escapeHtml(AZUL_RULE_TEXT)}</li>` : "";
       const latamGolRuleLi = (isLatamGol && !isAzul) ? `<li>${escapeHtml(LATAM_GOL_RULE_TEXT)}</li>` : "";
       const regrasPadrao = `
         <ul style="margin:8px 0 0; padding-left:18px">
@@ -2859,11 +2861,13 @@ const regrasExtra = regrasUser ? `<p style="margin:8px 0 0"><b>Observações:</b
         </tr>
       `);
 
-      const linkLine = (fp === "Link de pagamento" && link)
-        ? `<p style="margin:8px 0 0">Para pagamento via cartão, preencha os dados no link e nos responda com a quantidade de parcelas caso seja parcelado: <b><a href="${escapeHtml((/^https?:\/\//i.test(link)?link:`https://${link}`))}" target="_blank" rel="noopener">${escapeHtml(link)}</a></b></p>`
-        : `<p style="margin:8px 0 0">Forma de pagamento: <b>${escapeHtml(fp)}</b></p>`;
-
-      const fxLine = calc.fx > 0
+      const linkLine = (() => {
+        const payText = "Faturado ou Cartão de Crédito";
+        const base = `<p style="margin:8px 0 0">Forma de pagamento: <b>${escapeHtml(payText)}</b></p>`;
+        if(!link) return base;
+        const href = escapeHtml((/^https?:\/\//i.test(link)?link:`https://${link}`));
+        return base + `<p style="margin:6px 0 0">Link de pagamento: <b><a href="${href}" target="_blank" rel="noopener">${escapeHtml(link)}</a></b></p>`;
+      })();const fxLine = calc.fx > 0
         ? `<p style="margin:6px 0 0"><b>Câmbio informado:</b> 1 ${escapeHtml(calc.cur)} = ${calc.fx.toFixed(4).replace(".",",")} BRL • <b>Total (BRL):</b> ${fmtBRL(calc.totalBRL)}</p>`
         : `<p style="margin:6px 0 0; color:#6b4b00"><b>Atenção:</b> informe o câmbio (Moeda → BRL) para gerar o total em BRL.</p>`;
 
