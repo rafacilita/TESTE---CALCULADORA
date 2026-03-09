@@ -2518,7 +2518,7 @@ const CRR5_API = "https://crr-api.rexturfacilita.workers.dev/".replace(/\/+$/,""
 function extractCRR5(text){
   const compact = String(text || "").replace(/\s+/g,"");
   const mm = compact.match(/CRR5-[A-Za-z0-9]{6,64}/i);
-  return mm ? mm[0].toUpperCase() : null;
+  return mm ? mm[0] : null;
 }
 
 async function saveCRR5FromCRR4(crr4){
@@ -2530,11 +2530,11 @@ async function saveCRR5FromCRR4(crr4){
   if(!r.ok) throw new Error("Falha ao salvar CRR curto");
   const data = await r.json().catch(()=>null);
   if(!data || !data.id) throw new Error("Resposta inválida do servidor");
-  return `CRR5-${data.id}`;
+  return `CRR5-${String(data.id).toLowerCase()}`;
 }
 
 async function loadCRR5ToCRR4(crr5){
-  const id = String(crr5 || "").trim().replace(/^CRR5-/i,"");
+  const id = String(crr5 || "").trim().replace(/^CRR5-/i,"").toLowerCase();
   const r = await fetch(`${CRR5_API}/load?id=${encodeURIComponent(id)}`);
   if(!r.ok) throw new Error("CRR curto não encontrado (ou expirou)");
   const data = await r.json().catch(()=>null);
