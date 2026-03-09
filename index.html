@@ -2517,8 +2517,9 @@ const CRR5_API = "https://crr-api.rexturfacilita.workers.dev/".replace(/\/+$/,""
 
 function extractCRR5(text){
   const compact = String(text || "").replace(/\s+/g,"");
-  const mm = compact.match(/CRR5-[A-Za-z0-9]{6,64}/i);
-  return mm ? mm[0] : null;
+  const mm = compact.match(/CRR5-([A-Za-z0-9]{6,64})/i);
+  if(!mm) return null;
+  return `CRR5-${mm[1].toLowerCase()}`;
 }
 
 async function saveCRR5FromCRR4(crr4){
