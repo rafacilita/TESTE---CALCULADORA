@@ -637,7 +637,7 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
   background: transparent;
   color: #0f172a;
   font-weight: 900;
-  padding: 10px 16px;
+  padding: 9px 15px;
   border-radius: 999px;
 }
 :root[data-theme="light"] .card.calcCard .tabs .tab:hover{
@@ -654,6 +654,59 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
   box-shadow: 0 0 0 4px rgba(124,58,237,.22);
 }
 
+
+
+/* ===== Saídas em abas ===== */
+.outputsTabs{display:grid;grid-template-columns:repeat(4,minmax(96px,1fr));gap:10px;margin:6px 0 12px}
+@media (max-width:760px){.outputsTabs{grid-template-columns:repeat(2,minmax(96px,1fr));}}
+.outputTabBtn{
+  appearance:none;display:inline-flex;align-items:center;justify-content:center;text-align:center;line-height:1.1;
+  border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.16);color:var(--text);
+  padding:9px 14px;border-radius:16px;cursor:pointer;font-weight:850;font-size:12.5px;min-height:46px;min-width:0;
+  box-shadow:0 6px 16px rgba(2,6,23,.12);
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease, background-color .12s ease;
+}
+.outputTabBtn:hover{transform:translateY(-1px);box-shadow:0 10px 20px rgba(2,6,23,.16)}
+.outputTabBtn[aria-selected="true"]{
+  border-color: rgba(155,92,255,.55);
+  box-shadow: 0 0 0 2px rgba(155,92,255,.15) inset, 0 10px 20px rgba(76,29,149,.14);
+  background: rgba(155,92,255,.14);
+}
+.outputPanel{display:none}
+.outputPanel.is-active{display:block}
+.outputEmpty{border:1px dashed rgba(255,255,255,.14);border-radius:14px;padding:16px;background:rgba(0,0,0,.10);color:var(--muted)}
+.agencyOptBox{margin-top:10px;padding:10px 12px;border-radius:12px;border:1px dashed rgba(155,92,255,.28);background:rgba(155,92,255,.08)}
+.agencyOpt{display:flex;align-items:center;gap:8px;cursor:pointer;margin:0;font-size:13px;color:var(--text);font-weight:700}
+.agencyOpt input[type="checkbox"]{width:16px;height:16px}
+.outputsCard .hd{padding:14px 16px 8px}
+.outputsCard .bd{padding:10px 16px 16px}
+.outputsCard .btns{align-items:stretch;gap:10px;margin-top:12px}
+.outputsCard .btns .action{
+  flex:1 1 220px;
+  min-height:48px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  line-height:1.1;
+  padding:10px 16px;
+  border-radius:16px;
+  box-shadow:0 6px 16px rgba(2,6,23,.10);
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease, background-color .12s ease;
+}
+.outputsCard .btns .action:hover{transform:translateY(-1px);box-shadow:0 10px 20px rgba(2,6,23,.14)}
+.outputsCard .preview,
+.outputsCard .codebox{border-radius:16px}
+.outputsCard .tag{font-size:12px;padding:7px 12px}
+#previewHint{margin:2px 0 0;line-height:1.45}
+.outTitle{line-height:1.45;font-size:12.5px}
+:root[data-theme="light"] .outputTabBtn{border:1px solid rgba(15,23,42,.12);background:#fff;color:#0f172a;box-shadow:0 5px 14px rgba(15,23,42,.05)}
+:root[data-theme="light"] .outputTabBtn:hover{box-shadow:0 10px 20px rgba(15,23,42,.08)}
+:root[data-theme="light"] .outputTabBtn[aria-selected="true"]{border-color: rgba(124,58,237,.50);background: rgba(124,58,237,.10);color:#111827;box-shadow: 0 0 0 2px rgba(124,58,237,.16) inset, 0 10px 20px rgba(124,58,237,.10)}
+:root[data-theme="light"] .outputsCard .btns .action{box-shadow:0 5px 14px rgba(15,23,42,.05)}
+:root[data-theme="light"] .outputsCard .btns .action:hover{box-shadow:0 10px 20px rgba(15,23,42,.08)}
+:root[data-theme="light"] .outputEmpty{border-color:rgba(15,23,42,.14);background:rgba(15,23,42,.03)}
+:root[data-theme="light"] .agencyOptBox{border-color:rgba(124,58,237,.24);background:rgba(124,58,237,.06)}
 </style>
 </head>
 <body>
@@ -1032,6 +1085,10 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
               <div id="nac_folio_wrap" style="display:none; flex:1; min-width:260px; max-width:520px">
                 <label>Fólio (texto livre)</label>
                 <textarea id="nac_folio_text" placeholder="Digite o fólio/observação aqui (opcional)" style="min-height:42px"></textarea>
+                <div class="agencyOptBox">
+                  <label class="agencyOpt"><input type="checkbox" id="nac_folio_agencia" /> Incluir fólio também no e-mail da agência</label>
+                  <div class="muted small" style="margin-top:6px">Desmarcado = o fólio fica apenas no contexto interno.</div>
+                </div>
               </div>
             </div>
           </div>
@@ -1170,6 +1227,10 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
               <div id="inter_endosso_wrap" style="display:none; flex:1; min-width:260px; max-width:720px">
                 <label>Endosso (texto livre)</label>
                 <textarea id="inter_endosso_text" placeholder="Digite o endosso aqui (opcional)" style="min-height:42px"></textarea>
+                <div class="agencyOptBox">
+                  <label class="agencyOpt"><input type="checkbox" id="inter_endosso_agencia" /> Incluir endosso também no e-mail da agência</label>
+                  <div class="muted small" style="margin-top:6px">Desmarcado = o endosso fica apenas no contexto interno.</div>
+                </div>
               </div>
             </div>
           </div>
@@ -1207,54 +1268,60 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
       <div class="hd">
         <div>
           <div style="font-weight:900">Saídas</div>
-          <div class="muted small" id="previewHint">Gere o e-mail e/ou copie o código pro RF.</div>
+          <div class="muted small" id="previewHint">Gere o e-mail. Se alterar qualquer dado, clique novamente em <b>Gerar / Atualizar E-mail</b> para renovar o CRR.</div>
         </div>
         <span class="pill" id="subjectPill">Assunto: —</span>
       </div>
       <div class="bd">
-        <div class="muted small outTitle" style="margin-bottom:6px"><span class="tag tag--agency">AGÊNCIA</span> <b>1) Preview do e-mail (agência)</b> — isso é o que você cola no Outlook.</div>
-        <div id="preview" class="preview" contenteditable="true" aria-label="Pré-visualização do e-mail"></div>
-
-        <div class="btns" style="margin-top:10px">
-          <button class="action primary calc" id="btnGerar">Gerar E-mail (preview)</button>
-          <button class="action good" id="btnCopiarHtml">Copiar E-mail (HTML)</button>
+        <div class="outputsTabs" role="tablist" aria-label="Saídas da calculadora">
+          <button type="button" class="outputTabBtn" id="outTabBtnAgency" data-output-tab="agency" aria-selected="true">Agência</button>
+          <button type="button" class="outputTabBtn" id="outTabBtnCco" data-output-tab="cco" aria-selected="false">CCO</button>
+          <button type="button" class="outputTabBtn" id="outTabBtnRent" data-output-tab="rent" aria-selected="false">Rent</button>
+          <button type="button" class="outputTabBtn" id="outTabBtnCrr" data-output-tab="crr" aria-selected="false">CRR</button>
         </div>
 
-        <div class="hr"></div>
-
-        <div id="outRentSicaSection">
-        <div class="muted small outTitle" style="margin-bottom:6px"><span class="tag tag--rent">RENT</span> <b>2) Formulário de rentabilidade (SICA)</b> — copie e cole no e-mail para o time de Rentabilização lançar no SICA.</div>
-        <div id="rentFormWrap">
-          <div id="rentFormPreview" class="preview" style="min-height:180px" contenteditable="true" aria-label="Formulário de Rentabilização (SICA)"></div>
+        <div class="outputPanel is-active" id="outPanelAgency" data-output-panel="agency">
+          <div class="muted small outTitle" style="margin-bottom:6px"><span class="tag tag--agency">AGÊNCIA</span> <b>1) Preview do e-mail (agência)</b> — gere/atualize antes de colar no Outlook.</div>
+          <div id="preview" class="preview" contenteditable="true" aria-label="Pré-visualização do e-mail"></div>
           <div class="btns" style="margin-top:10px">
-            <button class="action rent" id="btnCopiarRentForm">Formulário Rentabilização</button>
+            <button class="action primary calc" id="btnGerar">Gerar / Atualizar E-mail</button>
+            <button class="action good" id="btnCopiarHtml">Copiar E-mail (HTML)</button>
           </div>
         </div>
 
-        <div class="hr"></div>
+        <div class="outputPanel" id="outPanelCco" data-output-panel="cco">
+          <div class="muted small outTitle" style="margin-bottom:6px"><span class="tag tag--cco">CCO</span> <b>2) Código para OBS (OP no RF)</b> — cole direto na observação pra equipe de reemissão (CCO) ver a tabela.</div>
+          <textarea id="obsCode" class="codebox" style="min-height:240px" spellcheck="false" aria-label="Código para Observação no RF"></textarea>
+          <div class="btns" style="margin-top:10px">
+            <button class="action cco" id="btnCopiarObs">Copiar código OBS (RF)</button>
+          </div>
+          <div class="muted small" style="margin-top:8px">
+            “Copiar código OBS (RF)” copia o <b>código</b> pra colar na observação da OP no RF. Se o RF não renderizar, teste colar só a tabela (sem o título).
+          </div>
         </div>
 
-        <div class="muted small outTitle" style="margin-bottom:6px"><span class="tag tag--cco">CCO</span> <b>3) Código para OBS (OP no RF)</b> — cole direto na observação pra equipe de reemissão (CCO) ver a tabela.</div>
-        <textarea id="obsCode" class="codebox" style="display:none" spellcheck="false" aria-label="Código para Observação no RF"></textarea>
-
-        <div class="btns" style="margin-top:10px">
-          <button class="action cco" id="btnCopiarObs">Copiar código OBS (RF)</button>
+        <div class="outputPanel" id="outPanelRent" data-output-panel="rent">
+          <div id="outRentSicaSection">
+            <div class="muted small outTitle" style="margin-bottom:6px"><span class="tag tag--rent">RENT</span> <b>3) Formulário de rentabilidade (SICA)</b> — copie e cole no e-mail para o time de Rentabilização lançar no SICA.</div>
+            <div id="rentFormWrap">
+              <div id="rentFormPreview" class="preview" style="min-height:180px" contenteditable="true" aria-label="Formulário de Rentabilização (SICA)"></div>
+              <div class="btns" style="margin-top:10px">
+                <button class="action rent" id="btnCopiarRentForm">Formulário Rentabilização</button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="muted small" style="margin-top:8px">
-          “Copiar código OBS (RF)” copia o <b>código</b> pra colar na observação da OP no RF. Se o RF não renderizar, teste colar só a tabela (sem o título).
+
+        <div class="outputPanel" id="outPanelCrr" data-output-panel="crr">
+          <div class="muted small outTitle" style="margin-bottom:6px"><span class="tag tag--sys">CRR</span> <b>4) CRR (código de registro de reemissão)</b> — o código é atualizado ao clicar em <b>Gerar / Atualizar E-mail</b> ou <b>Copiar E-mail (HTML)</b>. Cole aqui um código salvo para carregar o cálculo.</div>
+          <textarea id="raCode" class="codebox" style="min-height:96px" spellcheck="false" aria-label="CRR para reabrir cálculo"></textarea>
+          <div class="btns" style="margin-top:10px">
+            <button class="action" id="btnCarregarRACode">Carregar CRR</button>
+          </div>
+          <div class="muted small" style="margin-top:8px">Se você colar um texto maior (ex.: a observação inteira do RF), o sistema tenta achar automaticamente o trecho <b>CRR5/CRR4/CRR2-...</b> (ou <b>CRR1/RA1</b> antigos).</div>
         </div>
 
-        <div class="hr"></div>
-
-        <div class="muted small outTitle" style="margin-bottom:6px"><span class="tag tag--sys">CRR</span> <b>4) CRR (código de registro de reemissão)</b> — copie/cole este código na OP (RF) ou no Teams/e-mail. Depois, cole aqui e clique em “Carregar”.</div>
-        <textarea id="raCode" class="codebox" style="min-height:96px" spellcheck="false" aria-label="CRR para reabrir cálculo"></textarea>
-        <div class="btns" style="margin-top:10px">
-                    <button class="action good" id="btnGerarCRR5">Gerar CRR curto (CRR5)</button>
-          <button class="action" id="btnCarregarRACode">Carregar CRR</button>
-</div>
-        <div class="muted small" style="margin-top:8px">Se você colar um texto maior (ex.: a observação inteira do RF), o sistema tenta achar automaticamente o trecho <b>CRR2-...</b> (ou <b>CRR1/RA1</b> antigos).</div>
-
-      </div>
+      </div>      </div>
     </section>
   </div>
 
@@ -1337,7 +1404,7 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
       // saída (SICA): ocultar quando Rentabilização estiver desabilitado
       const outSica = document.getElementById("outRentSicaSection");
       if(outSica) outSica.style.display = rd.enabled ? "block" : "none";
-
+      try{ syncOutputTabs(); }catch(e){}
 
     }
 
@@ -2459,7 +2526,7 @@ const store = getPaxStore();
 
     // ----- CRR4: mesmo conteúdo do CRR3, mas com chaves compactadas (reduz bem o tamanho) -----
     // Mapeia ids de campos -> índice base36 (ex.: "cia" -> "a") antes de compactar.
-    const CRR4_KEYS = ["themeSel","rentab","op_rf","agencia","filial","rent_tipo_multa","rent_tipo_diftar","rent_tipo_diftax","rent_pago_cia_multa_adt","rent_pago_cia_multa_chd","rent_pago_cia_multa_inf","rent_cobrar_ag_multa","rent_lucro_multa","rent_pago_cia_diftar_adt","rent_pago_cia_diftar_chd","rent_pago_cia_diftar_inf","rent_cobrar_ag_diftar","rent_lucro_diftar","rent_pago_cia_diftax_adt","rent_pago_cia_diftax_chd","rent_pago_cia_diftax_inf","rent_cobrar_ag_diftax","rent_lucro_diftax","cia","prazo","loc","oac","novo_loc","paxq_adt","paxq_chd","paxq_inf","pax_json","familia","pax","tks","bag","parcelamento","nac_fp","nac_link","nac_qty_ADT","nac_old_ADT","nac_new_ADT","nac_tax_ADT","nac_du_ADT","nac_pen_ADT","nac_qty_CHD","nac_old_CHD","nac_new_CHD","nac_tax_CHD","nac_du_CHD","nac_pen_CHD","nac_qty_INF","nac_old_INF","nac_new_INF","nac_tax_INF","nac_du_INF","nac_pen_INF","nac_services_on","nac_services_brl","nac_folio_on","nac_folio_text","nac_voos","nac_regras","inter_cur","inter_cur_other","inter_fx","inter_fx_usd","inter_incentivo","inter_tipo","inter_fp","inter_link","inter_qty_ADT","inter_fare_ADT","inter_tax_ADT","inter_du_ADT","inter_pen_ADT","inter_fee_ADT","inter_qty_CHD","inter_fare_CHD","inter_tax_CHD","inter_du_CHD","inter_pen_CHD","inter_fee_CHD","inter_qty_INF","inter_fare_INF","inter_tax_INF","inter_du_INF","inter_pen_INF","inter_fee_INF","inter_original","inter_voos","inter_interno","rf_include_racode","rf_mask_numbers","rf_include_tks"];
+    const CRR4_KEYS = ["themeSel","rentab","op_rf","agencia","filial","rent_tipo_multa","rent_tipo_diftar","rent_tipo_diftax","rent_pago_cia_multa_adt","rent_pago_cia_multa_chd","rent_pago_cia_multa_inf","rent_cobrar_ag_multa","rent_lucro_multa","rent_pago_cia_diftar_adt","rent_pago_cia_diftar_chd","rent_pago_cia_diftar_inf","rent_cobrar_ag_diftar","rent_lucro_diftar","rent_pago_cia_diftax_adt","rent_pago_cia_diftax_chd","rent_pago_cia_diftax_inf","rent_cobrar_ag_diftax","rent_lucro_diftax","cia","prazo","loc","oac","novo_loc","paxq_adt","paxq_chd","paxq_inf","pax_json","familia","pax","tks","bag","parcelamento","nac_fp","nac_link","nac_qty_ADT","nac_old_ADT","nac_new_ADT","nac_tax_ADT","nac_du_ADT","nac_pen_ADT","nac_qty_CHD","nac_old_CHD","nac_new_CHD","nac_tax_CHD","nac_du_CHD","nac_pen_CHD","nac_qty_INF","nac_old_INF","nac_new_INF","nac_tax_INF","nac_du_INF","nac_pen_INF","nac_services_on","nac_services_brl","nac_folio_on","nac_folio_text","nac_folio_agencia","nac_voos","nac_regras","inter_cur","inter_cur_other","inter_fx","inter_fx_usd","inter_incentivo","inter_tipo","inter_fp","inter_link","inter_qty_ADT","inter_fare_ADT","inter_tax_ADT","inter_du_ADT","inter_pen_ADT","inter_fee_ADT","inter_qty_CHD","inter_fare_CHD","inter_tax_CHD","inter_du_CHD","inter_pen_CHD","inter_fee_CHD","inter_qty_INF","inter_fare_INF","inter_tax_INF","inter_du_INF","inter_pen_INF","inter_fee_INF","inter_endosso_on","inter_endosso_text","inter_endosso_agencia","inter_original","inter_voos","inter_interno","rf_include_racode","rf_mask_numbers","rf_include_tks"];
     const CRR4_ID2K = {};
     const CRR4_K2ID = {};
     for(let i=0;i<CRR4_KEYS.length;i++){ 
@@ -2831,6 +2898,38 @@ async function ensureCRR5Current(){
       return escapeHtml(p || t || "");
     }
 // ---------- email templates (Outlook) ----------
+    function buildEmailSectionBlock(title, content, opts){
+      const o = opts || {};
+      const strong = !!o.strong;
+      const isHtml = !!o.html;
+      const useMono = o.mono !== false;
+      const value = String(content || "").trim();
+      const emptyHtml = `<span style="color:#999">${escapeHtml(o.emptyLabel || "-")}</span>`;
+      const bodyHtml = isHtml ? (value || emptyHtml) : (value ? brToHtml(value) : emptyHtml);
+      const headerBg = strong ? "#6d28d9" : "#efe8ff";
+      const headerColor = strong ? "#ffffff" : "#4c1d95";
+      const bodyBg = strong ? "#f7f3ff" : "#fbf9ff";
+      const border = strong ? "#d9c8f2" : "#e4daf8";
+      const marginTop = strong ? 22 : 18;
+      const bodyFont = useMono ? 'Consolas, &quot;Courier New&quot;, monospace' : 'Arial, sans-serif';
+      const bodyFontSize = useMono ? '14px' : '13px';
+      const bodyLineHeight = useMono ? '1.55' : '1.5';
+      const extraBodyStyle = o.bodyStyle ? `; ${o.bodyStyle}` : '';
+      return `
+        <table border="0" cellspacing="0" cellpadding="0" width="760" style="width:760px; max-width:760px; margin:${marginTop}px 0 0; mso-table-lspace:0pt; mso-table-rspace:0pt; border-collapse:collapse;">
+          <tr>
+            <td style="padding:0;">
+              <div style="padding:10px 12px; background:${headerBg}; color:${headerColor}; font-weight:900; border-radius:12px; letter-spacing:.3px; border:${strong ? 'none' : '1px solid ' + border};">${escapeHtml(title)}</div>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:12px 0 0;">
+              <div style="padding:14px 14px; border:1px solid ${border}; border-radius:12px; background:${bodyBg}; font-family:${bodyFont}; font-size:${bodyFontSize}; line-height:${bodyLineHeight}${extraBodyStyle}">${bodyHtml}</div>
+            </td>
+          </tr>
+        </table>
+      `.trim();
+    }
     function buildEmailHtmlNac(){
       const common = getCommon();
       const calc = calcNac();
@@ -2840,8 +2939,9 @@ async function ensureCRR5Current(){
       const link = document.getElementById("nac_link").value.trim();
       const voos = document.getElementById("nac_voos").value.trim();
       const folioOn = !!(document.getElementById("nac_folio_on") && document.getElementById("nac_folio_on").checked);
+      const folioAgencyOn = !!(document.getElementById("nac_folio_agencia") && document.getElementById("nac_folio_agencia").checked);
       const folio = (document.getElementById("nac_folio_text") ? document.getElementById("nac_folio_text").value.trim() : "");
-      const folioRow = (folioOn && folio) ? `<tr><td style="background-color:#efe9f8; padding:6px 8px; border:1px solid #e6def3;"><b>Fólio</b></td><td style="background-color:#ffffff; padding:6px 8px; border:1px solid #e6def3;">${escapeHtml(folio)}</td></tr>` : "";
+      const folioRow = (folioOn && folio && folioAgencyOn) ? `<tr><td style="background-color:#efe9f8; padding:6px 8px; border:1px solid #e6def3;"><b>Fólio</b></td><td style="background-color:#ffffff; padding:6px 8px; border:1px solid #e6def3;">${escapeHtml(folio)}</td></tr>` : "";
 
       const regrasUserRaw = document.getElementById("nac_regras").value.trim();
       const isAzul = /(^|[\s,\/])(?:AD|AZUL)($|[\s,\/])/i.test(String(common.cia||"").trim());
@@ -2949,12 +3049,8 @@ const regrasExtra = regrasUser ? `<p style="margin:8px 0 0"><b>Observações:</b
           <p style="margin:6px 0 0"><i>*Após o preenchimento, responda o e-mail para darmos continuidade ao processo</i></p>
           <p style="margin:6px 0 0">Em respeito a LGPD, não é permitido trafegar informações que envolvam dados de cartão de crédito.</p>
 
-          <div style="margin:22px 0 0; padding:10px 12px; background:#6d28d9; color:#ffffff; font-weight:900; border-radius:12px; letter-spacing:.3px;">VOOS SIMULADOS</div>
-          <div style="margin:14px 0 22px; padding:14px 14px; border:1px solid #d9c8f2; border-radius:12px; background:#f7f3ff; font-family:Consolas, \"Courier New\", monospace; font-size:14px; line-height:1.55;">${voos ? brToHtml(voos) : `<span style=\"color:#999\">-</span>`}</div>
-
-          <p style="margin:12px 0 0"><b>📌 Regras:</b></p>
-          ${regrasPadrao}
-          ${regrasExtra}
+          ${buildEmailSectionBlock("VOOS SIMULADOS", voos, { strong:true })}
+          ${buildEmailSectionBlock("REGRAS", `${regrasPadrao}${regrasExtra}`, { html:true, mono:false, bodyStyle:'padding:14px 16px;' })}
           <p style="margin:6px 0 0; font-size:9px; color:#999">${crrEmailHtml}</p>
         </div>
       `.trim();
@@ -2975,8 +3071,9 @@ const regrasExtra = regrasUser ? `<p style="margin:8px 0 0"><b>Observações:</b
       const interno = document.getElementById("inter_interno").value.trim();
 
       const endossoOn = !!(document.getElementById("inter_endosso_on") && document.getElementById("inter_endosso_on").checked);
+      const endossoAgencyOn = !!(document.getElementById("inter_endosso_agencia") && document.getElementById("inter_endosso_agencia").checked);
       const endosso = (document.getElementById("inter_endosso_text") ? document.getElementById("inter_endosso_text").value.trim() : "");
-      const endossoRow = (endossoOn && endosso) ? `<tr><td style="background-color:#efe9f8; padding:6px 8px; border:1px solid #e6def3;"><b>Endosso</b></td><td style="background-color:#ffffff; padding:6px 8px; border:1px solid #e6def3;">${escapeHtml(endosso)}</td></tr>` : "";
+      const endossoRow = (endossoOn && endosso && endossoAgencyOn) ? `<tr><td style="background-color:#efe9f8; padding:6px 8px; border:1px solid #e6def3;"><b>Endosso</b></td><td style="background-color:#ffffff; padding:6px 8px; border:1px solid #e6def3;">${escapeHtml(endosso)}</td></tr>` : "";
 
       const isAzul = /(^|[\s,\/])(?:AD|AZUL)($|[\s,\/])/i.test(String(common.cia||"").trim());
       const azulMsg = "";
@@ -3062,10 +3159,9 @@ const regrasExtra = regrasUser ? `<p style="margin:8px 0 0"><b>Observações:</b
           <p style="margin:6px 0 0"><i>*Após o preenchimento, responda o e-mail para darmos continuidade ao processo</i></p>
           <p style="margin:6px 0 0">Em respeito a LGPD, não é permitido trafegar informações que envolvam dados de cartão de crédito.</p>
 
-          <div style="margin:22px 0 0; padding:10px 12px; background:#6d28d9; color:#ffffff; font-weight:900; border-radius:12px; letter-spacing:.3px;">VOOS SIMULADOS</div>
-          <div style="margin:14px 0 22px; padding:14px 14px; border:1px solid #d9c8f2; border-radius:12px; background:#f7f3ff; font-family:Consolas, \"Courier New\", monospace; font-size:14px; line-height:1.55;">${voos ? brToHtml(voos) : `<span style=\"color:#999\">-</span>`}</div>
-          <p style="margin:12px 0 0"><b>📌 CÁLCULO - USO INTERNO:</b><br/>${interno ? brToHtml(interno) : `<span style="color:#999">-</span>`}</p>
-          <p style="margin:12px 0 0"><b>✈ BILHETE ORIGINAL:</b><br/>${original ? brToHtml(original) : `<span style="color:#999">-</span>`}</p>
+          ${buildEmailSectionBlock("VOOS SIMULADOS", voos, { strong:true })}
+          ${buildEmailSectionBlock("CÁLCULO - USO INTERNO", interno)}
+          ${buildEmailSectionBlock("BILHETE ORIGINAL", original)}
           <p style="margin:6px 0 0; font-size:9px; color:#999">${crrEmailHtml}</p>
         </div>
       `.trim();
@@ -3685,6 +3781,32 @@ ${endossoRow}
       for(const s of document.querySelectorAll(".rentCur")){ s.textContent = cur; }
     }
 
+    function switchOutputTab(name){
+      const target = String(name || "agency").toLowerCase();
+      const allowed = new Set(["agency","cco","rent","crr"]);
+      const next = allowed.has(target) ? target : "agency";
+      for(const btn of document.querySelectorAll(".outputTabBtn")){
+        const on = btn.getAttribute("data-output-tab") === next;
+        btn.setAttribute("aria-selected", on ? "true" : "false");
+      }
+      for(const panel of document.querySelectorAll(".outputPanel")){
+        panel.classList.toggle("is-active", panel.getAttribute("data-output-panel") === next);
+      }
+      try{ localStorage.setItem("ra_output_last_tab", next); }catch(e){}
+    }
+
+    function syncOutputTabs(){
+      const rentSection = document.getElementById("outRentSicaSection");
+      const rentBtn = document.getElementById("outTabBtnRent");
+      const rentVisible = !!(rentSection && rentSection.style.display !== "none");
+      if(rentBtn) rentBtn.style.display = rentVisible ? "inline-flex" : "none";
+      const active = document.querySelector('.outputTabBtn[aria-selected="true"]');
+      const activeName = active ? active.getAttribute("data-output-tab") : "agency";
+      if(activeName === "rent" && !rentVisible){
+        switchOutputTab("agency");
+      }
+    }
+
     const AZUL_RULE_TEXT = "Em reemissões Azul, o serviço pago previamente será utilizado como crédito no recalculo de reemissão e é necessário a nova compra do mesmo.";
 const LATAM_GOL_RULE_TEXT = "Se reemitido através de um novo LOC, o localizador original deverá ser cancelado após a reemissão.";
 let __lastCiaForAzul = "";
@@ -3800,6 +3922,7 @@ function updateAll(arg){
       if(rfp && document.activeElement !== rfp){
         rfp.innerHTML = buildSicaFormHtml();
       }
+      syncOutputTabs();
 
       // sem toast aqui (senão spamma a cada digitação)
       return;
@@ -3862,7 +3985,9 @@ document.getElementById("paxq_adt").value = "1";
       document.getElementById("paxq_inf").value = "0";
       document.getElementById("pax_json").value = "";
       const _fol = document.getElementById("nac_folio_on"); if(_fol) _fol.checked = false;
+      const _folAg = document.getElementById("nac_folio_agencia"); if(_folAg) _folAg.checked = false;
       const _end = document.getElementById("inter_endosso_on"); if(_end) _end.checked = false;
+      const _endAg = document.getElementById("inter_endosso_agencia"); if(_endAg) _endAg.checked = false;
       const _endT = document.getElementById("inter_endosso_text"); if(_endT) _endT.value = "";
       updateAll();
       renderPaxFields();
@@ -3906,12 +4031,19 @@ document.getElementById("paxq_adt").value = "1";
     // wire tabs
     document.getElementById("tabNac").addEventListener("click", ()=>switchTab("tabNac"));
     document.getElementById("tabInter").addEventListener("click", ()=>switchTab("tabInter"));
+    for(const btn of document.querySelectorAll(".outputTabBtn")){
+      btn.addEventListener("click", ()=>switchOutputTab(btn.getAttribute("data-output-tab") || "agency"));
+    }
     // restaura última aba usada (NAC / INTER)
     try{
       const last = localStorage.getItem("ra_calc_last_mode");
       if(last === "INTER") switchTab("tabInter");
       else if(last === "NAC") switchTab("tabNac");
     }catch(e){}
+    try{
+      const lastOut = localStorage.getItem("ra_output_last_tab") || "agency";
+      switchOutputTab(lastOut);
+    }catch(e){ switchOutputTab("agency"); }
 
     // NAC: seletor de cia (GOL/LATAM/AZUL)
     for(const btn of document.querySelectorAll("#ciaNacSelector .airBtn")){
@@ -4051,6 +4183,7 @@ document.getElementById("btnCarregarRACode").addEventListener("click", async ()=
     }
 
     updateAll();
+    syncOutputTabs();
     renderPaxFields();
 
     // PAX listeners
