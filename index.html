@@ -5,7 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Calculadora de Reemissão • Gerador de cálculo de reemissão</title>
   <style>
-    #calcRoot{
+    .app-version-footer{position:fixed;right:12px;bottom:10px;z-index:9999;padding:6px 10px;border-radius:999px;background:rgba(15,23,42,.82);color:#fff;font:700 12px/1.2 var(--sans);letter-spacing:.02em;box-shadow:0 8px 22px rgba(0,0,0,.18);backdrop-filter:blur(8px);opacity:.92} 
+    :root[data-theme="light"] .app-version-footer{background:rgba(15,23,42,.78);color:#fff;border:1px solid rgba(255,255,255,.14)}
+    @media (max-width: 700px){.app-version-footer{right:8px;bottom:8px;font-size:11px;padding:5px 9px}}
+
+    :root{
       --bg:#0b0f17;
       --card:#121a27;
       --muted:#8ea0b7;
@@ -17,7 +21,7 @@
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
     }
 
-    #calcRoot[data-theme="light"]{--bg:#f6f7fb;
+    :root[data-theme="light"]{--bg:#f6f7fb;
       --card:#ffffff;
       --muted:#334155;
       --text:#0f172a;
@@ -39,47 +43,51 @@
 }
 
 /* ===== Melhorias visuais (tema claro) ===== */
-#calcRoot[data-theme="light"] .legend .item{color:var(--text);font-weight:700}
-#calcRoot[data-theme="light"] .legend .dot{box-shadow:0 0 0 3px rgba(15,23,42,.06)}
+[data-theme="light"] .legend .item{color:var(--text);font-weight:700}
+[data-theme="light"] .legend .dot{box-shadow:0 0 0 3px rgba(15,23,42,.06)}
 /* Destaque por área */
-#calcRoot[data-theme="light"] .accent-calc{color:#1d4ed8}
-#calcRoot[data-theme="light"] .accent-rent{color:#166534}
-#calcRoot[data-theme="light"] .accent-cco{color:#6d28d9}
+[data-theme="light"] .accent-calc{color:#1d4ed8}
+[data-theme="light"] .accent-rent{color:#166534}
+[data-theme="light"] .accent-cco{color:#6d28d9}
 /* Tags das saídas */
-#calcRoot[data-theme="light"] .tag{
+[data-theme="light"] .tag{
   border:1px solid rgba(15,23,42,.16);
   color:#0f172a;
   font-weight:800;
 }
-#calcRoot[data-theme="light"] .tag.agencia{background:rgba(29,78,216,.10);border-color:rgba(29,78,216,.28)}
-#calcRoot[data-theme="light"] .tag.rent{background:rgba(22,101,52,.10);border-color:rgba(22,101,52,.25)}
-#calcRoot[data-theme="light"] .tag.cco{background:rgba(109,40,217,.10);border-color:rgba(109,40,217,.28)}
-#calcRoot[data-theme="light"] .tag.crr{background:rgba(15,23,42,.06);border-color:rgba(15,23,42,.14)}
+[data-theme="light"] .tag.agencia{background:rgba(29,78,216,.10);border-color:rgba(29,78,216,.28)}
+[data-theme="light"] .tag.rent{background:rgba(22,101,52,.10);border-color:rgba(22,101,52,.25)}
+[data-theme="light"] .tag.cco{background:rgba(109,40,217,.10);border-color:rgba(109,40,217,.28)}
+[data-theme="light"] .tag.crr{background:rgba(15,23,42,.06);border-color:rgba(15,23,42,.14)}
 /* Títulos de blocos mais “na cara” */
-#calcRoot[data-theme="light"] .section-title{color:#0f172a;font-weight:900}
-#calcRoot[data-theme="light"] .section-title .sub{color:#334155;font-weight:700}
+[data-theme="light"] .section-title{color:#0f172a;font-weight:900}
+[data-theme="light"] .section-title .sub{color:#334155;font-weight:700}
 /* Botões por intenção (mantém legível no claro) */
-#calcRoot[data-theme="light"] .btn.primary{background:rgba(29,78,216,.12);border-color:rgba(29,78,216,.30)}
-#calcRoot[data-theme="light"] .btn.purple{background:rgba(109,40,217,.12);border-color:rgba(109,40,217,.30)}
-#calcRoot[data-theme="light"] .btn.green{background:rgba(22,101,52,.12);border-color:rgba(22,101,52,.25)}
+[data-theme="light"] .btn.primary{background:rgba(29,78,216,.12);border-color:rgba(29,78,216,.30)}
+[data-theme="light"] .btn.purple{background:rgba(109,40,217,.12);border-color:rgba(109,40,217,.30)}
+[data-theme="light"] .btn.green{background:rgba(22,101,52,.12);border-color:rgba(22,101,52,.25)}
 
 
-    #calcRoot[data-theme="light"]{
+    :root[data-theme="light"] body{
       background: radial-gradient(1000px 600px at 15% 0%, rgba(155,92,255,.18), transparent 55%),
                   radial-gradient(800px 400px at 85% 20%, rgba(61,220,151,.12), transparent 55%),
                   var(--bg);
       color: var(--text);
     }
-    #calcRoot[data-theme="light"] .card{
+    :root[data-theme="light"] .card{
       background: linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.01));
       border:1px solid rgba(15,23,42,.12);
     }
-    #calcRoot[data-theme="light"] input, #calcRoot[data-theme="light"] select, #calcRoot[data-theme="light"] textarea{
+    :root[data-theme="light"] input,
+    :root[data-theme="light"] select,
+    :root[data-theme="light"] textarea{
       border:1px solid rgba(15,23,42,.14);
       background: rgba(255,255,255,.90);
       color: var(--text);
     }
-    #calcRoot[data-theme="light"] .tab, #calcRoot[data-theme="light"] .action, #calcRoot[data-theme="light"] .pill{
+    :root[data-theme="light"] .tab,
+    :root[data-theme="light"] .action,
+    :root[data-theme="light"] .pill{
       border:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.20);
       color: var(--text);
@@ -88,19 +96,19 @@
       font-weight: 900;
       font-size: 13px;
     }
-    #calcRoot[data-theme="light"] .hr{ background: rgba(15,23,42,.10); }
-    #calcRoot[data-theme="light"] .muted{ color: var(--muted); }
-    #calcRoot[data-theme="light"] .note{
+    :root[data-theme="light"] .hr{ background: rgba(15,23,42,.10); }
+    :root[data-theme="light"] .muted{ color: var(--muted); }
+    :root[data-theme="light"] .note{
       border-left: 3px solid rgba(245,158,11,.65);
       background: rgba(245,158,11,.10);
     }
-    #calcRoot[data-theme="light"] .codebox{
+    :root[data-theme="light"] .codebox{
       border:1px solid rgba(15,23,42,.14);
       background: rgba(15,23,42,.06);
       color: var(--text);
     }
-        #calcRoot, #calcRoot *{box-sizing:border-box}
-    #calcRoot{
+        *{box-sizing:border-box}
+    body{
       margin:0;
       font-family:var(--sans);
       background: radial-gradient(1000px 600px at 15% 0%, rgba(155,92,255,.25), transparent 55%),
@@ -108,49 +116,49 @@
                   var(--bg);
       color:var(--text);
     }
-    #calcRoot header{ padding: 26px 18px 10px; max-width: 1240px; margin: 0 auto; }
+    header{ padding: 26px 18px 10px; max-width: 1240px; margin: 0 auto; }
     
-    #calcRoot .brand{ display:flex; align-items:center; gap:14px; }
-    #calcRoot .logoMark{
+    .brand{ display:flex; align-items:center; gap:14px; }
+    .logoMark{
       width:56px; height:40px; border-radius: 14px;
       display:flex; align-items:center; justify-content:center;
       background: rgba(255,255,255,.04);
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.07);
       overflow:hidden;
     }
-    #calcRoot .logoMark img{
+    .logoMark img{
       width:170px; height:40px; display:block;
       object-fit: cover; object-position: right center;
       filter: saturate(1.05);
     }
-    #calcRoot .titles{ min-width: 0; }
-    #calcRoot .titles h1{ margin:0 0 6px; }
-#calcRoot h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
-    #calcRoot .sub{ color:var(--muted); font-size: 13px; line-height:1.35; max-width: 1100px; }
-    #calcRoot .wrap{
+    .titles{ min-width: 0; }
+    .titles h1{ margin:0 0 6px; }
+h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
+    .sub{ color:var(--muted); font-size: 13px; line-height:1.35; max-width: 1100px; }
+    .wrap{
       max-width: 1240px; margin: 0 auto; padding: 12px 18px 40px;
       display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
     }
-    @media (max-width: 980px){ #calcRoot .wrap{grid-template-columns: 1fr} }
-    #calcRoot .card{
+    @media (max-width: 980px){ .wrap{grid-template-columns: 1fr} }
+    .card{
       background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
       border:1px solid rgba(255,255,255,.06);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       overflow:hidden;
     }
-    #calcRoot .card > .hd{
+    .card > .hd{
       padding: 14px 14px 10px;display:flex; align-items:center; justify-content:space-between; gap:10px;
     }
-    #calcRoot .pill{
+    .pill{
       font-size:12px; color: var(--muted);
       border:1px solid rgba(255,255,255,.10);
       padding:4px 10px; border-radius: 999px;
       background: rgba(0,0,0,.18); white-space:nowrap;
     }
-    #calcRoot .card .bd{ padding: 14px; }
-    #calcRoot .tabs{ display:flex; gap:8px; flex-wrap:wrap; }
-    #calcRoot .tab{
+    .card .bd{ padding: 14px; }
+    .tabs{ display:flex; gap:8px; flex-wrap:wrap; }
+    .tab{
       appearance:none;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.16);
@@ -161,60 +169,60 @@
       font-weight:800;
       font-size: 13px;
     }
-    #calcRoot .tab[aria-selected="true"]{
+    .tab[aria-selected="true"]{
       border-color: rgba(155,92,255,.55);
       box-shadow: 0 0 0 3px rgba(155,92,255,.15) inset;
       background: rgba(155,92,255,.14);
     }
-    #calcRoot .grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    @media (max-width: 520px){ #calcRoot .grid{grid-template-columns:1fr} }
-    #calcRoot label{ display:block; font-size:12px; color: var(--muted); margin: 0 0 6px; }
-    #calcRoot input, #calcRoot select, #calcRoot textarea{
+    .grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 520px){ .grid{grid-template-columns:1fr} }
+    label{ display:block; font-size:12px; color: var(--muted); margin: 0 0 6px; }
+    input, select, textarea{
       width:100%; padding: 10px 10px;
       border-radius: 12px; border:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.22); color: var(--text); outline:none;
     }
-    #calcRoot textarea{ min-height: 84px; resize: vertical; }
-    #calcRoot input:focus, #calcRoot select:focus, #calcRoot textarea:focus{
+    textarea{ min-height: 84px; resize: vertical; }
+    input:focus, select:focus, textarea:focus{
       border-color: rgba(155,92,255,.55);
       box-shadow: 0 0 0 3px rgba(155,92,255,.14);
     }
-    #calcRoot .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
-    #calcRoot .row > div{ flex: 1 1 140px; }
-    #calcRoot .muted{ color: var(--muted); font-size: 12px; }
-    #calcRoot .small{ font-size: 12px; }
-    #calcRoot .kpi{
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
+    .row > div{ flex: 1 1 140px; }
+    .muted{ color: var(--muted); font-size: 12px; }
+    .small{ font-size: 12px; }
+    .kpi{
       display:grid; grid-template-columns: 1fr 1fr;
       gap:10px; margin-top: 10px;
     }
-    #calcRoot .kpi .box{
+    .kpi .box{
       border:1px solid rgba(255,255,255,.08);
       border-radius: 14px;
       padding: 10px 12px;
       background: rgba(0,0,0,.16);
     }
-    #calcRoot .kpi .t{ color: var(--muted); font-size:12px; }
-    #calcRoot .kpi .v{ font-family: var(--mono); font-size: 16px; font-weight:900; margin-top:4px; }
-    #calcRoot .hr{ height:1px; background: rgba(255,255,255,.06); margin: 14px 0; }
-    #calcRoot .btns{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 10px; }
-    #calcRoot button.action{
+    .kpi .t{ color: var(--muted); font-size:12px; }
+    .kpi .v{ font-family: var(--mono); font-size: 16px; font-weight:900; margin-top:4px; }
+    .hr{ height:1px; background: rgba(255,255,255,.06); margin: 14px 0; }
+    .btns{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 10px; }
+    button.action{
       appearance:none; border:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.20); color: var(--text);
       padding: 10px 12px; border-radius: 14px;
       cursor:pointer; font-weight: 900; font-size: 13px;
     }
-    #calcRoot .action:disabled{ opacity:.45; cursor:not-allowed; filter: grayscale(25%); }
-    #calcRoot .action:disabled:hover{ transform:none; }
-    #calcRoot button.action.primary{ border-color: rgba(155,92,255,.55); background: rgba(155,92,255,.18); }
-    #calcRoot button.action.good{ border-color: rgba(61,220,151,.40); background: rgba(61,220,151,.14); }
-    #calcRoot button.action.warn{ border-color: rgba(255,204,102,.55); background: rgba(255,204,102,.12); }
-    #calcRoot button.action:active{ transform: translateY(1px); }
-    #calcRoot .preview{
+    .action:disabled{ opacity:.45; cursor:not-allowed; filter: grayscale(25%); }
+    .action:disabled:hover{ transform:none; }
+    button.action.primary{ border-color: rgba(155,92,255,.55); background: rgba(155,92,255,.18); }
+    button.action.good{ border-color: rgba(61,220,151,.40); background: rgba(61,220,151,.14); }
+    button.action.warn{ border-color: rgba(255,204,102,.55); background: rgba(255,204,102,.12); }
+    button.action:active{ transform: translateY(1px); }
+    .preview{
       background: #ffffff; color:#0b0f17;
       border-radius: 14px; border: 1px solid rgba(0,0,0,.08);
       padding: 12px; min-height: 240px; overflow:auto;
     }
-    #calcRoot .codebox{
+    .codebox{
       width:100%;
       min-height: 240px;
       font-family: var(--mono);
@@ -229,7 +237,7 @@
       padding: 10px;
       outline:none;
     }
-    #calcRoot .toast{
+    .toast{
       position: fixed; left:50%; bottom: 16px; transform: translateX(-50%);
       background: rgba(17,24,39,.92);
       border:1px solid rgba(255,255,255,.10);
@@ -238,8 +246,8 @@
       font-size: 13px; box-shadow: var(--shadow);
       opacity: 0; pointer-events:none; transition: opacity .18s ease;
     }
-    #calcRoot .toast.show{ opacity: 1; }
-    #calcRoot .note{
+    .toast.show{ opacity: 1; }
+    .note{
       border-left: 3px solid rgba(255,204,102,.7);
       background: rgba(255,204,102,.10);
       padding: 10px 12px;
@@ -247,30 +255,30 @@
       font-size: 12px;
       color: var(--text);
     }
-    #calcRoot .tbl{ width:100%; border-collapse: collapse; font-size: 12px; }
-    #calcRoot .tbl td, #calcRoot .tbl th{ border:1px solid rgba(0,0,0,.18); padding: 6px 8px; vertical-align: top; }
-    #calcRoot .tbl th{ background: rgba(0,0,0,.05); text-align:left; }
-    #calcRoot .right{ text-align:right; }
-    #calcRoot .badge{
+    .tbl{ width:100%; border-collapse: collapse; font-size: 12px; }
+    .tbl td,.tbl th{ border:1px solid rgba(0,0,0,.18); padding: 6px 8px; vertical-align: top; }
+    .tbl th{ background: rgba(0,0,0,.05); text-align:left; }
+    .right{ text-align:right; }
+    .badge{
       display:inline-block; font-size:11px;
       padding: 2px 8px; border-radius: 999px;
       border:1px solid rgba(0,0,0,.18);
       background: rgba(0,0,0,.04);
       margin-left:6px;
     }
-    #calcRoot .hidden{ display:none !important; }
-    #calcRoot code{ font-family: var(--mono); font-size: 12px; }
+    .hidden{ display:none !important; }
+    code{ font-family: var(--mono); font-size: 12px; }
   
     /* --- PAX dynamic fields --- */
-    #calcRoot .qtywrap{ display:none !important; }
-    #calcRoot .paxBox{
+    .qtywrap{ display:none !important; }
+    .paxBox{
       border:1px solid rgba(255,255,255,.08);
       border-radius: 14px;
       background: rgba(0,0,0,.14);
       padding: 10px;
       margin-top: 10px;
     }
-    #calcRoot .paxSecTitle{
+    .paxSecTitle{
       display:flex;
       align-items:center;
       justify-content:space-between;
@@ -278,36 +286,36 @@
       font-weight:700;
       margin: 6px 0 8px;
     }
-    #calcRoot .paxRow{
+    .paxRow{
       display:grid;
       grid-template-columns: 1fr 220px;
       gap:10px;
       padding: 6px 0;
       border-bottom:1px dashed rgba(255,255,255,.08);
     }
-    #calcRoot .paxRow:last-child{ border-bottom:none; }
-    #calcRoot .paxRow label{ margin:0 0 4px; }
-    #calcRoot .paxTag{
+    .paxRow:last-child{ border-bottom:none; }
+    .paxRow label{ margin:0 0 4px; }
+    .paxTag{
       font-family: var(--mono);
       font-size: 12px;
       color: var(--muted);
       font-weight:600;
     }
-    #calcRoot .paxHint{
+    .paxHint{
       margin-top:8px;
       font-size: 12px;
       color: var(--muted);
       line-height: 1.35;
     }
     @media (max-width: 720px){
-      #calcRoot .paxRow{ grid-template-columns: 1fr; }
+      .paxRow{ grid-template-columns: 1fr; }
     }
 
   
 
-    #calcRoot .topRow{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
-    #calcRoot .themeCtl{ margin-left:auto; }
-    #calcRoot .themeCtl{
+    .topRow{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+    .themeCtl{ margin-left:auto; }
+    .themeCtl{
       display:flex; align-items:center; gap:10px;
       padding: 8px 10px;
       border-radius: 999px;
@@ -315,18 +323,18 @@
       border: 1px solid rgba(255,255,255,.14);
       box-shadow: 0 8px 22px rgba(0,0,0,.18);
     }
-    #calcRoot[data-theme="light"] .themeCtl{
+    :root[data-theme="light"] .themeCtl{
       background: rgba(15,23,42,.04);
       border-color: rgba(15,23,42,.16);
       box-shadow: 0 10px 22px rgba(2,6,23,.10);
     }
-    #calcRoot .themeCtl label{
+    .themeCtl label{
       font-size:12px;
       color: var(--muted);
       font-weight:900;
       letter-spacing:.2px;
     }
-    #calcRoot .themeIcon{
+    .themeIcon{
       width:28px; height:28px;
       display:inline-flex; align-items:center; justify-content:center;
       border-radius: 999px;
@@ -335,11 +343,11 @@
       font-size: 14px;
       line-height: 1;
     }
-    #calcRoot[data-theme="light"] .themeIcon{
+    :root[data-theme="light"] .themeIcon{
       background: rgba(15,23,42,.06);
       border-color: rgba(15,23,42,.16);
     }
-    #calcRoot .themeCtl select{
+    .themeCtl select{
       appearance: none;
       -webkit-appearance: none;
       -moz-appearance: none;
@@ -354,17 +362,17 @@
       outline: none;
       position: relative;
     }
-    #calcRoot[data-theme="light"] .themeCtl select{
+    :root[data-theme="light"] .themeCtl select{
       background: rgba(255,255,255,.9);
       border-color: rgba(15,23,42,.16);
     }
-    #calcRoot .themeCtl select:focus{
+    .themeCtl select:focus{
       box-shadow: 0 0 0 3px rgba(155,92,255,.30);
       border-color: rgba(155,92,255,.55);
     }
     /* setinha */
-    #calcRoot .themeCtl{ position: relative; }
-    #calcRoot .themeCtl select{
+    .themeCtl{ position: relative; }
+    .themeCtl select{
       background-image:
         linear-gradient(45deg, transparent 50%, rgba(255,255,255,.85) 50%),
         linear-gradient(135deg, rgba(255,255,255,.85) 50%, transparent 50%),
@@ -379,22 +387,22 @@
         1px 18px;
       background-repeat: no-repeat;
     }
-    #calcRoot[data-theme="light"] .themeCtl select{
+    :root[data-theme="light"] .themeCtl select{
       background-image:
         linear-gradient(45deg, transparent 50%, rgba(15,23,42,.85) 50%),
         linear-gradient(135deg, rgba(15,23,42,.85) 50%, transparent 50%),
         linear-gradient(to right, transparent, transparent);
     }
-#calcRoot .grid3{ display:grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 10px; }
-    @media (max-width: 720px){ #calcRoot .grid3{ grid-template-columns: 1fr; } }
+.grid3{ display:grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 10px; }
+    @media (max-width: 720px){ .grid3{ grid-template-columns: 1fr; } }
 
-    #calcRoot[data-theme="light"] input::placeholder, #calcRoot[data-theme="light"] textarea::placeholder{ color:#64748b; opacity:1; }
+    :root[data-theme="light"] input::placeholder, :root[data-theme="light"] textarea::placeholder{ color:#64748b; opacity:1; }
 
-    #calcRoot .rentCtl{ display:flex; align-items:center; gap:8px; }
-    #calcRoot .rentCtl .chk{ display:flex; align-items:center; gap:8px; user-select:none; }
-    #calcRoot .rentCtl input[type="checkbox"]{ width:16px; height:16px; }
+    .rentCtl{ display:flex; align-items:center; gap:8px; }
+    .rentCtl .chk{ display:flex; align-items:center; gap:8px; user-select:none; }
+    .rentCtl input[type="checkbox"]{ width:16px; height:16px; }
 
-    #calcRoot .subHd{
+    .subHd{
       padding: 0 14px 12px;
       display:flex;
       align-items:center;
@@ -403,13 +411,13 @@
       flex-wrap:wrap;
       border-bottom:1px solid rgba(255,255,255,.06);
     }
-    #calcRoot[data-theme="light"] .subHd{ border-bottom:1px solid rgba(15,23,42,.10); }
-    #calcRoot .subHd .muted{ font-size:12px; }
+    :root[data-theme="light"] .subHd{ border-bottom:1px solid rgba(15,23,42,.10); }
+    .subHd .muted{ font-size:12px; }
 
 
     /* Rentabilização (uso interno) */
-    #calcRoot .rentSection{ margin-top: 10px; }
-    #calcRoot .rentToggle{
+    .rentSection{ margin-top: 10px; }
+    .rentToggle{
       display: inline-flex; align-items: center; gap: 10px;
       padding: 10px 12px;
       border-radius: 14px;
@@ -418,20 +426,20 @@
       background: rgba(34,197,94,.14);
       border: 1px solid rgba(34,197,94,.28);
     }
-    #calcRoot .rentToggle input{ width: 16px; height: 16px; }
-    #calcRoot .rentToggle span{
+    .rentToggle input{ width: 16px; height: 16px; }
+    .rentToggle span{
       font-weight: 800;
       color: rgba(134,239,172,1);
     }
-    #calcRoot[data-theme="light"] .rentToggle{
+    :root[data-theme="light"] .rentToggle{
       background: rgba(34,197,94,.10);
       border-color: rgba(34,197,94,.22);
     }
-    #calcRoot[data-theme="light"] .rentToggle span{
+    :root[data-theme="light"] .rentToggle span{
       color: rgba(21,128,61,1);
     }
 
-    #calcRoot .rentHint{
+    .rentHint{
       margin: 6px 0 0 2px;
       font-size: 11px;
       color: var(--muted);
@@ -440,10 +448,10 @@
       font-style: italic;
     }
 
-    #calcRoot .rentDivider{ margin: 10px 0 0; }
+    .rentDivider{ margin: 10px 0 0; }
 
 
-    #calcRoot .rentPanel{
+    .rentPanel{
       display:none;
       margin: 10px 0 4px;
       padding: 12px 12px;
@@ -452,43 +460,43 @@
       border: 1px solid rgba(255,255,255,.10);
       border-left: 3px solid rgba(34,197,94,.40);
     }
-    #calcRoot[data-theme="light"] .rentPanel{
+    :root[data-theme="light"] .rentPanel{
       background: rgba(15,23,42,.03);
       border-color: rgba(15,23,42,.12);
       border-left-color: rgba(21,128,61,.35);
     }
-    #calcRoot .rentRow{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px; }
-    #calcRoot .rentSection{ margin-top:10px; }
-    #calcRoot .rentChk{ display:flex; gap:8px; align-items:center; margin:8px 0 8px; }
-    #calcRoot .rentBlock{ border:1px dashed rgba(255,255,255,.18); border-radius:12px; padding:10px; margin-bottom:10px; }
-    #calcRoot.theme-light .rentBlock{ border-color: rgba(0,0,0,.18); }
-    #calcRoot .rentBlockHdr{ font-weight:800; margin-bottom:8px; font-size:12px; color: var(--text); opacity:.95; }
+    .rentRow{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px; }
+    .rentSection{ margin-top:10px; }
+    .rentChk{ display:flex; gap:8px; align-items:center; margin:8px 0 8px; }
+    .rentBlock{ border:1px dashed rgba(255,255,255,.18); border-radius:12px; padding:10px; margin-bottom:10px; }
+    body.theme-light .rentBlock{ border-color: rgba(0,0,0,.18); }
+    .rentBlockHdr{ font-weight:800; margin-bottom:8px; font-size:12px; color: var(--text); opacity:.95; }
 
-    #calcRoot .rentOpts{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
-    #calcRoot .rentOpts label{ display:flex; gap:8px; align-items:center; font-size:13px; }
-    #calcRoot .rentTitle{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
-    #calcRoot .rentTitle b{ color: var(--text); }
-    #calcRoot .rentMuted{ color: var(--muted); font-size:12px; }
+    .rentOpts{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
+    .rentOpts label{ display:flex; gap:8px; align-items:center; font-size:13px; }
+    .rentTitle{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .rentTitle b{ color: var(--text); }
+    .rentMuted{ color: var(--muted); font-size:12px; }
 
 
-    #calcRoot .rentSection input[readonly]{
+    .rentSection input[readonly]{
       background: rgba(0,0,0,.14);
       border-style: dashed;
       opacity: .92;
     }
-    #calcRoot[data-theme="light"] .rentSection input[readonly]{
+    :root[data-theme="light"] .rentSection input[readonly]{
       background: rgba(15,23,42,.04);
     }
 
     /* ====== Visual cues (Cálculo / Rentabilização / CCO) ====== */
-    #calcRoot{
+    :root{
       --calc:#38bdf8;   /* cálculo */
       --rent:#22c55e;   /* rentabilização */
       --cco:#a78bfa;    /* CCO / RF */
       --sys:#94a3b8;    /* utilitários */
     }
-    #calcRoot .legend{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
-    #calcRoot .badge{
+    .legend{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .badge{
       display:inline-flex; align-items:center; gap:8px;
       padding: 6px 10px; border-radius: 999px;
       font-size: 12px; font-weight: 900; letter-spacing:.2px;
@@ -496,85 +504,85 @@
       background: rgba(0,0,0,.18);
       color: var(--text);
     }
-    #calcRoot .badge::before{ content:""; width:10px; height:10px; border-radius:999px; display:inline-block; }
-    #calcRoot .badge--calc::before{ background: var(--calc); box-shadow: 0 0 0 3px rgba(56,189,248,.18); }
-    #calcRoot .badge--rent::before{ background: var(--rent); box-shadow: 0 0 0 3px rgba(34,197,94,.18); }
-    #calcRoot .badge--cco::before{  background: var(--cco);  box-shadow: 0 0 0 3px rgba(167,139,250,.18); }
+    .badge::before{ content:""; width:10px; height:10px; border-radius:999px; display:inline-block; }
+    .badge--calc::before{ background: var(--calc); box-shadow: 0 0 0 3px rgba(56,189,248,.18); }
+    .badge--rent::before{ background: var(--rent); box-shadow: 0 0 0 3px rgba(34,197,94,.18); }
+    .badge--cco::before{  background: var(--cco);  box-shadow: 0 0 0 3px rgba(167,139,250,.18); }
 
     /* Section accents */
-    #calcRoot .card.calcCard{ position:relative; }
-    #calcRoot .card.calcCard::before{
+    .card.calcCard{ position:relative; }
+    .card.calcCard::before{
       content:""; position:absolute; left:0; right:0; top:0; height:3px;
       background: linear-gradient(90deg, rgba(56,189,248,.85), rgba(56,189,248,.15), transparent 70%);
     }
-    #calcRoot .card.outputsCard{ position:relative; }
-    #calcRoot .card.outputsCard::before{
+    .card.outputsCard{ position:relative; }
+    .card.outputsCard::before{
       content:""; position:absolute; left:0; right:0; top:0; height:3px;
       background: linear-gradient(90deg, rgba(167,139,250,.85), rgba(167,139,250,.15), transparent 70%);
     }
-    #calcRoot .rentPanel{
+    .rentPanel{
       border-left: 4px solid rgba(34,197,94,.55);
       background: linear-gradient(180deg, rgba(34,197,94,.08), rgba(255,255,255,.02));
     }
 
     /* Output titles + tags */
-    #calcRoot .outTitle{ display:flex; align-items:flex-start; gap:8px; flex-wrap:wrap; }
-    #calcRoot .tag{
+    .outTitle{ display:flex; align-items:flex-start; gap:8px; flex-wrap:wrap; }
+    .tag{
       display:inline-flex; align-items:center; justify-content:center;
       padding: 4px 8px; border-radius: 999px;
       font-size: 11px; font-weight: 900; letter-spacing:.35px;
       border: 1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.16);
     }
-    #calcRoot .tag--agency{ color: #cffafe; border-color: rgba(56,189,248,.40); background: rgba(56,189,248,.14); }
-    #calcRoot .tag--rent{   color: #dcfce7; border-color: rgba(34,197,94,.40);  background: rgba(34,197,94,.14); }
-    #calcRoot .tag--cco{    color: #ede9fe; border-color: rgba(167,139,250,.42); background: rgba(167,139,250,.16); }
-    #calcRoot .tag--sys{    color: #e2e8f0; border-color: rgba(148,163,184,.35); background: rgba(148,163,184,.12); }
+    .tag--agency{ color: #cffafe; border-color: rgba(56,189,248,.40); background: rgba(56,189,248,.14); }
+    .tag--rent{   color: #dcfce7; border-color: rgba(34,197,94,.40);  background: rgba(34,197,94,.14); }
+    .tag--cco{    color: #ede9fe; border-color: rgba(167,139,250,.42); background: rgba(167,139,250,.16); }
+    .tag--sys{    color: #e2e8f0; border-color: rgba(148,163,184,.35); background: rgba(148,163,184,.12); }
 
     /* Highlight areas */
-    #calcRoot #obsCode.codebox{
+    #obsCode.codebox{
       border-color: rgba(167,139,250,.45);
       background: rgba(167,139,250,.10);
     }
 /* Button flavors */
-    #calcRoot button.action.cco{ border-color: rgba(167,139,250,.55); background: rgba(167,139,250,.18); }
-    #calcRoot button.action.rent{ border-color: rgba(34,197,94,.45); background: rgba(34,197,94,.16); }
-    #calcRoot button.action.calc{ border-color: rgba(56,189,248,.45); background: rgba(56,189,248,.14); }
+    button.action.cco{ border-color: rgba(167,139,250,.55); background: rgba(167,139,250,.18); }
+    button.action.rent{ border-color: rgba(34,197,94,.45); background: rgba(34,197,94,.16); }
+    button.action.calc{ border-color: rgba(56,189,248,.45); background: rgba(56,189,248,.14); }
 
   
 /* Fallbacks caso classes não existam (não quebra nada) */
-#calcRoot[data-theme="light"] h1, #calcRoot[data-theme="light"] h2{color:#0f172a}
+[data-theme="light"] h1,[data-theme="light"] h2{color:#0f172a}
 
 /* NAC airline selector (GOL/LATAM/AZUL) */
-#calcRoot .airlineSelector{display:flex;gap:10px;flex-wrap:nowrap;margin-top:6px;padding:4px}
-#calcRoot .airBtn{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;height:52px;border-radius:14px;border:2px solid rgba(17,24,39,.14);background:#fff;cursor:pointer;user-select:none;transition:transform .02s ease, box-shadow .12s ease, border-color .12s ease, background-color .12s ease}
-#calcRoot .airBtn:hover{box-shadow:0 6px 18px rgba(17,24,39,.08);border-color:rgba(17,24,39,.22)}
-#calcRoot .airBtn:active{transform:scale(.99)}
-#calcRoot .airBtn.active{border-color:#7c3aed;background:rgba(124,58,237,.06);box-shadow:0 0 0 4px rgba(124,58,237,.18), 0 10px 26px rgba(124,58,237,.22);transform:translateY(-1px) scale(1.01)}
-#calcRoot .airBtn.active .airCode{opacity:1;color:#4c1d95}
-#calcRoot .airBtn.active .airLogo{filter:drop-shadow(0 2px 6px rgba(17,24,39,.18))}
-#calcRoot .airBtn.active:active{transform:translateY(-1px) scale(.99)}
-#calcRoot .airBtn:focus-visible{outline:3px solid rgba(124,58,237,.35);outline-offset:2px}
-#calcRoot .airLogo{display:inline-flex;align-items:center;justify-content:center;height:30px;width:auto;max-width:86px;border-radius:10px;overflow:hidden;background:transparent}
-#calcRoot .airLogo img{display:block;height:30px;width:auto}
-#calcRoot .airCode{font-weight:900;font-size:12px;color:#111827;opacity:.8}
+.airlineSelector{display:flex;gap:10px;flex-wrap:nowrap;margin-top:6px;padding:4px}
+.airBtn{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;height:52px;border-radius:14px;border:2px solid rgba(17,24,39,.14);background:#fff;cursor:pointer;user-select:none;transition:transform .02s ease, box-shadow .12s ease, border-color .12s ease, background-color .12s ease}
+.airBtn:hover{box-shadow:0 6px 18px rgba(17,24,39,.08);border-color:rgba(17,24,39,.22)}
+.airBtn:active{transform:scale(.99)}
+.airBtn.active{border-color:#7c3aed;background:rgba(124,58,237,.06);box-shadow:0 0 0 4px rgba(124,58,237,.18), 0 10px 26px rgba(124,58,237,.22);transform:translateY(-1px) scale(1.01)}
+.airBtn.active .airCode{opacity:1;color:#4c1d95}
+.airBtn.active .airLogo{filter:drop-shadow(0 2px 6px rgba(17,24,39,.18))}
+.airBtn.active:active{transform:translateY(-1px) scale(.99)}
+.airBtn:focus-visible{outline:3px solid rgba(124,58,237,.35);outline-offset:2px}
+.airLogo{display:inline-flex;align-items:center;justify-content:center;height:30px;width:auto;max-width:86px;border-radius:10px;overflow:hidden;background:transparent}
+.airLogo img{display:block;height:30px;width:auto}
+.airCode{font-weight:900;font-size:12px;color:#111827;opacity:.8}
 
 
 
 /* --- Theme control: basic (no pill / no custom arrow) --- */
-#calcRoot .themeCtl{
+.themeCtl{
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
   padding: 0 !important;
   border-radius: 0 !important;
 }
-#calcRoot .themeCtl label{
+.themeCtl label{
   font-size: 13px !important;
   font-weight: 700 !important;
   color: var(--muted) !important;
 }
-#calcRoot .themeCtl select{
+.themeCtl select{
   appearance: auto !important;
   -webkit-appearance: auto !important;
   -moz-appearance: auto !important;
@@ -592,12 +600,12 @@
   background: rgba(255,255,255,.06) !important;
   color: var(--text) !important;
 }
-#calcRoot .themeCtl select:focus{
+.themeCtl select:focus{
   outline: none !important;
   box-shadow: 0 0 0 3px rgba(155,92,255,.25) !important;
   border-color: rgba(155,92,255,.55) !important;
 }
-#calcRoot[data-theme="light"] .themeCtl select{
+:root[data-theme="light"] .themeCtl select{
   border-color: rgba(15,23,42,.20) !important;
   background: #ffffff !important;
   color: #0f172a !important;
@@ -606,11 +614,11 @@
 
 
 /* Theme select dropdown options legibility (dark) */
-#calcRoot[data-theme="dark"] .themeCtl select option{
+:root[data-theme="dark"] .themeCtl select option{
   background: #0b1020;
   color: #e9eefc;
 }
-#calcRoot[data-theme="light"] .themeCtl select option{
+:root[data-theme="light"] .themeCtl select option{
   background: #ffffff;
   color: #0f172a;
 }
@@ -621,14 +629,14 @@
    - mais contraste para ver o selecionado
    - estilo tipo "segmented control"
    ========================= */
-#calcRoot[data-theme="light"] .card.calcCard .tabs{
+:root[data-theme="light"] .card.calcCard .tabs{
   background: rgba(124,58,237,.08);
   border: 1px solid rgba(124,58,237,.18);
   padding: 6px;
   border-radius: 999px;
   gap: 6px;
 }
-#calcRoot[data-theme="light"] .card.calcCard .tabs .tab{
+:root[data-theme="light"] .card.calcCard .tabs .tab{
   border: 1px solid transparent;
   background: transparent;
   color: #0f172a;
@@ -636,16 +644,16 @@
   padding: 9px 15px;
   border-radius: 999px;
 }
-#calcRoot[data-theme="light"] .card.calcCard .tabs .tab:hover{
+:root[data-theme="light"] .card.calcCard .tabs .tab:hover{
   background: rgba(124,58,237,.10);
 }
-#calcRoot[data-theme="light"] .card.calcCard .tabs .tab[aria-selected="true"]{
+:root[data-theme="light"] .card.calcCard .tabs .tab[aria-selected="true"]{
   background: #7c3aed;
   color: #ffffff;
   border-color: rgba(109,40,217,.65);
   box-shadow: 0 10px 22px rgba(124,58,237,.22);
 }
-#calcRoot[data-theme="light"] .card.calcCard .tabs .tab:focus-visible{
+:root[data-theme="light"] .card.calcCard .tabs .tab:focus-visible{
   outline: none;
   box-shadow: 0 0 0 4px rgba(124,58,237,.22);
 }
@@ -653,31 +661,31 @@
 
 
 /* ===== Saídas em abas ===== */
-#calcRoot .outputsTabs{display:grid;grid-template-columns:repeat(4,minmax(96px,1fr));gap:10px;margin:6px 0 12px}
-@media (max-width:760px){#calcRoot .outputsTabs{grid-template-columns:repeat(2,minmax(96px,1fr));}}
-#calcRoot .outputTabBtn{
+.outputsTabs{display:grid;grid-template-columns:repeat(4,minmax(96px,1fr));gap:10px;margin:6px 0 12px}
+@media (max-width:760px){.outputsTabs{grid-template-columns:repeat(2,minmax(96px,1fr));}}
+.outputTabBtn{
   appearance:none;display:inline-flex;align-items:center;justify-content:center;text-align:center;line-height:1.1;
   border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.16);color:var(--text);
   padding:9px 14px;border-radius:16px;cursor:pointer;font-weight:850;font-size:12.5px;min-height:46px;min-width:0;
   box-shadow:0 6px 16px rgba(2,6,23,.12);
   transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease, background-color .12s ease;
 }
-#calcRoot .outputTabBtn:hover{transform:translateY(-1px);box-shadow:0 10px 20px rgba(2,6,23,.16)}
-#calcRoot .outputTabBtn[aria-selected="true"]{
+.outputTabBtn:hover{transform:translateY(-1px);box-shadow:0 10px 20px rgba(2,6,23,.16)}
+.outputTabBtn[aria-selected="true"]{
   border-color: rgba(155,92,255,.55);
   box-shadow: 0 0 0 2px rgba(155,92,255,.15) inset, 0 10px 20px rgba(76,29,149,.14);
   background: rgba(155,92,255,.14);
 }
-#calcRoot .outputPanel{display:none}
-#calcRoot .outputPanel.is-active{display:block}
-#calcRoot .outputEmpty{border:1px dashed rgba(255,255,255,.14);border-radius:14px;padding:16px;background:rgba(0,0,0,.10);color:var(--muted)}
-#calcRoot .agencyOptBox{margin-top:10px;padding:10px 12px;border-radius:12px;border:1px dashed rgba(155,92,255,.28);background:rgba(155,92,255,.08)}
-#calcRoot .agencyOpt{display:flex;align-items:center;gap:8px;cursor:pointer;margin:0;font-size:13px;color:var(--text);font-weight:700}
-#calcRoot .agencyOpt input[type="checkbox"]{width:16px;height:16px}
-#calcRoot .outputsCard .hd{padding:14px 16px 8px}
-#calcRoot .outputsCard .bd{padding:10px 16px 16px}
-#calcRoot .outputsCard .btns{align-items:stretch;gap:10px;margin-top:12px}
-#calcRoot .outputsCard .btns .action{
+.outputPanel{display:none}
+.outputPanel.is-active{display:block}
+.outputEmpty{border:1px dashed rgba(255,255,255,.14);border-radius:14px;padding:16px;background:rgba(0,0,0,.10);color:var(--muted)}
+.agencyOptBox{margin-top:10px;padding:10px 12px;border-radius:12px;border:1px dashed rgba(155,92,255,.28);background:rgba(155,92,255,.08)}
+.agencyOpt{display:flex;align-items:center;gap:8px;cursor:pointer;margin:0;font-size:13px;color:var(--text);font-weight:700}
+.agencyOpt input[type="checkbox"]{width:16px;height:16px}
+.outputsCard .hd{padding:14px 16px 8px}
+.outputsCard .bd{padding:10px 16px 16px}
+.outputsCard .btns{align-items:stretch;gap:10px;margin-top:12px}
+.outputsCard .btns .action{
   flex:1 1 220px;
   min-height:48px;
   display:inline-flex;
@@ -690,38 +698,22 @@
   box-shadow:0 6px 16px rgba(2,6,23,.10);
   transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease, background-color .12s ease;
 }
-#calcRoot .outputsCard .btns .action:hover{transform:translateY(-1px);box-shadow:0 10px 20px rgba(2,6,23,.14)}
-#calcRoot .outputsCard .preview, #calcRoot .outputsCard .codebox{border-radius:16px}
-#calcRoot .outputsCard .tag{font-size:12px;padding:7px 12px}
-#calcRoot #previewHint{margin:2px 0 0;line-height:1.45}
-#calcRoot .outTitle{line-height:1.45;font-size:12.5px}
-#calcRoot[data-theme="light"] .outputTabBtn{border:1px solid rgba(15,23,42,.12);background:#fff;color:#0f172a;box-shadow:0 5px 14px rgba(15,23,42,.05)}
-#calcRoot[data-theme="light"] .outputTabBtn:hover{box-shadow:0 10px 20px rgba(15,23,42,.08)}
-#calcRoot[data-theme="light"] .outputTabBtn[aria-selected="true"]{border-color: rgba(124,58,237,.50);background: rgba(124,58,237,.10);color:#111827;box-shadow: 0 0 0 2px rgba(124,58,237,.16) inset, 0 10px 20px rgba(124,58,237,.10)}
-#calcRoot[data-theme="light"] .outputsCard .btns .action{box-shadow:0 5px 14px rgba(15,23,42,.05)}
-#calcRoot[data-theme="light"] .outputsCard .btns .action:hover{box-shadow:0 10px 20px rgba(15,23,42,.08)}
-#calcRoot[data-theme="light"] .outputEmpty{border-color:rgba(15,23,42,.14);background:rgba(15,23,42,.03)}
-#calcRoot[data-theme="light"] .agencyOptBox{border-color:rgba(124,58,237,.24);background:rgba(124,58,237,.06)}
-
-
-    /* ===== blindagem contra o CSS global do site (exclusivo da versao Intranet) ===== */
-    #calcRoot{ color: var(--text); font-family: var(--sans); text-align: left; }
-    #calcRoot h1, #calcRoot h2{ font-family: var(--sans); color: var(--text); }
-    #calcRoot label{ display: block; }
-    #calcRoot input, #calcRoot select, #calcRoot textarea, #calcRoot button{
-      font-family: var(--sans);
-      font-size: 100%;
-      line-height: normal;
-    }
-    #calcRoot .codebox, #calcRoot .kpi .v{ font-family: var(--mono); }
-    #calcRoot table{ border-collapse: collapse; }
-    /* o preview do e-mail precisa continuar sempre claro, em qualquer tema */
-    #calcRoot .preview{ background: #ffffff; color: #0b0f17; }
-    /* ===== fim da blindagem ===== */
+.outputsCard .btns .action:hover{transform:translateY(-1px);box-shadow:0 10px 20px rgba(2,6,23,.14)}
+.outputsCard .preview,
+.outputsCard .codebox{border-radius:16px}
+.outputsCard .tag{font-size:12px;padding:7px 12px}
+#previewHint{margin:2px 0 0;line-height:1.45}
+.outTitle{line-height:1.45;font-size:12.5px}
+:root[data-theme="light"] .outputTabBtn{border:1px solid rgba(15,23,42,.12);background:#fff;color:#0f172a;box-shadow:0 5px 14px rgba(15,23,42,.05)}
+:root[data-theme="light"] .outputTabBtn:hover{box-shadow:0 10px 20px rgba(15,23,42,.08)}
+:root[data-theme="light"] .outputTabBtn[aria-selected="true"]{border-color: rgba(124,58,237,.50);background: rgba(124,58,237,.10);color:#111827;box-shadow: 0 0 0 2px rgba(124,58,237,.16) inset, 0 10px 20px rgba(124,58,237,.10)}
+:root[data-theme="light"] .outputsCard .btns .action{box-shadow:0 5px 14px rgba(15,23,42,.05)}
+:root[data-theme="light"] .outputsCard .btns .action:hover{box-shadow:0 10px 20px rgba(15,23,42,.08)}
+:root[data-theme="light"] .outputEmpty{border-color:rgba(15,23,42,.14);background:rgba(15,23,42,.03)}
+:root[data-theme="light"] .agencyOptBox{border-color:rgba(124,58,237,.24);background:rgba(124,58,237,.06)}
 </style>
 </head>
 <body>
-<div id="calcRoot" data-theme="dark">
   <header>
     <div class="topRow">
       <div class="brand">
@@ -1166,6 +1158,7 @@
               <select id="inter_tipo">
                 <option>Manual</option>
                 <option>Automático</option>
+                <option>Automático com dados manuais</option>
               </select>
             </div>
             <div>
@@ -1183,10 +1176,11 @@
 
           <div class="hr"></div>
 
+          <div id="interValuesWrap">
           <div class="muted small"><b>Valores por tipo de pax (na moeda selecionada • RC sempre em USD)</b></div>
           <div class="hr"></div>
 
-          
+
 
           <div class="row paxTypeRow" data-pax-type="ADT" id="interRow_ADT">
             <div class="qtywrap"><label>QTD ADT</label><input id="inter_qty_ADT" value="1" inputmode="numeric" /></div>
@@ -1225,8 +1219,8 @@
               <div class="v" id="inter_total_brl">R$ 0,00</div>
             </div>
           </div>
+          </div>
 
-          
           <div class="hr"></div>
 
           <!-- INTER: Endosso (texto livre) -->
@@ -1253,18 +1247,60 @@
 
           <div class="hr"></div>
 
-          <label>Bilhete original (opcional)</label>
-          <textarea id="inter_original" placeholder="Cole aqui dados do bilhete original"></textarea>
+
+
+                    <div id="interFxqIntro" class="note" style="border-left:3px solid rgba(155,92,255,.65); background: rgba(155,92,255,.10);">
+            <div class="muted small"><b>Automático (Amadeus FXQ/FXO)</b> — fluxo: <b>1)</b> cole a máscara do PNR → <b>2)</b> cole o FXO por tipo → <b>3)</b> cole FA/FHE dos bilhetes. <b>CRR5 intocado.</b></div>
+            <div class="muted small" id="fxqStatus" style="margin-top:6px"></div>
+          </div>
 
           <div class="hr"></div>
 
-          <label>Voos simulados (opcional)</label>
-          <textarea id="inter_voos" placeholder="Cole aqui os voos simulados (um por linha)"></textarea>
+          <label id="lbl_inter_voos">1) Itinerário / Máscara (cole o PNR)</label>
+          <textarea id="inter_voos" placeholder="Cole aqui RP/... com PAX + segmentos (Amadeus)."></textarea>
 
           <div class="hr"></div>
 
-          <label>Cálculo (uso interno) — opcional</label>
-          <textarea id="inter_interno" placeholder="Cole aqui observações internas / máscara / prints (não enviar ao cliente se não quiser)"></textarea>
+          <div id="fxoWrap" class="hidden">
+            <div class="muted small"><b>2) Recálculo por tipo (FXO)</b> — cole o FXO (ou FXQ) de cada tipo abaixo. O sistema preenche Dif. tarifa, Multa e Dif. taxas automaticamente.</div>
+            <div class="hr"></div>
+
+            <div id="fxoBox_ADT_wrap" class="hidden">
+              <label>FXO (ADT)</label>
+              <textarea id="fxoBox_ADT" placeholder="Cole aqui o FXO do ADT"></textarea>
+              <div class="muted small" id="fxoBox_ADT_status" style="margin-top:6px"></div>
+            </div>
+
+            <div id="fxoBox_CHD_wrap" class="hidden">
+              <label>FXO (CHD)</label>
+              <textarea id="fxoBox_CHD" placeholder="Cole aqui o FXO do CHD"></textarea>
+              <div class="muted small" id="fxoBox_CHD_status" style="margin-top:6px"></div>
+            </div>
+
+            <div id="fxoBox_INF_wrap" class="hidden">
+              <label>FXO (INF)</label>
+              <textarea id="fxoBox_INF" placeholder="Cole aqui o FXO do INF"></textarea>
+              <div class="muted small" id="fxoBox_INF_status" style="margin-top:6px"></div>
+            </div>
+          </div>
+
+          <div id="manualInternoWrap">
+            <label>Cálculo (uso interno) — opcional</label>
+            <textarea id="inter_interno" placeholder="Cole aqui observações internas / máscara / prints (não enviar ao cliente se não quiser)"></textarea>
+          </div>
+
+          <div class="hr"></div>
+
+          <div id="ticketsWrap" class="hidden">
+            <label id="lbl_inter_original">3) Bilhetes (FA/FHE/TKT)</label>
+            <textarea id="inter_original" placeholder="Cole aqui FA/FHE ou máscara TKT (com /P1, /P2... quando houver)"></textarea>
+            <div class="muted small" id="ticketsStatus" style="margin-top:6px"></div>
+          </div>
+
+          <div id="btnFinalizarAutoWrap" class="hidden" style="margin-top:10px">
+            <button class="action primary" id="btnFinalizarAuto" type="button">Concluir preenchimento</button>
+            <div class="muted small" style="margin-top:6px">Libera os campos de valor e a geração das saídas. Se algum dado não veio automático, dá pra preencher manualmente antes de gerar.</div>
+          </div>
         </div>
 
         <div class="hr"></div>
@@ -1276,7 +1312,7 @@
     </section>
 
     <!-- OUTPUT -->
-    <section class="card outputsCard">
+    <section class="card outputsCard" id="outputsCard">
       <div class="hd">
         <div>
           <div style="font-weight:900">Saídas</div>
@@ -1338,8 +1374,9 @@
   </div>
 
   <div class="toast" id="toast">Copiado!</div>
-</div><!-- /#calcRoot -->
-<script>
+
+  <script>
+
     const PAX_TYPES = ["ADT","CHD","INF"];
 
     // ---------- helpers ----------
@@ -1878,6 +1915,11 @@ function fmtNumPT(n){
       const v = Number.isFinite(x) ? x : 0;
       return new Intl.NumberFormat("pt-BR", {minimumFractionDigits:2, maximumFractionDigits:2}).format(v);
     }
+function fmtNumPT4(n){
+      const x = Number(n);
+      const v = Number.isFinite(x) ? x : 0;
+      return new Intl.NumberFormat("pt-BR", {minimumFractionDigits:4, maximumFractionDigits:4}).format(v);
+    }
 
     function intVal(id){
       const v = parseInt(String(document.getElementById(id).value||"0").replace(/[^\d\-]/g,""),10);
@@ -1910,9 +1952,6 @@ function fmtNumPT(n){
     }
 
     function escAttr(s){
-      // safer for RF-ish environments
-      return escapeHtml(s).replace(/`/g,"");
-    }function escAttr(s){
       // safer for RF-ish environments
       return escapeHtml(s).replace(/`/g,"");
     }
@@ -2538,7 +2577,7 @@ const store = getPaxStore();
 
     // ----- CRR4: mesmo conteúdo do CRR3, mas com chaves compactadas (reduz bem o tamanho) -----
     // Mapeia ids de campos -> índice base36 (ex.: "cia" -> "a") antes de compactar.
-    const CRR4_KEYS = ["themeSel","rentab","op_rf","agencia","filial","rent_tipo_multa","rent_tipo_diftar","rent_tipo_diftax","rent_pago_cia_multa_adt","rent_pago_cia_multa_chd","rent_pago_cia_multa_inf","rent_cobrar_ag_multa","rent_lucro_multa","rent_pago_cia_diftar_adt","rent_pago_cia_diftar_chd","rent_pago_cia_diftar_inf","rent_cobrar_ag_diftar","rent_lucro_diftar","rent_pago_cia_diftax_adt","rent_pago_cia_diftax_chd","rent_pago_cia_diftax_inf","rent_cobrar_ag_diftax","rent_lucro_diftax","cia","prazo","loc","oac","novo_loc","paxq_adt","paxq_chd","paxq_inf","pax_json","familia","pax","tks","bag","parcelamento","nac_fp","nac_link","nac_qty_ADT","nac_old_ADT","nac_new_ADT","nac_tax_ADT","nac_du_ADT","nac_pen_ADT","nac_qty_CHD","nac_old_CHD","nac_new_CHD","nac_tax_CHD","nac_du_CHD","nac_pen_CHD","nac_qty_INF","nac_old_INF","nac_new_INF","nac_tax_INF","nac_du_INF","nac_pen_INF","nac_services_on","nac_services_brl","nac_folio_on","nac_folio_text","nac_folio_agencia","nac_voos","nac_regras","inter_cur","inter_cur_other","inter_fx","inter_fx_usd","inter_incentivo","inter_tipo","inter_fp","inter_link","inter_qty_ADT","inter_fare_ADT","inter_tax_ADT","inter_du_ADT","inter_pen_ADT","inter_fee_ADT","inter_qty_CHD","inter_fare_CHD","inter_tax_CHD","inter_du_CHD","inter_pen_CHD","inter_fee_CHD","inter_qty_INF","inter_fare_INF","inter_tax_INF","inter_du_INF","inter_pen_INF","inter_fee_INF","inter_endosso_on","inter_endosso_text","inter_endosso_agencia","inter_original","inter_voos","inter_interno","rf_include_racode","rf_mask_numbers","rf_include_tks"];
+    const CRR4_KEYS = ["themeSel","rentab","op_rf","agencia","filial","rent_tipo_multa","rent_tipo_diftar","rent_tipo_diftax","rent_pago_cia_multa_adt","rent_pago_cia_multa_chd","rent_pago_cia_multa_inf","rent_cobrar_ag_multa","rent_lucro_multa","rent_pago_cia_diftar_adt","rent_pago_cia_diftar_chd","rent_pago_cia_diftar_inf","rent_cobrar_ag_diftar","rent_lucro_diftar","rent_pago_cia_diftax_adt","rent_pago_cia_diftax_chd","rent_pago_cia_diftax_inf","rent_cobrar_ag_diftax","rent_lucro_diftax","cia","prazo","loc","oac","novo_loc","paxq_adt","paxq_chd","paxq_inf","pax_json","familia","pax","tks","bag","parcelamento","nac_fp","nac_link","nac_qty_ADT","nac_old_ADT","nac_new_ADT","nac_tax_ADT","nac_du_ADT","nac_pen_ADT","nac_qty_CHD","nac_old_CHD","nac_new_CHD","nac_tax_CHD","nac_du_CHD","nac_pen_CHD","nac_qty_INF","nac_old_INF","nac_new_INF","nac_tax_INF","nac_du_INF","nac_pen_INF","nac_services_on","nac_services_brl","nac_folio_on","nac_folio_text","nac_voos","nac_regras","inter_cur","inter_cur_other","inter_fx","inter_fx_usd","inter_incentivo","inter_tipo","inter_fp","inter_link","inter_qty_ADT","inter_fare_ADT","inter_tax_ADT","inter_du_ADT","inter_pen_ADT","inter_fee_ADT","inter_qty_CHD","inter_fare_CHD","inter_tax_CHD","inter_du_CHD","inter_pen_CHD","inter_fee_CHD","inter_qty_INF","inter_fare_INF","inter_tax_INF","inter_du_INF","inter_pen_INF","inter_fee_INF","inter_original","inter_voos","inter_interno","rf_include_racode","rf_mask_numbers","rf_include_tks"];
     const CRR4_ID2K = {};
     const CRR4_K2ID = {};
     for(let i=0;i<CRR4_KEYS.length;i++){ 
@@ -2772,6 +2811,17 @@ async function ensureCRR5Current(){
       migrateOne("rent_pago_cia_multa","rent_pago_cia_multa_adt");
       migrateOne("rent_pago_cia_diftar","rent_pago_cia_diftar_adt");
       migrateOne("rent_pago_cia_diftax","rent_pago_cia_diftax_adt");
+
+      // um CRR salvo é um cálculo já concluído: reabrir deve mostrar tudo, não a tela escondida do fluxo guiado
+      if(String(mode).toUpperCase() === "INTER"){
+        window.__interFinalized = false;
+        window.__interPaxReady = false;
+        if(typeof window.__interApplyInterTipoUI === 'function') window.__interApplyInterTipoUI();
+        const tipoVal = document.getElementById('inter_tipo') ? document.getElementById('inter_tipo').value : '';
+        if(/autom/i.test(tipoVal||'') && typeof window.__interFinalizeAutoFlow === 'function'){
+          window.__interFinalizeAutoFlow();
+        }
+      }
 
       renderPaxFields();
       updateAll();
@@ -3773,6 +3823,23 @@ ${endossoRow}
     }
 
     // ---------- UI ----------
+    window.__interFinalized = false;
+    window.__interPaxReady = false;
+    function updateFlowVisibility(){
+      const nacOn = document.getElementById("tabNac").getAttribute("aria-selected") === "true";
+      const valuesWrap = document.getElementById("interValuesWrap");
+      const outputsCard = document.getElementById("outputsCard");
+      const finalizeWrap = document.getElementById("btnFinalizarAutoWrap");
+      const modeSel = document.getElementById("inter_tipo");
+      const modeVal = modeSel ? modeSel.value : "Manual";
+      const isAutoLike = /autom/i.test(modeVal || "");
+      const isHybrid = modeVal === "Automático com dados manuais";
+      const showOutputs = nacOn ? true : (!isAutoLike || window.__interFinalized);
+      const showValues = nacOn ? true : (!isAutoLike || (isHybrid && window.__interPaxReady) || window.__interFinalized);
+      if(valuesWrap) valuesWrap.classList.toggle("hidden", !showValues);
+      if(outputsCard) outputsCard.classList.toggle("hidden", !showOutputs);
+      if(finalizeWrap) finalizeWrap.classList.toggle("hidden", nacOn || !isAutoLike || window.__interFinalized);
+    }
     function switchTab(which){
       const nacOn = (which === "tabNac");
       document.getElementById("tabNac").setAttribute("aria-selected", nacOn ? "true" : "false");
@@ -3784,6 +3851,7 @@ ${endossoRow}
       placeRentPanel();
       updateAll({silent:true});
       renderPaxFields();
+      updateFlowVisibility();
       try{ localStorage.setItem("ra_calc_last_mode", nacOn ? "NAC" : "INTER"); }catch(e){}
     }
 
@@ -4001,6 +4069,9 @@ document.getElementById("paxq_adt").value = "1";
       const _end = document.getElementById("inter_endosso_on"); if(_end) _end.checked = false;
       const _endAg = document.getElementById("inter_endosso_agencia"); if(_endAg) _endAg.checked = false;
       const _endT = document.getElementById("inter_endosso_text"); if(_endT) _endT.value = "";
+      window.__interFinalized = false;
+      window.__interPaxReady = false;
+      if(typeof window.__interApplyInterTipoUI === 'function') window.__interApplyInterTipoUI();
       updateAll();
       renderPaxFields();
       if(!silent) showToast("Limpo!");
@@ -4069,7 +4140,909 @@ document.getElementById("paxq_adt").value = "1";
     // estado inicial do seletor
     syncCiaNacSelector();
 
-    // buttons
+    
+
+    
+    // ----- FXQ/FXO Wizard (INTER Automático) -----
+    (function initFxqWizard(){
+      const $ = (id)=>document.getElementById(id);
+      const show = (el, on)=>{ if(el) el.classList.toggle("hidden", !on); };
+
+      const state = window.__FXQ_WIZ = {
+        paxList: [],
+        pIndexToTypePos: {},
+        requiredTypes: [],
+        fxoOk: {ADT:false, CHD:false, INF:false},
+        bagByType: {ADT:null, CHD:null, INF:null},
+        familyByType: {ADT:null, CHD:null, INF:null},
+        bagAuto: false,
+        parseMeta: {warnings:[], segments:[], confidence:0, loc:""}
+      };
+
+      function isInterAuto(){
+        const sel = $("inter_tipo");
+        return sel && String(sel.value||"").toLowerCase().includes("autom");
+      }
+
+      function isInterHybrid(){
+        const sel = $("inter_tipo");
+        return !!(sel && String(sel.value||"") === "Automático com dados manuais");
+      }
+
+      function setStatus(msg){
+        const el = $("fxqStatus");
+        if(el) el.textContent = msg || "";
+      }
+
+      function normalizeGdsText(raw){
+        let text = String(raw || "").replace(/\r/g, "\n");
+        text = text.replace(/\n{2,}/g, "\n");
+        text = text.replace(/[‐‑‒–—−]/g, "-");
+        text = text.replace(/^\s*(?:\)>|>+)\s*$/gmi, "");
+        text = text.replace(/^\s*md\s*$/gmi, "");
+        text = text.replace(/^\s*see\s+rtsvc\s*$/gmi, "");
+        text = splitInlinePassengerLines(text);
+        const lines = text.split(/\n/).map(x=>x.replace(/[\t ]+$/g,"")).filter((line,idx,arr)=>!(line==="" && arr[idx-1]===""));
+        return { raw:String(raw||""), text: lines.join("\n"), lines };
+      }
+
+      function splitInlinePassengerLines(text){
+        return String(text||"")
+          .replace(/([^\n])\s+(?=(\d{1,2})\.)/g, "$1\n")
+          .replace(/(\b(?:MR|MRS|MISS|MSTR|MS)\b(?:\([^\n]*?\))*)\s+(?=(\d{1,2})\.)/gi, "$1\n");
+      }
+
+      function parseLoc(text){
+        const s = String(text || "");
+        let m = s.match(/^\s*RP\/.*?\s+([A-Z0-9]{5,7})\s*$/mi);
+        if(m) return m[1].trim().toUpperCase();
+        m = s.match(/\bLOC\s+([A-Z0-9]{5,7})\b/i);
+        if(m) return m[1].trim().toUpperCase();
+        return "";
+      }
+
+      function normalizePersonName(s){
+        return normalizePaxName(String(s||"").replace(/\s+/g," ").trim());
+      }
+
+      function splitNameTitle(namePart){
+        const m = String(namePart||"").trim().match(/^(.*?)(?:\s+(MR|MRS|MS|MISS|MSTR|INF))?$/i);
+        return {
+          base: normalizePersonName(m ? m[1] : namePart),
+          title: (m && m[2]) ? String(m[2]).toUpperCase() : ""
+        };
+      }
+
+      function parseInfName(rawInf, adultName){
+        const adultSurname = normalizePersonName(String(adultName||"").split("/")[0] || "");
+        let s = String(rawInf||"").trim();
+        s = s.replace(/^\s*INF(?:ANT)?/i, "").replace(/^\//, "").trim();
+        const parts = s.split("/").map(x=>x.trim()).filter(Boolean);
+        const isDob = (v)=>/^\d{2}[A-Z]{3}\d{2}$/i.test(String(v||"").replace(/\s/g,""));
+        while(parts.length && isDob(parts[parts.length-1])) parts.pop();
+        if(parts.length >= 2){
+          const sn = normalizePersonName(parts[0] || adultSurname);
+          const tail = splitNameTitle(parts[1]);
+          return `${sn}/${tail.base} ${tail.title||"INF"}`.trim();
+        }
+        const tail = splitNameTitle(parts[0] || "INFANT");
+        const sn = adultSurname || "";
+        return `${sn ? sn + "/" : ""}${tail.base} ${tail.title||"INF"}`.trim();
+      }
+
+      function parsePassengersData(text){
+        const norm = normalizeGdsText(text);
+        const pax = [];
+        const warnings = [];
+        let confidence = 0;
+        const loc = parseLoc(norm.text);
+        const seen = new Set();
+        let nextInfIdx = 9000;
+
+        function addPax(idx, type, name, extra){
+          const t = String(type||"").toUpperCase();
+          if(!["ADT","CHD","INF"].includes(t)) return;
+          const nm = normalizePersonName(name);
+          if(!nm) return;
+          const key = `${idx}|${t}|${nm}`;
+          if(seen.has(key)) return;
+          seen.add(key);
+          pax.push(Object.assign({idx:Number(idx)||0, type:t, name:nm}, extra||{}));
+        }
+
+        for(const line of norm.lines){
+          const pm = line.match(/^\s*(\d+)\.\s*(.+)$/);
+          if(!pm) continue;
+          const idx = parseInt(pm[1],10);
+          const rest = pm[2] || "";
+          const namePart = (rest.split("(")[0] || rest).trim();
+          if(!/\//.test(namePart)) continue;
+          const groups = Array.from(rest.matchAll(/\(([^)]*)\)/g)).map(m=>String(m[1]||"").trim());
+          let type = "ADT";
+          if(groups.some(g=>/^\s*CHD\b/i.test(g))) type = "CHD";
+          else if(groups.some(g=>/^\s*ADT\b/i.test(g))) type = "ADT";
+          else if(groups.some(g=>/^\s*INF\s*$/i.test(g))) type = "INF";
+          addPax(idx, type, namePart, {source:"PNR"});
+          confidence += 12;
+
+          for(const g of groups){
+            if(!/^\s*INF/i.test(g) || /^\s*INF\s*$/i.test(g)) continue;
+            addPax(nextInfIdx++, "INF", parseInfName(g, namePart), {source:"INF_INLINE", linkedTo:idx});
+            confidence += 8;
+          }
+        }
+
+        // SSR INFT fallback
+        for(const line of norm.lines){
+          const m = line.match(/SSR\s+INFT\b.*?([A-Z][A-Z '\-]+)\/(.+?)(?:\s+|\/)(\d{2}[A-Z]{3}\d{2}).*?\/P(\d+)/i);
+          if(!m) continue;
+          const sn = normalizePersonName(m[1]);
+          const tail = splitNameTitle(m[2]);
+          const full = `${sn}/${tail.base} ${tail.title||"INF"}`.trim();
+          addPax(nextInfIdx++, "INF", full, {source:"SSR_INFT", linkedTo:parseInt(m[4],10), dob:m[3]});
+          confidence += 10;
+        }
+
+        pax.sort((a,b)=>{
+          const av = a.linkedTo ? a.linkedTo + 0.5 : a.idx;
+          const bv = b.linkedTo ? b.linkedTo + 0.5 : b.idx;
+          return av-bv;
+        });
+
+        const qty = {ADT:0, CHD:0, INF:0};
+        pax.forEach(p=>qty[p.type] = (qty[p.type]||0)+1);
+        if(!pax.length) warnings.push("Nenhum passageiro identificado na máscara.");
+        if(pax.length && !loc) warnings.push("LOC não identificado na máscara.");
+
+        return { loc, pax, qty, warnings, confidence: Math.max(0, Math.min(100, confidence)) };
+      }
+
+      function parseSegments(text){
+        const norm = normalizeGdsText(text);
+        const segs = [];
+        const seen = new Set();
+        function add(seg){
+          const key = `${seg.carrier}|${seg.flight}|${seg.date}|${seg.origin}|${seg.destination}|${seg.dep}`;
+          if(seen.has(key)) return;
+          seen.add(key);
+          segs.push(seg);
+        }
+        for(const line of norm.lines){
+          let m = line.match(/^\s*(\d+)\s+([A-Z0-9]{1,3})\s*(\d{1,4})\s+([A-Z])\s+(\d{2}[A-Z]{3})\s+\d\*?([A-Z]{6})\s+[A-Z]{2}\d+\s+(\d{4})\s+(\d{4})\s+(\d{2}[A-Z]{3}).*?(\b\d{1,2}P\b|\bNIL\b|\b0P\b)?/i);
+          if(m){
+            add({ segNo:parseInt(m[1],10), carrier:m[2].toUpperCase(), flight:m[3], bookingClass:m[4].toUpperCase(), date:m[5].toUpperCase(), origin:m[6].slice(0,3).toUpperCase(), destination:m[6].slice(3,6).toUpperCase(), dep:m[7], arr:m[8], arrDate:m[9].toUpperCase(), bag:(m[10]||"").toUpperCase(), source:"PNR" });
+            continue;
+          }
+          m = line.match(/^\s*([A-Z]{3})\s+([A-Z]{3})\s+([A-Z0-9]{1,3})\s+0*(\d{1,4})\s+([A-Z])\s+\*?\s*(\d{2}[A-Z]{3})\s+(\d{4})\s+.+?(\b\d{1,2}P\b|\bNIL\b|\b0P\b)\s*$/i);
+          if(m){
+            add({ segNo:0, carrier:m[3].toUpperCase(), flight:m[4], bookingClass:m[5].toUpperCase(), date:m[6].toUpperCase(), origin:m[1].toUpperCase(), destination:m[2].toUpperCase(), dep:m[7], arr:"", arrDate:"", bag:(m[8]||"").toUpperCase(), source:"FXO" });
+          }
+        }
+        return segs;
+      }
+
+      function renderFormattedVoosFromSegments(segs){
+        if(!Array.isArray(segs) || !segs.length) return "";
+        return segs.map(seg=>`${seg.carrier}${String(seg.flight).padStart(0,"0")} ${seg.bookingClass} ${seg.date} ${seg.origin}${seg.destination} ${seg.dep}${seg.arr?` ${seg.arr}`:""}${seg.arrDate?` ${seg.arrDate}`:""}`.trim()).join("\n");
+      }
+
+      function applyPassengerData(parsed){
+        const pax = parsed && Array.isArray(parsed.pax) ? parsed.pax : [];
+        if(!pax.length){
+          setStatus("Cole a máscara do PNR (RP/...) contendo passageiros.");
+          window.__interPaxReady = false;
+          show($("fxoWrap"), false);
+          show($("interValuesWrap"), false);
+          show($("ticketsWrap"), false);
+          return false;
+        }
+        window.__interPaxReady = true;
+
+        const counts = parsed.qty || {ADT:0, CHD:0, INF:0};
+        const store = {ADT:[], CHD:[], INF:[]};
+        const map = {};
+        const infLinkedMap = {};
+        const perTypeIdx = {ADT:0, CHD:0, INF:0};
+        let pOrder = 1;
+        for(const p of pax){
+          const idxWithin = perTypeIdx[p.type]++;
+          store[p.type].push({name:p.name, ticket:""});
+          if(p.type === 'INF' && Number.isFinite(p.linkedTo)){
+            const arr = infLinkedMap[p.linkedTo] || [];
+            arr.push({type:p.type, idx:idxWithin, name:p.name, sourceIdx:p.idx, linkedTo:p.linkedTo});
+            infLinkedMap[p.linkedTo] = arr;
+          } else {
+            map[pOrder++] = {type:p.type, idx:idxWithin, name:p.name, sourceIdx:p.idx};
+          }
+        }
+
+        if($("paxq_adt")) $("paxq_adt").value = String(counts.ADT||0);
+        if($("paxq_chd")) $("paxq_chd").value = String(counts.CHD||0);
+        if($("paxq_inf")) $("paxq_inf").value = String(counts.INF||0);
+        setPaxStore(store);
+        renderPaxFields();
+
+        state.paxList = pax;
+        state.pIndexToTypePos = map;
+        state.infLinkToTypePos = infLinkedMap;
+        state.requiredTypes = ["ADT","CHD","INF"].filter(t => (counts[t]||0)>0);
+        state.fxoOk = {ADT:false, CHD:false, INF:false};
+        state.bagByType = {ADT:null, CHD:null, INF:null};
+        state.familyByType = {ADT:null, CHD:null, INF:null};
+        state.parseMeta.loc = parsed.loc || "";
+        state.parseMeta.warnings = parsed.warnings || [];
+        state.parseMeta.confidence = parsed.confidence || 0;
+
+        const bagEl = $("bag"); if(bagEl){ bagEl.value = ""; delete bagEl.dataset.auto; }
+        const famEl = $("familia"); if(famEl && famEl.dataset.auto === "1"){ famEl.value = ""; delete famEl.dataset.auto; }
+
+        if(isInterHybrid()){
+          show($("fxoWrap"), false);
+          show($("interValuesWrap"), true);
+          show($("ticketsWrap"), true);
+        } else {
+          show($("fxoWrap"), true);
+          for(const t of ["ADT","CHD","INF"]){
+            show($(`fxoBox_${t}_wrap`), state.requiredTypes.includes(t));
+            const st = $(`fxoBox_${t}_status`); if(st) st.textContent = "";
+          }
+          show($("ticketsWrap"), false);
+        }
+        if($("ticketsStatus")) $("ticketsStatus").textContent = "";
+        if(typeof updateFlowVisibility === 'function') updateFlowVisibility();
+
+        if(parsed.loc && $("loc") && !$("loc").value.trim()) $("loc").value = parsed.loc;
+
+        const segs = parseSegments($("inter_voos")?.value || "");
+        state.parseMeta.segments = segs;
+        const segInfo = segs.length ? ` • ${segs.length} trecho(s)` : "";
+        const warnTxt = (parsed.warnings||[]).length ? ` • aviso: ${(parsed.warnings||[]).join(" | ")}` : "";
+        setStatus(`Detectado: ${counts.ADT||0} ADT • ${counts.CHD||0} CHD • ${counts.INF||0} INF${parsed.loc?` • LOC ${parsed.loc}`:""}${segInfo} • confiança ${parsed.confidence||0}%${warnTxt}. Agora cole o FXO por tipo.`);
+        return true;
+      }
+
+      function parseCurrencyPairs(chunk){
+        const pairs = [];
+        for(const m of String(chunk||"").matchAll(/\b([A-Z]{3})\s+(-?\d+(?:\.\d{1,2})?)/g)){
+          const cur = String(m[1]).toUpperCase();
+          const amt = parseFloat(m[2]);
+          if(cur && Number.isFinite(amt)) pairs.push({cur, amt});
+        }
+        return pairs;
+      }
+
+      function findLabelValue(text, label, preferCur){
+        const src = normalizeGdsText(text).text;
+        const labelsAnchor = '(?:OLD\\s+BASE\\s+FARE|NEW\\s+BASE\\s+FARE|FARE\\s+BALANCE|OLD\\s+TAX|NEW\\s+TAX|TAX\\s+BALANCE|TICKET\\s+DIFFERENCE|PENALTY|GRAND\\s+TOTAL|TOTAL\\s+ADD\\s+COLL|RESIDUAL\\s+VALUE)';
+        const lineRe = new RegExp('^\\s*' + label + '\\b.*$', 'im');
+        const mLine = src.match(lineRe);
+        if(mLine){
+          const ownPairs = parseCurrencyPairs(mLine[0]);
+          if(ownPairs.length){
+            const exactOwn = preferCur ? ownPairs.find(p=>p.cur===preferCur) : null;
+            return exactOwn || ownPairs[ownPairs.length-1] || null;
+          }
+        }
+        const blockRe = new RegExp('(?:^|\\n)\\s*' + label + '\\b([\\s\\S]*?)(?=\\n\\s*' + labelsAnchor + '\\b|$)', 'i');
+        const mBlock = src.match(blockRe);
+        if(!mBlock) return null;
+        const chunk = String(mBlock[0] || '') + '\\n' + String(mBlock[1] || '');
+        const pairs = parseCurrencyPairs(chunk);
+        if(!pairs.length) return null;
+        const exact = preferCur ? pairs.find(p=>p.cur===preferCur) : null;
+        return exact || pairs[pairs.length-1] || null;
+      }
+
+      function extractFxoSubBlock(text, wantType){
+        const src = String(text||'');
+        if(!src.trim()) return src;
+        const type = String(wantType||'').toUpperCase();
+        const hasTagged = /(^|\n)\s*\[(ADT|CHD|INF)\]\s*$/im.test(src);
+        if(hasTagged){
+          const lines = src.replace(/\r\n?/g,'\n').split('\n');
+          let cur = '';
+          let buf = [];
+          const blocks = {};
+          const flush = ()=>{ if(cur && !blocks[cur]) blocks[cur] = buf.join('\n').trim(); buf = []; };
+          for(const line of lines){
+            const m = line.match(/^\s*\[(ADT|CHD|INF)\]\s*$/i);
+            if(m){ flush(); cur = String(m[1]).toUpperCase(); continue; }
+            if(cur) buf.push(line);
+          }
+          flush();
+          if(blocks[type]) return blocks[type];
+        }
+        return src;
+      }
+
+      function parseFxoBlock(text, wantType){
+        const s = extractFxoSubBlock(text, wantType);
+        const paxType = /\bCHD\b|\/CH\b/i.test(s) ? "CHD" : ((/\(INF\)|\bINF\b|\/IN\b/i.test(s)) && /FARE\s+BALANCE/i.test(s) ? "INF" : "ADT");
+        const oldBase = findLabelValue(s, 'OLD\\s+BASE\\s+FARE');
+        const newBase = findLabelValue(s, 'NEW\\s+BASE\\s+FARE');
+        const fare = findLabelValue(s, 'FARE\\s+BALANCE');
+        const taxBal = findLabelValue(s, 'TAX\\s+BALANCE');
+        const tktDiff = findLabelValue(s, 'TICKET\\s+DIFFERENCE');
+        const pen = findLabelValue(s, 'PENALTY');
+        const grand = findLabelValue(s, 'GRAND\\s+TOTAL');
+        const add = findLabelValue(s, 'TOTAL\\s+ADD\\s+COLL') || grand || tktDiff;
+        const residual = findLabelValue(s, 'RESIDUAL\\s+VALUE');
+        const bagInfo = parseBagFromText(s);
+        const familyInfo = parseFareFamilies(s);
+        const warnings = [];
+        if(!fare) warnings.push('FARE BALANCE não encontrado');
+        if(!pen) warnings.push('PENALTY não encontrado');
+        if(!add) warnings.push('TOTAL ADD COLL não encontrado');
+        let confidence = 0;
+        if(fare) confidence += 35;
+        if(pen) confidence += 20;
+        if(add) confidence += 25;
+        if(familyInfo.text) confidence += 10;
+        if(bagInfo.text) confidence += 10;
+        return { paxType, oldBase, newBase, fare, taxBal, tktDiff, pen, grand, add, residual, bag:bagInfo.text, family:familyInfo.text, familyItems:familyInfo.items, warnings, confidence:Math.min(100,confidence) };
+      }
+
+
+      function parseBagFromText(text){
+        const s = String(text || "");
+        const lines = normalizeGdsText(s).lines;
+        let inTable = false;
+        let currentOrigin = "";
+        const routes = [];
+
+        function bagLabel(n){ return n > 0 ? `${n}PC` : 'Sem bagagem'; }
+        function pushRoute(from, to, pieces){
+          if(!from || !to) return;
+          routes.push({ from, to, pieces, label: bagLabel(pieces) });
+        }
+
+        for (const rawLine of lines){
+          const line = String(rawLine || "").trim().replace(/\s+/g, " ");
+          if(/AL\s+FLGT\s+BK\s+DATE\s+TIME.*BG/i.test(line)){ inTable = true; continue; }
+          if(!inTable) continue;
+          if(/ORIGIN\s+TRVL\s+CURRENCY|OLD\s+BASE\s+FARE/i.test(line)) break;
+          if(!line) continue;
+
+          const surface = line.match(/^([A-Z]{3})\s+(?:S\s+U\s+R\s+F\s+A\s+C\s+E|ARNK)$/i);
+          if(surface){
+            currentOrigin = String(surface[1]).toUpperCase();
+            continue;
+          }
+
+          const loneCity = line.match(/^([A-Z]{3})$/i);
+          if(loneCity){
+            currentOrigin = String(loneCity[1]).toUpperCase();
+            continue;
+          }
+
+          const bagMatch = line.match(/\b(NIL|0P|\d{1,2}P)\s*$/i);
+          if(!bagMatch) continue;
+
+          const destMatch = line.match(/^([A-Z]{3})\b/);
+          if(!destMatch) continue;
+
+          const dest = String(destMatch[1]).toUpperCase();
+          const rawBag = String(bagMatch[1]).toUpperCase();
+          const pieces = /^(?:NIL|0P)$/i.test(rawBag) ? 0 : parseInt(rawBag, 10);
+
+          pushRoute(currentOrigin, dest, pieces);
+          currentOrigin = dest;
+        }
+
+        if(!routes.length){
+          if(/\bNIL\b|\b0P\b/i.test(s)) return {pieces:[0], text:'Sem bagagem', groups:[], routes:[]};
+          return {pieces:[], text:'', groups:[], routes:[]};
+        }
+
+        const uniq = Array.from(new Set(routes.map(r => r.pieces)));
+        if(uniq.length === 1){
+          const only = uniq[0];
+          return {
+            pieces: uniq,
+            text: only > 0 ? `${only}PC` : 'Sem bagagem',
+            groups: [{ pieces: only, routes: routes.map(r => `${r.from}-${r.to}`) }],
+            routes
+          };
+        }
+
+        const groups = [];
+        for (const r of routes){
+          const last = groups[groups.length - 1];
+          const routeLabel = `${r.from}-${r.to}`;
+          if(last && last.pieces === r.pieces){
+            last.routes.push(routeLabel);
+          } else {
+            groups.push({ pieces: r.pieces, routes: [routeLabel] });
+          }
+        }
+
+        const textOut = groups.map(g => `${bagLabel(g.pieces)}: ${g.routes.join(', ')}`).join(' • ');
+        return { pieces: uniq, text: textOut, groups, routes };
+      }
+
+
+      function parseFareFamilies(text){
+        const items = Array.from(String(text||"").matchAll(/FARE\s+FAMILY:FC\d+:(\d+(?:-\d+)?):([A-Z0-9]+)/gi)).map(m=>({seg:m[1], fam:String(m[2]).toUpperCase()}));
+        if(!items.length) return {items:[], text:''};
+        const uniq = Array.from(new Set(items.map(x=>x.fam)));
+        if(uniq.length===1) return {items, text:uniq[0]};
+        const parts = [];
+        items.forEach(x=>{ const p = `${x.fam} (SEG ${x.seg})`; if(!parts.includes(p)) parts.push(p); });
+        return {items, text:parts.join(' • ')};
+      }
+
+      function resolveFxoCurrency(parsed, wantCur){
+        const hasAny = (o)=>o && Number.isFinite(o.amt) && o.cur;
+        const fareRaw = parsed.fare, penRaw = parsed.pen, addRaw = parsed.add;
+        const anyBRL = [fareRaw, penRaw, addRaw].some(x=>hasAny(x) && x.cur === 'BRL') && wantCur !== 'BRL';
+        let fx = parseBRNumber($("inter_fx")?.value);
+        let inferred = false;
+
+        if(anyBRL && !(fx > 0)){
+          const pairs = [parsed.fare, parsed.taxBal, parsed.residual, parsed.tktDiff, parsed.add].filter(hasAny);
+          const usdPair = pairs.find(x=>x.cur===wantCur && x.amt !== 0);
+          const brlPair = pairs.find(x=>x.cur==='BRL' && x.amt !== 0);
+          if(usdPair && brlPair){
+            fx = Math.abs(brlPair.amt / usdPair.amt);
+            if(fx > 0){ inferred = true; if($("inter_fx") && !$("inter_fx").value.trim()) $("inter_fx").value = fmtNumPT4(fx); }
+          }
+        }
+        if(anyBRL && !(fx > 0) && parsed.oldBase && parsed.newBase && parsed.fare && parsed.oldBase.cur===wantCur && parsed.newBase.cur===wantCur && parsed.fare.cur==='BRL'){
+          const diff = parsed.newBase.amt - parsed.oldBase.amt;
+          if(diff > 0){
+            fx = parsed.fare.amt / diff;
+            if(fx > 0){ inferred = true; if($("inter_fx") && !$("inter_fx").value.trim()) $("inter_fx").value = fmtNumPT4(fx); }
+          }
+        }
+
+        if(anyBRL && !(fx > 0)) return {canApply:false, needsFx:true, fx:0, inferred:false};
+
+        function toWant(obj){
+          if(!hasAny(obj)) return null;
+          if(obj.cur === 'BRL' && wantCur !== 'BRL') return {cur:wantCur, amt:obj.amt / fx, srcCur:'BRL'};
+          return {cur:obj.cur, amt:obj.amt, srcCur:obj.cur};
+        }
+        return { canApply:true, needsFx:false, fx:fx||0, inferred, fare:toWant(parsed.fare), pen:toWant(parsed.pen), add:toWant(parsed.add), taxBal:toWant(parsed.taxBal), tktDiff:toWant(parsed.tktDiff) };
+      }
+
+
+      function updateBagSummary(){
+        const bagEl = $("bag");
+        if(!bagEl) return;
+        const canOverwrite = !bagEl.value.trim() || bagEl.dataset.auto === '1';
+        if(!canOverwrite) return;
+
+        const vals = state.requiredTypes
+          .filter(t => state.bagByType[t])
+          .map(t => `${t}: ${state.bagByType[t]}`);
+
+        if(!vals.length) return;
+
+        const onlyBagText = vals.map(v => v.replace(/^[A-Z]{3}:\s*/, ''));
+        const uniqVals = Array.from(new Set(onlyBagText));
+
+        bagEl.value = uniqVals.length === 1 ? uniqVals[0] : vals.join(' | ');
+        bagEl.dataset.auto = '1';
+      }
+
+
+      function updateFamilySummary(){
+        const famEl = $("familia");
+        if(!famEl) return;
+        const canOverwrite = !famEl.value.trim() || famEl.dataset.auto === '1';
+        if(!canOverwrite) return;
+        const vals = state.requiredTypes.filter(t=>state.familyByType[t]).map(t=>`${t}: ${state.familyByType[t]}`);
+        if(!vals.length) return;
+        const uniq = Array.from(new Set(vals.map(v=>v.split(': ')[1])));
+        famEl.value = uniq.length === 1 ? uniq[0] : vals.join(' | ');
+        famEl.dataset.auto = '1';
+      }
+
+      function syncInternoFromBoxes(){
+        const blocks = [];
+        for(const t of ['ADT','CHD','INF']){
+          const ta = $(`fxoBox_${t}`);
+          const txt = ta ? ta.value.trim() : '';
+          if(txt) blocks.push(`[${t}]\n${txt}`);
+        }
+        const interno = $("inter_interno");
+        if(interno) interno.value = blocks.join("\n\n");
+      }
+
+      function applyFxForType(type){
+        const ta = $(`fxoBox_${type}`);
+        const st = $(`fxoBox_${type}_status`);
+        if(!ta) return;
+        const parsed = parseFxoBlock(ta.value || '', type);
+        syncInternoFromBoxes();
+        const wantCur = (typeof getInterCurrency === 'function') ? getInterCurrency() : 'USD';
+        const resolved = resolveFxoCurrency(parsed, wantCur);
+        const fareEl = $(`inter_fare_${type}`), taxEl = $(`inter_tax_${type}`), penEl = $(`inter_pen_${type}`), duEl = $(`inter_du_${type}`), feeEl = $(`inter_fee_${type}`);
+        if(fareEl) fareEl.value = '';
+        if(taxEl) taxEl.value = '';
+        if(penEl) penEl.value = '';
+        if(duEl) duEl.value = '';
+        if(feeEl) feeEl.value = '';
+
+        if(!resolved.canApply){
+          state.fxoOk[type] = false;
+          if(st) st.textContent = `Este FXO veio em BRL (equivalente). Informe o câmbio ${wantCur}→BRL no campo “Câmbio”.`;
+          try{ updateAll(); }catch(e){}
+          return;
+        }
+
+        let ok = false;
+        if(resolved.fare && fareEl){ fareEl.value = fmtNumPT(resolved.fare.amt); ok = true; }
+        if(penEl){
+          penEl.value = fmtNumPT(resolved.pen ? resolved.pen.amt : 0);
+          if(resolved.pen) ok = true;
+        }
+        if(taxEl){
+          let diftax = null;
+          if(resolved.add){
+            const fareAmt = resolved.fare ? resolved.fare.amt : 0;
+            const penAmt = resolved.pen ? resolved.pen.amt : 0;
+            diftax = resolved.add.amt - fareAmt - penAmt;
+          } else if(resolved.tktDiff && resolved.fare){
+            diftax = resolved.tktDiff.amt - resolved.fare.amt;
+          } else if(resolved.taxBal){
+            diftax = resolved.taxBal.amt;
+          }
+          if(diftax !== null && Number.isFinite(diftax)){ taxEl.value = fmtNumPT(diftax); ok = true; }
+        }
+        if(parsed.bag){ state.bagByType[type] = parsed.bag; updateBagSummary(); }
+        if(parsed.family){ state.familyByType[type] = parsed.family; updateFamilySummary(); }
+        state.fxoOk[type] = ok;
+
+        if(st){
+          if(ok){
+            const msg = [`OK — ${wantCur}`];
+            if(resolved.fx>0 && (resolved.inferred || parseBRNumber($("inter_fx")?.value)>0)) msg.push(`câmbio ${fmtNumPT(resolved.fx)}${resolved.inferred?' (inferido)':''}`);
+            if(parsed.confidence) msg.push(`confiança ${parsed.confidence}%`);
+            if(parsed.warnings.length) msg.push(parsed.warnings.join(' | '));
+            st.textContent = msg.join(' • ');
+          }else{
+            st.textContent = 'Não encontrei FARE BALANCE / PENALTY / TOTAL ADD COLL suficientes neste bloco.';
+          }
+        }
+        try{ updateAll(); }catch(e){}
+        try{ applyPaxTypeVisibility(); }catch(e){}
+        const allOk = state.requiredTypes.every(t=>state.fxoOk[t]);
+        const allFilled = state.requiredTypes.every(t=>{
+          const box = $(`fxoBox_${t}`);
+          return box && String(box.value||'').trim();
+        });
+        const canOpenTickets = allOk || allFilled;
+        show($("ticketsWrap"), canOpenTickets);
+        if($("ticketsStatus")){
+          if(allOk){
+            $("ticketsStatus").textContent = 'Agora cole FA/FHE/TKT que eu distribuo nos passageiros.';
+          }else if(allFilled){
+            $("ticketsStatus").textContent = 'Os FXO foram colados. Você já pode inserir os bilhetes; se algum valor não bater, revise o bloco correspondente.';
+          }
+        }
+      }
+
+      function getAirlineInfoByTicketPrefix(ticket){
+        const raw = ensureTicketHyphen(String(ticket||''));
+        const prefix = raw.slice(0,3);
+        const map = {
+          '001':{code:'AA', name:'American Airlines'},
+          '006':{code:'DL', name:'Delta Air Lines'},
+          '014':{code:'AC', name:'Air Canada'},
+          '016':{code:'UA', name:'United Airlines'},
+          '027':{code:'AS', name:'Alaska Airlines'},
+          '037':{code:'US', name:'US Airways'},
+          '044':{code:'LA', name:'LATAM'},
+          '045':{code:'AV', name:'Avianca'},
+          '047':{code:'TP', name:'TAP Air Portugal'},
+          '055':{code:'AZ', name:'Alitalia / ITA legado'},
+          '057':{code:'AF', name:'Air France'},
+          '074':{code:'KL', name:'KLM'},
+          '075':{code:'IB', name:'Iberia'},
+          '081':{code:'QF', name:'Qantas'},
+          '125':{code:'BA', name:'British Airways'},
+          '139':{code:'AM', name:'Aeromexico'},
+          '157':{code:'QR', name:'Qatar Airways'},
+          '176':{code:'EK', name:'Emirates'},
+          '220':{code:'LH', name:'Lufthansa'},
+          '235':{code:'TK', name:'Turkish Airlines'},
+          '257':{code:'OS', name:'Austrian Airlines'},
+          '390':{code:'A3', name:'Aegean'},
+          '724':{code:'LX', name:'Swiss'},
+          '957':{code:'LA', name:'TAM legado / LATAM'}
+        };
+        return map[prefix] || null;
+      }
+      function getAirlineByTicketPrefix(ticket){
+        const info = getAirlineInfoByTicketPrefix(ticket);
+        return info ? info.name : '';
+      }
+
+      function canonicalPaxNameForMatch(name){
+        let s = normalizePaxName(String(name||'')).toUpperCase();
+        s = s.replace(/^\s*\d+\.\s*/, '');
+        s = s.replace(/\b(ADT|CHD|INF|CNN|INS|ST)\b/gi, ' ');
+        s = s.replace(/\b(MR|MRS|MISS|MSTR|MST|MS)\b/gi, ' ');
+        s = s.replace(/\s+/g, ' ').trim();
+        const parts = s.split('/');
+        if(parts.length >= 2){
+          const sur = parts[0].trim();
+          const giv = parts.slice(1).join('/').replace(/\//g,' ').replace(/\s+/g,' ').trim();
+          return (sur + '/' + giv).trim();
+        }
+        return s;
+      }
+      function paxNameLooseKey(name){
+        return canonicalPaxNameForMatch(name).replace(/[^A-Z0-9]+/g,'');
+      }
+      function parseTickets(text){
+        const src = String(text||'');
+        const lines = normalizeGdsText(src).lines;
+        const out = {};
+        const infOut = {};
+        const meta = { loc:'', source:'', airlineInfos:[], tktMasks:[] };
+        let pendingTicket = null;
+        const orphanTickets = [];
+        const grabP = (line)=>{
+          const s = String(line||'');
+          const m = s.match(/\/P(\d+)(?:\D|$)/i);
+          return m ? parseInt(m[1],10) : null;
+        };
+        const grabTicket = (line)=>{
+          const s = String(line||'');
+          let m = s.match(/(?:^|[^\d])(\d{3})-(\d{10})(?:-(\d{2,3}))?(?=[^\d]|$)/);
+          if(m) return ensureTicketHyphen(`${m[1]}-${m[2]}`);
+          m = s.match(/(?:^|[^\d])(\d{13})(?:-(\d{2,3}))?(?=[^\d]|$)/);
+          if(m) return ensureTicketHyphen(m[1]);
+          return null;
+        };
+        const isFaFheLine = (line)=>/(?:^|\s)(?:FA|FHE)\s+(?:PAX|INF)(?:\s|$)/i.test(String(line||''));
+        const isTktMask = /(?:^|\n)\s*TKT-(\d{13})(?:-\d{2,3})?/i.test(src);
+
+        if(isTktMask){
+          meta.source = 'TKT';
+          const blocks = String(src).split(/(?=^\s*TKT-\d{13}(?:-\d{2,3})?)/m).filter(s=>/TKT-\d{13}/i.test(s));
+          for(const block of blocks){
+            const tkm = block.match(/(?:^|\n)\s*TKT-(\d{13})(?:-\d{2,3})?/i);
+            const baseTicket = tkm ? ensureTicketHyphen(tkm[1]) : '';
+            const locm = block.match(/\bLOC-([A-Z0-9]{5,6})\b/i);
+            if(!meta.loc && locm) meta.loc = (locm[1] || '').toUpperCase();
+            let paxName = '';
+            let paxType = '';
+            for(const line of normalizeGdsText(block).lines){
+              const pm = String(line||'').match(/^\s*\d+\.\s*([A-Z][A-Z\s'\/\-]+?)\s{2,}(ADT|CHD|INF)\b/i);
+              if(pm){
+                paxName = normalizePaxName(pm[1]);
+                paxType = (pm[2]||'').toUpperCase();
+                break;
+              }
+            }
+            if(baseTicket){
+              meta.tktMasks.push({
+                ticket: baseTicket,
+                loc: locm ? (locm[1]||'').toUpperCase() : '',
+                name: paxName,
+                type: paxType,
+                canonicalName: canonicalPaxNameForMatch(paxName)
+              });
+            }
+          }
+        }
+
+        for(const line of lines){
+          const isFaFhe = isFaFheLine(line);
+          const isInfLine = /(?:^|\s)(?:FA|FHE)\s+INF(?:\s|$)/i.test(String(line||''));
+          const tk = grabTicket(line);
+          const p = grabP(line);
+          if(isFaFhe && tk && p){
+            if(isInfLine){ infOut[p] = tk; }
+            else { out[p] = tk; }
+            pendingTicket = null;
+            continue;
+          }
+          if(isFaFhe && tk){
+            pendingTicket = {ticket:tk, isInf:isInfLine};
+            if(!orphanTickets.includes(tk)) orphanTickets.push(tk);
+            continue;
+          }
+          if(pendingTicket && p){
+            if(pendingTicket.isInf) infOut[p] = pendingTicket.ticket;
+            else out[p] = pendingTicket.ticket;
+            pendingTicket = null;
+            continue;
+          }
+          if(tk && p && !out[p] && !infOut[p]){
+            if(isInfLine) infOut[p] = tk;
+            else out[p] = tk;
+            continue;
+          }
+        }
+        if(orphanTickets.length === 1 && Object.keys(out).length === 0 && meta.tktMasks.length === 0){
+          out[1] = orphanTickets[0];
+        }
+        const allTickets = [...Object.values(out), ...Object.values(infOut), ...meta.tktMasks.map(x=>x.ticket)].filter(Boolean);
+        const airlineInfos = [...new Map(allTickets.map(tk=>{
+          const info = getAirlineInfoByTicketPrefix(tk);
+          return info ? [info.code, info] : null;
+        }).filter(Boolean)).values()];
+        meta.airlineInfos = airlineInfos;
+        return { mapping: out, infMapping: infOut, meta };
+      }
+      function applyTickets(){
+        const ta = $("inter_original");
+        if(!ta) return;
+        const parsed = parseTickets(ta.value || '');
+        const mapping = parsed.mapping || {};
+        const infMapping = parsed.infMapping || {};
+        const ts = $("ticketsStatus");
+        const keys = Object.keys(mapping);
+        const infKeys = Object.keys(infMapping);
+        const tktMasks = Array.isArray(parsed.meta?.tktMasks) ? parsed.meta.tktMasks : [];
+        if(!keys.length && !infKeys.length && !tktMasks.length){ if(ts) ts.textContent = 'Não encontrei bilhetes FA/FHE/TKT no texto colado.'; return; }
+        const map = state.pIndexToTypePos || {};
+        const infMap = state.infLinkToTypePos || {};
+        const store = getPaxStore();
+        let applied = 0;
+        keys.forEach(k=>{
+          const info = map[parseInt(k,10)];
+          if(info && store[info.type] && store[info.type][info.idx]){ store[info.type][info.idx].ticket = ensureTicketHyphen(mapping[k]); applied++; }
+        });
+        infKeys.forEach(k=>{
+          const linked = infMap[parseInt(k,10)];
+          const info = Array.isArray(linked) ? linked[0] : null;
+          if(info && store[info.type] && store[info.type][info.idx]){ store[info.type][info.idx].ticket = ensureTicketHyphen(infMapping[k]); applied++; }
+        });
+        if(tktMasks.length){
+          const candidates = [];
+          ['ADT','CHD','INF'].forEach(tp=>{
+            (store[tp]||[]).forEach((p,idx)=>{
+              candidates.push({ type:tp, idx, canonicalName: canonicalPaxNameForMatch(p.name||'') });
+            });
+          });
+          const used = new Set();
+          for(const row of tktMasks){
+            const wantType = row.type || '';
+            const canon = row.canonicalName || canonicalPaxNameForMatch(row.name||'');
+            let found = null;
+            if(canon){
+              const wantLoose = paxNameLooseKey(canon);
+              found = candidates.find(c=>!used.has(c.type+':'+c.idx) && (!wantType || c.type===wantType) && c.canonicalName===canon);
+              if(!found) found = candidates.find(c=>!used.has(c.type+':'+c.idx) && c.canonicalName===canon);
+              if(!found && wantLoose){
+                found = candidates.find(c=>!used.has(c.type+':'+c.idx) && (!wantType || c.type===wantType) && paxNameLooseKey(c.canonicalName)===wantLoose);
+              }
+              if(!found && wantLoose){
+                found = candidates.find(c=>!used.has(c.type+':'+c.idx) && (!wantType || c.type===wantType) && (paxNameLooseKey(c.canonicalName).includes(wantLoose) || wantLoose.includes(paxNameLooseKey(c.canonicalName))));
+              }
+              if(!found && wantLoose){
+                found = candidates.find(c=>!used.has(c.type+':'+c.idx) && (paxNameLooseKey(c.canonicalName)===wantLoose || paxNameLooseKey(c.canonicalName).includes(wantLoose) || wantLoose.includes(paxNameLooseKey(c.canonicalName))));
+              }
+            }
+            if(found && store[found.type] && store[found.type][found.idx]){
+              store[found.type][found.idx].ticket = ensureTicketHyphen(row.ticket);
+              used.add(found.type+':'+found.idx);
+              applied++;
+            }
+          }
+        }
+        setPaxStore(store); renderPaxFields();
+        const airlineInfos = parsed.meta?.airlineInfos || [];
+        const ciaInput = $('cia');
+        if(ciaInput && airlineInfos.length === 1){
+          ciaInput.value = airlineInfos[0].code;
+          try{ ciaInput.dispatchEvent(new Event('input', {bubbles:true})); }catch(e){}
+          try{ ciaInput.dispatchEvent(new Event('change', {bubbles:true})); }catch(e){}
+        }
+        const locInput = $('loc');
+        if(locInput && parsed.meta?.loc && !String(locInput.value||'').trim()){
+          locInput.value = parsed.meta.loc;
+          try{ locInput.dispatchEvent(new Event('input', {bubbles:true})); }catch(e){}
+          try{ locInput.dispatchEvent(new Event('change', {bubbles:true})); }catch(e){}
+        }
+        if(ts){
+          const airlines = airlineInfos.map(a=>a.name);
+          if(applied){
+            const mode = tktMasks.length && !(keys.length || infKeys.length) ? 'pela máscara TKT/nome' : 'pelo P1/P2';
+            ts.textContent = `OK — distribuí ${applied} bilhete(s) ${mode}.${airlines.length ? ' Cia detectada: '+airlines.join(', ') : ''}${(ciaInput && airlineInfos.length===1) ? ' • Cia preenchida: '+airlineInfos[0].code : ''}`;
+          } else {
+            ts.textContent = 'Encontrei bilhetes, mas não consegui mapear P1/P2/nome.';
+          }
+        }
+        if(applied) showToast('Bilhetes preenchidos no PAX');
+      }
+
+      function applyInterTipoUI(){
+        const auto = isInterAuto();
+        const hybrid = isInterHybrid();
+        const manualWrap = $("manualInternoWrap");
+        const lblVoos = $("lbl_inter_voos"); const voosTA = $("inter_voos");
+        const lblTk = $("lbl_inter_original"); const tkTA = $("inter_original");
+        if(auto){
+          if(lblVoos) lblVoos.textContent = '1) Itinerário / Máscara (cole o PNR)';
+          if(voosTA) voosTA.placeholder = 'Cole aqui RP/... com PAX + segmentos (Amadeus).';
+          if(lblTk) lblTk.textContent = '3) Bilhetes (FA/FHE/TKT)';
+          if(tkTA) tkTA.placeholder = 'Cole aqui FA/FHE ou máscara TKT (com /P1, /P2... quando houver)';
+          if(manualWrap) manualWrap.classList.add('hidden');
+          const parsed = parsePassengersData(voosTA?.value || '');
+          window.__interPaxReady = !!parsed.pax.length;
+          if(hybrid){
+            show($("fxoWrap"), false);
+            if(parsed.pax.length) show($("interValuesWrap"), true);
+            show($("ticketsWrap"), parsed.pax.length ? true : false);
+          } else {
+            if(parsed.pax.length) show($("fxoWrap"), true);
+            show($("ticketsWrap"), false);
+          }
+        } else {
+          if(lblVoos) lblVoos.textContent = 'Voos simulados (opcional)';
+          if(voosTA) voosTA.placeholder = 'Cole aqui os voos simulados (um por linha)';
+          if(lblTk) lblTk.textContent = 'Bilhete original (opcional)';
+          if(tkTA) tkTA.placeholder = 'Cole aqui dados do bilhete original';
+          if(manualWrap) manualWrap.classList.remove('hidden');
+          show($("fxoWrap"), false);
+          show($("ticketsWrap"), true);
+          setStatus('');
+        }
+        if(typeof updateFlowVisibility === 'function') updateFlowVisibility();
+      }
+
+      window.__interApplyInterTipoUI = applyInterTipoUI;
+
+      function finalizeAutoFlow(){
+        window.__interFinalized = true;
+        show($("interValuesWrap"), true);
+        show($("outputsCard"), true);
+        if(typeof updateFlowVisibility === 'function') updateFlowVisibility();
+        showToast('Preenchimento concluído — campos liberados para edição');
+      }
+      window.__interFinalizeAutoFlow = finalizeAutoFlow;
+
+      function maybeAutoFromPnr(val){
+        if(isInterAuto()) return;
+        if(/(^|\n)\s*RP\//i.test(String(val||''))){
+          const sel = $("inter_tipo");
+          if(sel){ window.__interFinalized = false; window.__interPaxReady = false; sel.value = 'Automático'; applyInterTipoUI(); }
+        }
+      }
+
+      const interTipo = $("inter_tipo");
+      if(interTipo) interTipo.addEventListener('change', ()=>{ window.__interFinalized = false; window.__interPaxReady = false; applyInterTipoUI(); });
+
+      const btnFinalizarAuto = $("btnFinalizarAuto");
+      if(btnFinalizarAuto) btnFinalizarAuto.addEventListener('click', finalizeAutoFlow);
+
+      const it = $("inter_voos");
+      if(it){
+        const runPnr = ()=>{
+          maybeAutoFromPnr(it.value);
+          if(!isInterAuto()) return;
+          const parsed = parsePassengersData(it.value);
+          applyPassengerData(parsed);
+        };
+        it.addEventListener('paste', ()=> setTimeout(runPnr, 0));
+        it.addEventListener('input', ()=>{ clearTimeout(it.__fxq_t); it.__fxq_t = setTimeout(runPnr, 250); });
+      }
+
+      ['ADT','CHD','INF'].forEach(t=>{
+        const ta = $(`fxoBox_${t}`);
+        if(!ta) return;
+        const run = ()=>{ if(isInterAuto()) applyFxForType(t); };
+        ta.addEventListener('paste', ()=> setTimeout(run, 0));
+        ta.addEventListener('input', ()=>{ clearTimeout(ta.__fxq_t); ta.__fxq_t = setTimeout(run, 250); });
+      });
+
+      const tk = $("inter_original");
+      if(tk){
+        const run = ()=>{ if(isInterAuto()) applyTickets(); };
+        tk.addEventListener('paste', ()=> setTimeout(run, 0));
+        tk.addEventListener('input', ()=>{ clearTimeout(tk.__fxq_t); tk.__fxq_t = setTimeout(run, 250); });
+      }
+
+      applyInterTipoUI();
+    })();
+
+// buttons
     let lastEmailHtml = "";
     document.getElementById("btnGerar").addEventListener("click", async ()=>{
       try{ await ensureCRR5Current(); }
@@ -4238,7 +5211,7 @@ document.getElementById("btnCarregarRACode").addEventListener("click", async ()=
 
       const apply = (v)=>{
         const theme = (v === "light") ? "light" : "dark";
-        (document.getElementById("calcRoot") || document.documentElement).dataset.theme = theme;
+        document.documentElement.dataset.theme = theme;
         localStorage.setItem(key, theme);
         if(sel) sel.value = theme;
         if(icon) icon.textContent = (theme === "light") ? "☀️" : "🌙";
@@ -4252,6 +5225,17 @@ document.getElementById("btnCarregarRACode").addEventListener("click", async ()=
         sel.addEventListener("change", () => apply(sel.value || "dark"));
       }
     })();
+
+    // ----- Versão exibida no rodapé -----
+    (function initVersionFooter(){
+      const APP_VERSION = "1.0.13-test";
+      const footer = document.getElementById("appVersionFooter");
+      if(footer) footer.textContent = `Versão: ${APP_VERSION}`;
+    })();
+
+
 </script>
+
+<div class="app-version-footer" id="appVersionFooter" aria-label="Versão da calculadora">Versão: 1.0.13-test</div>
 </body>
 </html>
