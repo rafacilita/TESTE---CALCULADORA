@@ -221,7 +221,9 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
       background: #ffffff; color:#0b0f17;
       border-radius: 14px; border: 1px solid rgba(0,0,0,.08);
       padding: 12px; min-height: 240px; overflow:auto;
+      text-align:center;
     }
+    .preview > div{ display:inline-block; text-align:left; }
     .codebox{
       width:100%;
       min-height: 240px;
@@ -1000,11 +1002,11 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
           </div>
           <div>
             <label>Passageiro(s) (auto)</label>
-            <input id="pax" placeholder="Ex.: SILVA/JOAO MR; SOUZA/MARIA MRS"  readonly placeholder="Gerado automaticamente" />
+            <input id="pax" placeholder="Gerado automaticamente" readonly />
           </div>
           <div>
             <label>Bilhete(s) (auto)</label>
-            <input id="tks" placeholder="Ex.: 957-1234567890 / OAC 012345"  readonly placeholder="Gerado automaticamente (957-1234567890)" />
+            <input id="tks" placeholder="Gerado automaticamente (957-1234567890)" readonly />
           </div>
           <div>
             <label>Bagagem</label>
@@ -1231,11 +1233,11 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
             <div class="muted small" style="margin-top:6px">Libera os campos de valor e a geração das saídas. Se algum dado não veio automático, dá pra preencher manualmente antes de gerar.</div>
           </div>
 
-          <div class="hr"></div>
+          <div class="hr" id="hrCommonSep"></div>
 
           <div id="commonAnchorInter"></div>
 
-          <div class="hr"></div>
+          <div class="hr" id="hrValuesSep"></div>
 
           <div id="interValuesWrap">
           <div class="muted small"><b>Valores por tipo de pax (na moeda selecionada • RC sempre em USD)</b></div>
@@ -1305,8 +1307,6 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
           <div class="hr"></div>
 
           <div id="rentAnchorInter"></div>
-
-          <div class="hr"></div>
 
         </div>
 
@@ -3851,6 +3851,8 @@ ${endossoRow}
       const commonWrap = document.getElementById("commonSection");
       const outputsCard = document.getElementById("outputsCard");
       const finalizeWrap = document.getElementById("btnFinalizarAutoWrap");
+      const hrCommonSep = document.getElementById("hrCommonSep");
+      const hrValuesSep = document.getElementById("hrValuesSep");
       const modeSel = document.getElementById("inter_tipo");
       const modeVal = modeSel ? modeSel.value : "Manual";
       const isAutoLike = /autom/i.test(modeVal || "");
@@ -3859,6 +3861,8 @@ ${endossoRow}
       const showValues = nacOn ? true : (!isAutoLike || (isHybrid && window.__interPaxReady) || window.__interFinalized);
       if(valuesWrap) valuesWrap.classList.toggle("hidden", !showValues);
       if(commonWrap) commonWrap.classList.toggle("hidden", !showValues);
+      if(hrCommonSep) hrCommonSep.classList.toggle("hidden", !showValues);
+      if(hrValuesSep) hrValuesSep.classList.toggle("hidden", !showValues);
       if(outputsCard) outputsCard.classList.toggle("hidden", !showOutputs);
       if(finalizeWrap) finalizeWrap.classList.toggle("hidden", nacOn || !isAutoLike || window.__interFinalized);
     }
