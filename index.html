@@ -1094,6 +1094,7 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
               <div id="nac_folio_wrap" style="display:none; flex:1; min-width:260px; max-width:520px">
                 <label>Fólio (texto livre)</label>
                 <textarea id="nac_folio_text" placeholder="Digite o fólio/observação aqui (opcional)" style="min-height:42px"></textarea>
+                <div class="muted small" id="nac_folio_text_count">0 caracteres</div>
                 <div class="agencyOptBox">
                   <label class="agencyOpt"><input type="checkbox" id="nac_folio_agencia" /> Incluir fólio também no e-mail da agência</label>
                   <div class="muted small" style="margin-top:6px">Desmarcado = o fólio fica apenas no contexto interno.</div>
@@ -1121,6 +1122,7 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
 
           <label>Regras / observações (opcional)</label>
           <textarea id="nac_regras" placeholder="Ex.: LOC deve ser cancelado em até 30 min se não prosseguir, risco de ADM..."></textarea>
+          <div class="muted small" id="nac_regras_count">0 caracteres</div>
         </div>
 
         <div id="panelInter" role="tabpanel" aria-labelledby="tabInter" class="hidden">
@@ -1219,6 +1221,7 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
           <div id="manualInternoWrap">
             <label>Cálculo (uso interno) — opcional</label>
             <textarea id="inter_interno" placeholder="Cole aqui observações internas / máscara / prints (não enviar ao cliente se não quiser)"></textarea>
+            <div class="muted small" id="inter_interno_count">0 caracteres</div>
           </div>
 
           <div class="hr"></div>
@@ -1296,6 +1299,7 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
               <div id="inter_endosso_wrap" style="display:none; flex:1; min-width:260px; max-width:720px">
                 <label>Endosso (texto livre)</label>
                 <textarea id="inter_endosso_text" placeholder="Digite o endosso aqui (opcional)" style="min-height:42px"></textarea>
+                <div class="muted small" id="inter_endosso_text_count">0 caracteres</div>
                 <div class="agencyOptBox">
                   <label class="agencyOpt"><input type="checkbox" id="inter_endosso_agencia" /> Incluir endosso também no e-mail da agência</label>
                   <div class="muted small" style="margin-top:6px">Desmarcado = o endosso fica apenas no contexto interno.</div>
@@ -1337,6 +1341,7 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
 
         <div class="outputPanel is-active" id="outPanelAgency" data-output-panel="agency">
           <div class="muted small outTitle" style="margin-bottom:6px"><span class="tag tag--agency">AGÊNCIA</span> <b>1) Preview do e-mail (agência)</b> — gere/atualize antes de colar no Outlook.</div>
+          <div class="muted small" style="margin-bottom:6px">Prévia sempre em fundo claro (como no Outlook)</div>
           <div id="preview" class="preview" contenteditable="true" aria-label="Pré-visualização do e-mail"></div>
           <div class="btns" style="margin-top:10px">
             <button class="action primary calc" id="btnGerar">Gerar / Atualizar E-mail</button>
@@ -1347,6 +1352,7 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
         <div class="outputPanel" id="outPanelCco" data-output-panel="cco">
           <div class="muted small outTitle" style="margin-bottom:6px"><span class="tag tag--cco">CCO</span> <b>2) Código para OBS (OP no RF)</b> — cole direto na observação pra equipe de reemissão (CCO) ver a tabela.</div>
           <textarea id="obsCode" class="codebox" style="min-height:240px" spellcheck="false" aria-label="Código para Observação no RF"></textarea>
+          <div class="muted small" id="obsCode_count">0 caracteres</div>
           <div class="btns" style="margin-top:10px">
             <button class="action cco" id="btnCopiarObs">Copiar código OBS (RF)</button>
           </div>
@@ -1380,7 +1386,7 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
     </section>
   </div>
 
-  <div class="toast" id="toast">Copiado!</div>
+  <div class="toast" id="toast" role="status" aria-live="polite">Copiado!</div>
 
   <script>
 
@@ -5148,6 +5154,15 @@ document.getElementById("btnCarregarRACode").addEventListener("click", async ()=
       }
     });
     document.getElementById("btnLimpar").addEventListener("click", ()=> clearAll());
+
+    for(const id of ["obsCode","inter_endosso_text","nac_folio_text","inter_interno","nac_regras"]){
+      const ta = document.getElementById(id);
+      const counter = document.getElementById(id + "_count");
+      if(!ta || !counter) continue;
+      const updateCount = ()=>{ counter.textContent = `${ta.value.length} caracteres`; };
+      ta.addEventListener("input", updateCount);
+      updateCount();
+    }
     function forceUpperKeepCursor(el){
       if(!el || typeof el.value !== "string") return;
       const start = el.selectionStart;
