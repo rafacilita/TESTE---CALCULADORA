@@ -4849,7 +4849,7 @@ document.getElementById("paxq_adt").value = "1";
             let paxName = '';
             let paxType = '';
             for(const line of normalizeGdsText(block).lines){
-              const pm = String(line||'').match(/^\s*\d+\.\s*([A-Z][A-Z\s'\/\-]+?)\s{2,}(ADT|CHD|INF)\b/i);
+              const pm = String(line||'').match(/^\s*\d+\.\s*([A-Z][A-Z\s'\/\-]+?)\s+(ADT|CHD|INF)\b/i);
               if(pm){
                 paxName = normalizePaxName(pm[1]);
                 paxType = (pm[2]||'').toUpperCase();
