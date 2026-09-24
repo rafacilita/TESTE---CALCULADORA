@@ -970,16 +970,16 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
             </div>
           </div>
 <div>
-            <label>Qtd ADT</label>
-            <input id="paxq_adt" value="1" inputmode="numeric" />
+            <label>Qtd ADT *</label>
+            <input id="paxq_adt" value="1" inputmode="numeric" aria-required="true" />
           </div>
           <div>
-            <label>Qtd CHD</label>
-            <input id="paxq_chd" value="0" inputmode="numeric" />
+            <label>Qtd CHD *</label>
+            <input id="paxq_chd" value="0" inputmode="numeric" aria-required="true" />
           </div>
           <div>
-            <label>Qtd INF</label>
-            <input id="paxq_inf" value="0" inputmode="numeric" />
+            <label>Qtd INF *</label>
+            <input id="paxq_inf" value="0" inputmode="numeric" aria-required="true" />
           </div>
           <div style="grid-column:1/-1">
             <div class="paxBox" id="paxBox">
@@ -1144,12 +1144,12 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
               <input id="inter_cur_other" placeholder="Ex.: JPY, CAD, ARS..." maxlength="3" />
             </div>
             <div>
-              <label>Câmbio (Moeda → BRL)</label>
-              <input id="inter_fx" placeholder="Ex.: 5,40" />
+              <label>Câmbio (Moeda → BRL) *</label>
+              <input id="inter_fx" placeholder="Ex.: 5,40" aria-required="true" />
             </div>
             <div id="inter_fx_usd_wrap" class="hidden">
-              <label>Câmbio (USD → BRL) (RC)</label>
-              <input id="inter_fx_usd" placeholder="Ex.: 5,40" />
+              <label>Câmbio (USD → BRL) (RC) * <span class="rentMuted">(quando houver RC)</span></label>
+              <input id="inter_fx_usd" placeholder="Ex.: 5,40" aria-required="true" />
             </div>
             <div>
               <label>Recuperação de incentivo?</label>
@@ -2125,12 +2125,12 @@ const store = getPaxStore();
           return `
             <div class="paxRow">
               <div>
-                <label>Nome ${key}${idx}</label>
-                <input data-role="pax-name" data-type="${key}" data-idx="${i}" value="${escapeHtml(normalizePaxName(p.name))}" placeholder="Ex.: SILVA/JOAO MR" />
+                <label>Nome ${key}${idx} *</label>
+                <input data-role="pax-name" data-type="${key}" data-idx="${i}" value="${escapeHtml(normalizePaxName(p.name))}" placeholder="Ex.: SILVA/JOAO MR" aria-required="true" />
               </div>
               <div>
-                <label>Bilhete ${key}${idx}</label>
-                <input data-role="pax-ticket" data-type="${key}" data-idx="${i}" value="${escapeHtml(p.ticket)}" placeholder="957-1234567890" />
+                <label>Bilhete ${key}${idx} *</label>
+                <input data-role="pax-ticket" data-type="${key}" data-idx="${i}" value="${escapeHtml(p.ticket)}" placeholder="957-1234567890" aria-required="true" />
               </div>
             </div>
           `;
@@ -4068,6 +4068,9 @@ function updateAll(arg){
     }
 
 function clearAll(silent){
+      if(!silent){
+        if(!confirm("Limpar todos os campos preenchidos?")) return;
+      }
       const ids = Array.from(document.querySelectorAll("input, textarea")).map(e=>e.id);
       for(const id of ids){
         const el = document.getElementById(id);
@@ -5144,7 +5147,7 @@ document.getElementById("btnCarregarRACode").addEventListener("click", async ()=
         showToast((e && e.message) ? e.message : "Código inválido.");
       }
     });
-    document.getElementById("btnLimpar").addEventListener("click", clearAll);
+    document.getElementById("btnLimpar").addEventListener("click", ()=> clearAll());
     function forceUpperKeepCursor(el){
       if(!el || typeof el.value !== "string") return;
       const start = el.selectionStart;
