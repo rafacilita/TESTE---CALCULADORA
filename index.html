@@ -923,6 +923,7 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
 <div class="hr"></div>
 
         <!-- COMMON -->
+        <div id="commonSection">
         <div class="grid">
           <div id="ciaWrap">
             <label>Cia aérea</label>
@@ -1017,11 +1018,13 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
             </select>
           </div>
         </div>
+        </div>
 
         <div class="hr"></div>
 
         <!-- PANELS -->
         <div id="panelNac" role="tabpanel" aria-labelledby="tabNac">
+          <div id="commonAnchorNac"></div>
           <div class="muted small"><b>Nacional</b> — valores em BRL (R$). Dif. tarifa = (Tarifa nova − Tarifa antiga).</div>
 
           <div class="hr"></div>
@@ -1176,6 +1179,64 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
 
           <div class="hr"></div>
 
+                    <div id="interFxqIntro" class="note" style="border-left:3px solid rgba(155,92,255,.65); background: rgba(155,92,255,.10);">
+            <div class="muted small"><b>Automático (Amadeus FXQ/FXO)</b> — fluxo: <b>1)</b> cole a máscara do PNR → <b>2)</b> cole o FXO por tipo → <b>3)</b> cole FA/FHE dos bilhetes. <b>CRR5 intocado.</b></div>
+            <div class="muted small" id="fxqStatus" style="margin-top:6px"></div>
+          </div>
+
+          <div class="hr"></div>
+
+          <label id="lbl_inter_voos">1) Itinerário / Máscara (cole o PNR)</label>
+          <textarea id="inter_voos" placeholder="Cole aqui RP/... com PAX + segmentos (Amadeus)."></textarea>
+
+          <div class="hr"></div>
+
+          <div id="fxoWrap" class="hidden">
+            <div class="muted small"><b>2) Recálculo por tipo (FXO)</b> — cole o FXO (ou FXQ) de cada tipo abaixo. O sistema preenche Dif. tarifa, Multa e Dif. taxas automaticamente.</div>
+            <div class="hr"></div>
+
+            <div id="fxoBox_ADT_wrap" class="hidden">
+              <label>FXO (ADT)</label>
+              <textarea id="fxoBox_ADT" placeholder="Cole aqui o FXO do ADT"></textarea>
+              <div class="muted small" id="fxoBox_ADT_status" style="margin-top:6px"></div>
+            </div>
+
+            <div id="fxoBox_CHD_wrap" class="hidden">
+              <label>FXO (CHD)</label>
+              <textarea id="fxoBox_CHD" placeholder="Cole aqui o FXO do CHD"></textarea>
+              <div class="muted small" id="fxoBox_CHD_status" style="margin-top:6px"></div>
+            </div>
+
+            <div id="fxoBox_INF_wrap" class="hidden">
+              <label>FXO (INF)</label>
+              <textarea id="fxoBox_INF" placeholder="Cole aqui o FXO do INF"></textarea>
+              <div class="muted small" id="fxoBox_INF_status" style="margin-top:6px"></div>
+            </div>
+          </div>
+
+          <div id="manualInternoWrap">
+            <label>Cálculo (uso interno) — opcional</label>
+            <textarea id="inter_interno" placeholder="Cole aqui observações internas / máscara / prints (não enviar ao cliente se não quiser)"></textarea>
+          </div>
+
+          <div class="hr"></div>
+
+          <div id="ticketsWrap" class="hidden">
+            <label id="lbl_inter_original">3) Bilhetes (FA/FHE/TKT)</label>
+            <textarea id="inter_original" placeholder="Cole aqui FA/FHE ou máscara TKT (com /P1, /P2... quando houver)"></textarea>
+            <div class="muted small" id="ticketsStatus" style="margin-top:6px"></div>
+          </div>
+          <div id="btnFinalizarAutoWrap" class="hidden" style="margin-top:10px">
+            <button class="action primary" id="btnFinalizarAuto" type="button">Concluir preenchimento</button>
+            <div class="muted small" style="margin-top:6px">Libera os campos de valor e a geração das saídas. Se algum dado não veio automático, dá pra preencher manualmente antes de gerar.</div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div id="commonAnchorInter"></div>
+
+          <div class="hr"></div>
+
           <div id="interValuesWrap">
           <div class="muted small"><b>Valores por tipo de pax (na moeda selecionada • RC sempre em USD)</b></div>
           <div class="hr"></div>
@@ -1247,60 +1308,6 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
 
           <div class="hr"></div>
 
-
-
-                    <div id="interFxqIntro" class="note" style="border-left:3px solid rgba(155,92,255,.65); background: rgba(155,92,255,.10);">
-            <div class="muted small"><b>Automático (Amadeus FXQ/FXO)</b> — fluxo: <b>1)</b> cole a máscara do PNR → <b>2)</b> cole o FXO por tipo → <b>3)</b> cole FA/FHE dos bilhetes. <b>CRR5 intocado.</b></div>
-            <div class="muted small" id="fxqStatus" style="margin-top:6px"></div>
-          </div>
-
-          <div class="hr"></div>
-
-          <label id="lbl_inter_voos">1) Itinerário / Máscara (cole o PNR)</label>
-          <textarea id="inter_voos" placeholder="Cole aqui RP/... com PAX + segmentos (Amadeus)."></textarea>
-
-          <div class="hr"></div>
-
-          <div id="fxoWrap" class="hidden">
-            <div class="muted small"><b>2) Recálculo por tipo (FXO)</b> — cole o FXO (ou FXQ) de cada tipo abaixo. O sistema preenche Dif. tarifa, Multa e Dif. taxas automaticamente.</div>
-            <div class="hr"></div>
-
-            <div id="fxoBox_ADT_wrap" class="hidden">
-              <label>FXO (ADT)</label>
-              <textarea id="fxoBox_ADT" placeholder="Cole aqui o FXO do ADT"></textarea>
-              <div class="muted small" id="fxoBox_ADT_status" style="margin-top:6px"></div>
-            </div>
-
-            <div id="fxoBox_CHD_wrap" class="hidden">
-              <label>FXO (CHD)</label>
-              <textarea id="fxoBox_CHD" placeholder="Cole aqui o FXO do CHD"></textarea>
-              <div class="muted small" id="fxoBox_CHD_status" style="margin-top:6px"></div>
-            </div>
-
-            <div id="fxoBox_INF_wrap" class="hidden">
-              <label>FXO (INF)</label>
-              <textarea id="fxoBox_INF" placeholder="Cole aqui o FXO do INF"></textarea>
-              <div class="muted small" id="fxoBox_INF_status" style="margin-top:6px"></div>
-            </div>
-          </div>
-
-          <div id="manualInternoWrap">
-            <label>Cálculo (uso interno) — opcional</label>
-            <textarea id="inter_interno" placeholder="Cole aqui observações internas / máscara / prints (não enviar ao cliente se não quiser)"></textarea>
-          </div>
-
-          <div class="hr"></div>
-
-          <div id="ticketsWrap" class="hidden">
-            <label id="lbl_inter_original">3) Bilhetes (FA/FHE/TKT)</label>
-            <textarea id="inter_original" placeholder="Cole aqui FA/FHE ou máscara TKT (com /P1, /P2... quando houver)"></textarea>
-            <div class="muted small" id="ticketsStatus" style="margin-top:6px"></div>
-          </div>
-
-          <div id="btnFinalizarAutoWrap" class="hidden" style="margin-top:10px">
-            <button class="action primary" id="btnFinalizarAuto" type="button">Concluir preenchimento</button>
-            <div class="muted small" style="margin-top:6px">Libera os campos de valor e a geração das saídas. Se algum dado não veio automático, dá pra preencher manualmente antes de gerar.</div>
-          </div>
         </div>
 
         <div class="hr"></div>
@@ -1849,6 +1856,19 @@ function updateRentComputed(mode, calc){
       if(!sec || !aN || !aI) return;
 
       // Decide based on the selected tab (robust even when panels are hidden)
+      const tabNac = document.getElementById("tabNac");
+      const nacOn = tabNac ? (tabNac.getAttribute("aria-selected")==="true") : true;
+      const isInter = !nacOn;
+
+      (isInter ? aI : aN).appendChild(sec);
+    }
+
+    function placeCommonSection(){
+      const sec = document.getElementById("commonSection");
+      const aN = document.getElementById("commonAnchorNac");
+      const aI = document.getElementById("commonAnchorInter");
+      if(!sec || !aN || !aI) return;
+
       const tabNac = document.getElementById("tabNac");
       const nacOn = tabNac ? (tabNac.getAttribute("aria-selected")==="true") : true;
       const isInter = !nacOn;
@@ -3828,6 +3848,7 @@ ${endossoRow}
     function updateFlowVisibility(){
       const nacOn = document.getElementById("tabNac").getAttribute("aria-selected") === "true";
       const valuesWrap = document.getElementById("interValuesWrap");
+      const commonWrap = document.getElementById("commonSection");
       const outputsCard = document.getElementById("outputsCard");
       const finalizeWrap = document.getElementById("btnFinalizarAutoWrap");
       const modeSel = document.getElementById("inter_tipo");
@@ -3837,6 +3858,7 @@ ${endossoRow}
       const showOutputs = nacOn ? true : (!isAutoLike || window.__interFinalized);
       const showValues = nacOn ? true : (!isAutoLike || (isHybrid && window.__interPaxReady) || window.__interFinalized);
       if(valuesWrap) valuesWrap.classList.toggle("hidden", !showValues);
+      if(commonWrap) commonWrap.classList.toggle("hidden", !showValues);
       if(outputsCard) outputsCard.classList.toggle("hidden", !showOutputs);
       if(finalizeWrap) finalizeWrap.classList.toggle("hidden", nacOn || !isAutoLike || window.__interFinalized);
     }
@@ -3849,6 +3871,7 @@ ${endossoRow}
       const oacW = document.getElementById("oacWrap");
       if(oacW) oacW.classList.toggle("hidden", !nacOn);
       placeRentPanel();
+      placeCommonSection();
       updateAll({silent:true});
       renderPaxFields();
       updateFlowVisibility();
@@ -4334,6 +4357,7 @@ document.getElementById("paxq_adt").value = "1";
           show($("fxoWrap"), false);
           show($("interValuesWrap"), false);
           show($("ticketsWrap"), false);
+          if(typeof updateFlowVisibility === 'function') updateFlowVisibility();
           return false;
         }
         window.__interPaxReady = true;
@@ -5157,6 +5181,7 @@ document.getElementById("btnCarregarRACode").addEventListener("click", async ()=
     }
 
     placeRentPanel();
+    placeCommonSection();
 
     const rentabEl = document.getElementById("rentab");
     if(rentabEl) rentabEl.addEventListener("change", ()=>{ toggleRentUI(); updateAll(); });
