@@ -1397,7 +1397,8 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
       const t = document.getElementById("toast");
       t.textContent = msg || "OK";
       t.classList.add("show");
-      setTimeout(()=>t.classList.remove("show"), 1400);
+      const duration = Math.max(1400, Math.min(4000, (msg || "").length * 40));
+      setTimeout(()=>t.classList.remove("show"), duration);
     }
     // ---- Rentabilização (uso interno): controla campos e gera bloco para OBS (RF) ----
     function getRentData(){
@@ -5082,53 +5083,72 @@ document.getElementById("paxq_adt").value = "1";
 // buttons
     let lastEmailHtml = "";
     document.getElementById("btnGerar").addEventListener("click", async ()=>{
-      try{ await ensureCRR5Current(); }
-      catch(e){ showToast((e && e.message) ? e.message : "Falha ao gerar CRR5."); return; }
-      lastEmailHtml = generateEmail();
+      const btn = document.getElementById("btnGerar");
+      btn.disabled = true;
+      try{
+        try{ await ensureCRR5Current(); }
+        catch(e){ showToast((e && e.message) ? e.message : "Falha ao gerar CRR5."); return; }
+        lastEmailHtml = generateEmail();
+      } finally { btn.disabled = false; }
     });
 
     document.getElementById("btnCopiarHtml").addEventListener("click", async ()=>{
-      try{ await ensureCRR5Current(); }
-      catch(e){ showToast((e && e.message) ? e.message : "Falha ao gerar CRR5."); return; }
-      lastEmailHtml = generateEmail();
-      if(!lastEmailHtml){ return; }
-      const ok = await copyHtmlToClipboard(lastEmailHtml);
-      if(!ok) showToast("Não deu pra copiar automático. Copie pelo preview.");
+      const btn = document.getElementById("btnCopiarHtml");
+      btn.disabled = true;
+      try{
+        try{ await ensureCRR5Current(); }
+        catch(e){ showToast((e && e.message) ? e.message : "Falha ao gerar CRR5."); return; }
+        lastEmailHtml = generateEmail();
+        if(!lastEmailHtml){ return; }
+        const ok = await copyHtmlToClipboard(lastEmailHtml);
+        if(!ok) showToast("Não deu pra copiar automático. Copie pelo preview.");
+      } finally { btn.disabled = false; }
     });
 
     document.getElementById("btnCopiarObs").addEventListener("click", async ()=>{
+      const btn = document.getElementById("btnCopiarObs");
       const errs = validateBeforeGenerate();
       if(errs.length){ setPill(false, "Atenção: revisar dados"); showToast(errs[0]); return; }
-      const code = buildRfObsCode();
-      document.getElementById("obsCode").value = code;
+      btn.disabled = true;
       try{
-        await navigator.clipboard.writeText(code);
-        showToast("Código OBS copiado!");
-      }catch(e){
-        showToast("Não deu pra copiar. Copie do campo de código.");
-      }
+        const code = buildRfObsCode();
+        document.getElementById("obsCode").value = code;
+        try{
+          await navigator.clipboard.writeText(code);
+          showToast("Código OBS copiado!");
+        }catch(e){
+          showToast("Não deu pra copiar. Copie do campo de código.");
+        }
+      } finally { btn.disabled = false; }
     });
     document.getElementById("btnCopiarRentForm").addEventListener("click", async ()=>{
+      const btn = document.getElementById("btnCopiarRentForm");
       const htmlForm = buildSicaFormHtml();
       if(!htmlForm){
         showToast("Nada para copiar no formulário de rentabilização.");
         return;
       }
-      const rfp = document.getElementById("rentFormPreview");
-      if(rfp && document.activeElement !== rfp) rfp.innerHTML = htmlForm;
+      btn.disabled = true;
+      try{
+        const rfp = document.getElementById("rentFormPreview");
+        if(rfp && document.activeElement !== rfp) rfp.innerHTML = htmlForm;
 
-      const ok = await copyHtmlToClipboard(htmlForm);
-      if(!ok) showToast("Não deu pra copiar automático. Copie pelo preview.");
+        const ok = await copyHtmlToClipboard(htmlForm);
+        if(!ok) showToast("Não deu pra copiar automático. Copie pelo preview.");
+      } finally { btn.disabled = false; }
     });
 // CRR
     // (botão "Copiar CRR" removido)
 
 document.getElementById("btnGerarCRR5") && document.getElementById("btnGerarCRR5").addEventListener("click", async ()=>{
+      const btn = document.getElementById("btnGerarCRR5");
+      btn.disabled = true;
       try{
         const crr5 = await ensureCRR5Current();
         try{ await navigator.clipboard.writeText(crr5); showToast("CRR5 copiado!"); }
         catch(e){ showToast("CRR5 gerado. Copie do campo."); }
       }catch(e){ showToast((e && e.message) ? e.message : "Falha ao gerar CRR5."); }
+      finally { btn.disabled = false; }
     });
 
 document.getElementById("btnCarregarRACode").addEventListener("click", async ()=>{
