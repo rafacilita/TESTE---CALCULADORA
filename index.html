@@ -4291,6 +4291,9 @@ document.getElementById("paxq_adt").value = "1";
       if(typeof window.__interApplyInterTipoUI === 'function') window.__interApplyInterTipoUI();
       updateAll();
       renderPaxFields();
+      // campo de câmbio foi zerado acima junto com os demais inputs — sem isso,
+      // o câmbio automático só voltava a aparecer depois de recarregar a página.
+      if(getActiveMode() === "INTER") maybeAutofillFx();
       try{ localStorage.removeItem("ra_reemissao_v3"); }catch(e){}
       if(!silent) showToast("Limpo!");
     }
