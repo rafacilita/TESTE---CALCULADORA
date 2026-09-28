@@ -14,19 +14,15 @@
       --card:#121a27;
       --muted:#8ea0b7;
       --text:#e8eef7;
-      --accent:#9b5cff;
+      --accent:#4C7EFF;
+      --accent-rgb:76,126,255;
       --shadow: 0 14px 40px rgba(0,0,0,.38);
       --radius: 18px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
     }
 
-    :root[data-theme="light"]{--bg:#f6f7fb;
-      --card:#ffffff;
-      --muted:#334155;
-      --text:#0f172a;
-      --shadow: 0 14px 40px rgba(0,0,0,.14);
-
+    :root[data-theme="light"]{
   /* --- CONTRASTE MELHORADO (tema claro) --- */
   --bg: #f6f7fb;
   --card: #ffffff;
@@ -38,7 +34,9 @@
   --input-border: rgba(15, 23, 42, .20);
   --input-text: #0f172a;
   --chip-bg: #eef2ff;
-  --chip-border: rgba(124, 58, 237, .28);
+  --chip-border: rgba(20, 48, 92, .28);
+  --accent: #14305C;
+  --accent-rgb: 20,48,92;
 
 }
 
@@ -69,7 +67,7 @@
 
 
     :root[data-theme="light"] body{
-      background: radial-gradient(1000px 600px at 15% 0%, rgba(155,92,255,.18), transparent 55%),
+      background: radial-gradient(1000px 600px at 15% 0%, rgba(var(--accent-rgb),.10), transparent 55%),
                   radial-gradient(800px 400px at 85% 20%, rgba(61,220,151,.12), transparent 55%),
                   var(--bg);
       color: var(--text);
@@ -111,7 +109,7 @@
     body{
       margin:0;
       font-family:var(--sans);
-      background: radial-gradient(1000px 600px at 15% 0%, rgba(155,92,255,.25), transparent 55%),
+      background: radial-gradient(1000px 600px at 15% 0%, rgba(var(--accent-rgb),.20), transparent 55%),
                   radial-gradient(800px 400px at 85% 20%, rgba(61,220,151,.15), transparent 55%),
                   var(--bg);
       color:var(--text);
@@ -164,15 +162,15 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
       background: rgba(0,0,0,.16);
       color: var(--text);
       padding: 8px 12px;
-      border-radius: 999px;
+      border-radius: 10px;
       cursor:pointer;
       font-weight:800;
       font-size: 13px;
     }
     .tab[aria-selected="true"]{
-      border-color: rgba(155,92,255,.55);
-      box-shadow: 0 0 0 3px rgba(155,92,255,.15) inset;
-      background: rgba(155,92,255,.14);
+      border-color: rgba(var(--accent-rgb),.55);
+      box-shadow: 0 0 0 3px rgba(var(--accent-rgb),.15) inset;
+      background: rgba(var(--accent-rgb),.14);
     }
     .grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     @media (max-width: 520px){ .grid{grid-template-columns:1fr} }
@@ -184,8 +182,8 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
     }
     textarea{ min-height: 84px; resize: vertical; }
     input:focus, select:focus, textarea:focus{
-      border-color: rgba(155,92,255,.55);
-      box-shadow: 0 0 0 3px rgba(155,92,255,.14);
+      border-color: rgba(var(--accent-rgb),.55);
+      box-shadow: 0 0 0 3px rgba(var(--accent-rgb),.14);
     }
     .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
     .row > div{ flex: 1 1 140px; }
@@ -213,7 +211,7 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
     }
     .action:disabled{ opacity:.45; cursor:not-allowed; filter: grayscale(25%); }
     .action:disabled:hover{ transform:none; }
-    button.action.primary{ border-color: rgba(155,92,255,.55); background: rgba(155,92,255,.18); }
+    button.action.primary{ border-color: rgba(var(--accent-rgb),.55); background: rgba(var(--accent-rgb),.18); }
     button.action.good{ border-color: rgba(61,220,151,.40); background: rgba(61,220,151,.14); }
     button.action.warn{ border-color: rgba(255,204,102,.55); background: rgba(255,204,102,.12); }
     button.action:active{ transform: translateY(1px); }
@@ -369,8 +367,8 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
       border-color: rgba(15,23,42,.16);
     }
     .themeCtl select:focus{
-      box-shadow: 0 0 0 3px rgba(155,92,255,.30);
-      border-color: rgba(155,92,255,.55);
+      box-shadow: 0 0 0 3px rgba(var(--accent-rgb),.30);
+      border-color: rgba(var(--accent-rgb),.55);
     }
     /* setinha */
     .themeCtl{ position: relative; }
@@ -468,7 +466,6 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
       border-left-color: rgba(21,128,61,.35);
     }
     .rentRow{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px; }
-    .rentSection{ margin-top:10px; }
     .rentChk{ display:flex; gap:8px; align-items:center; margin:8px 0 8px; }
     .rentBlock{ border:1px dashed rgba(255,255,255,.18); border-radius:12px; padding:10px; margin-bottom:10px; }
     body.theme-light .rentBlock{ border-color: rgba(0,0,0,.18); }
@@ -560,11 +557,10 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
 .airBtn{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;height:52px;border-radius:14px;border:2px solid rgba(17,24,39,.14);background:#fff;cursor:pointer;user-select:none;transition:transform .02s ease, box-shadow .12s ease, border-color .12s ease, background-color .12s ease}
 .airBtn:hover{box-shadow:0 6px 18px rgba(17,24,39,.08);border-color:rgba(17,24,39,.22)}
 .airBtn:active{transform:scale(.99)}
-.airBtn.active{border-color:#7c3aed;background:rgba(124,58,237,.06);box-shadow:0 0 0 4px rgba(124,58,237,.18), 0 10px 26px rgba(124,58,237,.22);transform:translateY(-1px) scale(1.01)}
-.airBtn.active .airCode{opacity:1;color:#4c1d95}
+.airBtn.active{border-color:var(--accent);background:rgba(var(--accent-rgb),.06);box-shadow:0 2px 8px rgba(var(--accent-rgb),.18)}
+.airBtn.active .airCode{opacity:1;color:var(--accent)}
 .airBtn.active .airLogo{filter:drop-shadow(0 2px 6px rgba(17,24,39,.18))}
-.airBtn.active:active{transform:translateY(-1px) scale(.99)}
-.airBtn:focus-visible{outline:3px solid rgba(124,58,237,.35);outline-offset:2px}
+.airBtn:focus-visible{outline:3px solid rgba(var(--accent-rgb),.35);outline-offset:2px}
 .airLogo{display:inline-flex;align-items:center;justify-content:center;height:30px;width:auto;max-width:86px;border-radius:10px;overflow:hidden;background:transparent}
 .airLogo img{display:block;height:30px;width:auto}
 .airCode{font-weight:900;font-size:12px;color:#111827;opacity:.8}
@@ -604,8 +600,8 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
 }
 .themeCtl select:focus{
   outline: none !important;
-  box-shadow: 0 0 0 3px rgba(155,92,255,.25) !important;
-  border-color: rgba(155,92,255,.55) !important;
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb),.25) !important;
+  border-color: rgba(var(--accent-rgb),.55) !important;
 }
 :root[data-theme="light"] .themeCtl select{
   border-color: rgba(15,23,42,.20) !important;
@@ -632,10 +628,10 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
    - estilo tipo "segmented control"
    ========================= */
 :root[data-theme="light"] .card.calcCard .tabs{
-  background: rgba(124,58,237,.08);
-  border: 1px solid rgba(124,58,237,.18);
+  background: rgba(var(--accent-rgb),.06);
+  border: 1px solid rgba(var(--accent-rgb),.16);
   padding: 6px;
-  border-radius: 999px;
+  border-radius: 12px;
   gap: 6px;
 }
 :root[data-theme="light"] .card.calcCard .tabs .tab{
@@ -644,20 +640,20 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
   color: #0f172a;
   font-weight: 900;
   padding: 9px 15px;
-  border-radius: 999px;
+  border-radius: 10px;
 }
 :root[data-theme="light"] .card.calcCard .tabs .tab:hover{
-  background: rgba(124,58,237,.10);
+  background: rgba(var(--accent-rgb),.08);
 }
 :root[data-theme="light"] .card.calcCard .tabs .tab[aria-selected="true"]{
-  background: #7c3aed;
+  background: var(--accent);
   color: #ffffff;
-  border-color: rgba(109,40,217,.65);
-  box-shadow: 0 10px 22px rgba(124,58,237,.22);
+  border-color: var(--accent);
+  box-shadow: 0 2px 6px rgba(var(--accent-rgb),.18);
 }
 :root[data-theme="light"] .card.calcCard .tabs .tab:focus-visible{
   outline: none;
-  box-shadow: 0 0 0 4px rgba(124,58,237,.22);
+  box-shadow: 0 0 0 4px rgba(var(--accent-rgb),.20);
 }
 
 
@@ -674,14 +670,14 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
 }
 .outputTabBtn:hover{transform:translateY(-1px);box-shadow:0 10px 20px rgba(2,6,23,.16)}
 .outputTabBtn[aria-selected="true"]{
-  border-color: rgba(155,92,255,.55);
-  box-shadow: 0 0 0 2px rgba(155,92,255,.15) inset, 0 10px 20px rgba(76,29,149,.14);
-  background: rgba(155,92,255,.14);
+  border-color: rgba(var(--accent-rgb),.55);
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb),.15) inset;
+  background: rgba(var(--accent-rgb),.14);
 }
 .outputPanel{display:none}
 .outputPanel.is-active{display:block}
 .outputEmpty{border:1px dashed rgba(255,255,255,.14);border-radius:14px;padding:16px;background:rgba(0,0,0,.10);color:var(--muted)}
-.agencyOptBox{margin-top:10px;padding:10px 12px;border-radius:12px;border:1px dashed rgba(155,92,255,.28);background:rgba(155,92,255,.08)}
+.agencyOptBox{margin-top:10px;padding:10px 12px;border-radius:12px;border:1px dashed rgba(var(--accent-rgb),.28);background:rgba(var(--accent-rgb),.08)}
 .agencyOpt{display:flex;align-items:center;gap:8px;cursor:pointer;margin:0;font-size:13px;color:var(--text);font-weight:700}
 .agencyOpt input[type="checkbox"]{width:16px;height:16px}
 .outputsCard .hd{padding:14px 16px 8px}
@@ -708,11 +704,11 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
 .outTitle{line-height:1.45;font-size:12.5px}
 :root[data-theme="light"] .outputTabBtn{border:1px solid rgba(15,23,42,.12);background:#fff;color:#0f172a;box-shadow:0 5px 14px rgba(15,23,42,.05)}
 :root[data-theme="light"] .outputTabBtn:hover{box-shadow:0 10px 20px rgba(15,23,42,.08)}
-:root[data-theme="light"] .outputTabBtn[aria-selected="true"]{border-color: rgba(124,58,237,.50);background: rgba(124,58,237,.10);color:#111827;box-shadow: 0 0 0 2px rgba(124,58,237,.16) inset, 0 10px 20px rgba(124,58,237,.10)}
+:root[data-theme="light"] .outputTabBtn[aria-selected="true"]{border-color: rgba(var(--accent-rgb),.50);background: rgba(var(--accent-rgb),.10);color:#111827;box-shadow: 0 0 0 2px rgba(var(--accent-rgb),.16) inset}
 :root[data-theme="light"] .outputsCard .btns .action{box-shadow:0 5px 14px rgba(15,23,42,.05)}
 :root[data-theme="light"] .outputsCard .btns .action:hover{box-shadow:0 10px 20px rgba(15,23,42,.08)}
 :root[data-theme="light"] .outputEmpty{border-color:rgba(15,23,42,.14);background:rgba(15,23,42,.03)}
-:root[data-theme="light"] .agencyOptBox{border-color:rgba(124,58,237,.24);background:rgba(124,58,237,.06)}
+:root[data-theme="light"] .agencyOptBox{border-color:rgba(var(--accent-rgb),.24);background:rgba(var(--accent-rgb),.06)}
 </style>
 </head>
 <body>
@@ -1148,6 +1144,7 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
             <div>
               <label>Câmbio (Moeda → BRL) *</label>
               <input id="inter_fx" placeholder="Ex.: 5,40" aria-required="true" />
+              <div class="muted small" id="inter_fx_status" role="status" aria-live="polite" style="margin-top:4px"></div>
             </div>
             <div id="inter_fx_usd_wrap" class="hidden">
               <label>Câmbio (USD → BRL) (RC) * <span class="rentMuted">(quando houver RC)</span></label>
@@ -1183,9 +1180,9 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
 
           <div class="hr"></div>
 
-                    <div id="interFxqIntro" class="note" style="border-left:3px solid rgba(155,92,255,.65); background: rgba(155,92,255,.10);">
+                    <div id="interFxqIntro" class="note" style="border-left:3px solid rgba(var(--accent-rgb),.65); background: rgba(var(--accent-rgb),.10);">
             <div class="muted small"><b>Automático (Amadeus FXQ/FXO)</b> — fluxo: <b>1)</b> cole a máscara do PNR → <b>2)</b> cole o FXO por tipo → <b>3)</b> cole FA/FHE dos bilhetes. <b>CRR5 intocado.</b></div>
-            <div class="muted small" id="fxqStatus" style="margin-top:6px"></div>
+            <div class="muted small" id="fxqStatus" role="status" aria-live="polite" style="margin-top:6px"></div>
           </div>
 
           <div class="hr"></div>
@@ -1202,19 +1199,19 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
             <div id="fxoBox_ADT_wrap" class="hidden">
               <label>FXO (ADT)</label>
               <textarea id="fxoBox_ADT" placeholder="Cole aqui o FXO do ADT"></textarea>
-              <div class="muted small" id="fxoBox_ADT_status" style="margin-top:6px"></div>
+              <div class="muted small" id="fxoBox_ADT_status" role="status" aria-live="polite" style="margin-top:6px"></div>
             </div>
 
             <div id="fxoBox_CHD_wrap" class="hidden">
               <label>FXO (CHD)</label>
               <textarea id="fxoBox_CHD" placeholder="Cole aqui o FXO do CHD"></textarea>
-              <div class="muted small" id="fxoBox_CHD_status" style="margin-top:6px"></div>
+              <div class="muted small" id="fxoBox_CHD_status" role="status" aria-live="polite" style="margin-top:6px"></div>
             </div>
 
             <div id="fxoBox_INF_wrap" class="hidden">
               <label>FXO (INF)</label>
               <textarea id="fxoBox_INF" placeholder="Cole aqui o FXO do INF"></textarea>
-              <div class="muted small" id="fxoBox_INF_status" style="margin-top:6px"></div>
+              <div class="muted small" id="fxoBox_INF_status" role="status" aria-live="polite" style="margin-top:6px"></div>
             </div>
           </div>
 
@@ -1229,7 +1226,7 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
           <div id="ticketsWrap" class="hidden">
             <label id="lbl_inter_original">3) Bilhetes (FA/FHE/TKT)</label>
             <textarea id="inter_original" placeholder="Cole aqui FA/FHE ou máscara TKT (com /P1, /P2... quando houver)"></textarea>
-            <div class="muted small" id="ticketsStatus" style="margin-top:6px"></div>
+            <div class="muted small" id="ticketsStatus" role="status" aria-live="polite" style="margin-top:6px"></div>
           </div>
           <div id="btnFinalizarAutoWrap" class="hidden" style="margin-top:10px">
             <button class="action primary" id="btnFinalizarAuto" type="button">Concluir preenchimento</button>
@@ -1388,6 +1385,8 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
 
   <div class="toast" id="toast" role="status" aria-live="polite">Copiado!</div>
 
+  <div class="app-version-footer" id="appVersionFooter" aria-label="Versão da calculadora">Versão: 1.0.13-test</div>
+
   <script>
 
     const PAX_TYPES = ["ADT","CHD","INF"];
@@ -1413,11 +1412,8 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
         enabled,
         multa, diftar, diftax,
         anyType,
-        multa_pago: v("rent_pago_cia_multa"),
         multa_cobrar: v("rent_cobrar_ag_multa"),
-        diftar_pago: v("rent_pago_cia_diftar"),
         diftar_cobrar: v("rent_cobrar_ag_diftar"),
-        diftax_pago: v("rent_pago_cia_diftax"),
         diftax_cobrar: v("rent_cobrar_ag_diftax"),
         multa_lucro: v("rent_lucro_multa"),
         diftar_lucro: v("rent_lucro_diftar"),
@@ -1948,6 +1944,109 @@ function fmtNumPT4(n){
       return new Intl.NumberFormat("pt-BR", {minimumFractionDigits:4, maximumFractionDigits:4}).format(v);
     }
 
+    // ----- Câmbio oficial do dia (BCB PTAX) -----
+    const BCB_FX_TIMEOUT_MS = 6000;
+    // Só USD é automatizado: o câmbio IATA/BSR de EUR e GBP usa uma metodologia própria
+    // (ROE da IATA) que não coincide com o fechamento PTAX do BCB — testado e confirmado
+    // com o painel "câmbio IATA" do usuário, que só bate exatamente para USD.
+    const BCB_FX_SUPPORTED = ["USD"];
+    const BCB_FX_CACHE_KEY = "bcb_fx_cache_v1";
+
+    function _bcbDateParam(d){
+      const mm = String(d.getMonth()+1).padStart(2,"0");
+      const dd = String(d.getDate()).padStart(2,"0");
+      return `${mm}-${dd}-${d.getFullYear()}`;
+    }
+    function _todayKey(d){ return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
+
+    async function _fetchBcbVenda(currency, dateObj){
+      const dateParam = _bcbDateParam(dateObj);
+      const url = currency === "USD"
+        ? `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='${dateParam}'&$format=json`
+        : `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoMoedaDia(moeda=@moeda,dataCotacao=@dataCotacao)?@moeda='${currency}'&@dataCotacao='${dateParam}'&$format=json`;
+      const ctrl = new AbortController();
+      const timer = setTimeout(()=>ctrl.abort(), BCB_FX_TIMEOUT_MS);
+      try{
+        const res = await fetch(url, { signal: ctrl.signal });
+        if(!res.ok) return null;
+        const data = await res.json();
+        const list = (data && data.value) || [];
+        if(!list.length) return null;
+        const entry = list.find(e => e.tipoBoletim === "Fechamento PTAX") || list[list.length-1];
+        return Number.isFinite(entry.cotacaoVenda) ? entry.cotacaoVenda : null;
+      }catch(e){
+        return null;
+      }finally{
+        clearTimeout(timer);
+      }
+    }
+
+    // Busca o câmbio vigente HOJE aplicando a regra de vigência (o fechamento do último dia
+    // útil anterior). Fins de semana/feriados retornam vazio na API do BCB, então basta recuar
+    // dia a dia até achar o último fechamento disponível — sem precisar de calendário fixo.
+    async function fetchOfficialFx(currency){
+      if(!BCB_FX_SUPPORTED.includes(currency)) return null;
+
+      const today = new Date();
+      let cache = {};
+      try{ cache = JSON.parse(localStorage.getItem(BCB_FX_CACHE_KEY) || "{}") || {}; }catch(e){}
+      const cached = cache[currency];
+      if(cached && cached.todayKey === _todayKey(today)) return cached;
+
+      const probe = new Date(today);
+      let value = null, closDate = null;
+      for(let i=1; i<=10 && value === null; i++){
+        probe.setDate(probe.getDate() - 1);
+        const v = await _fetchBcbVenda(currency, probe);
+        if(v !== null){ value = v; closDate = new Date(probe); }
+      }
+      if(value === null) return null;
+
+      const result = { value, closDate: closDate.toISOString().slice(0,10), todayKey: _todayKey(today) };
+      cache[currency] = result;
+      try{ localStorage.setItem(BCB_FX_CACHE_KEY, JSON.stringify(cache)); }catch(e){}
+      return result;
+    }
+
+    let __fxAutofillSeq = 0;
+    async function maybeAutofillFx(){
+      const mySeq = ++__fxAutofillSeq;
+      const isStale = ()=> mySeq !== __fxAutofillSeq;
+      const cur = getInterCurrency();
+      const fxEl = document.getElementById("inter_fx");
+      const fxStatus = document.getElementById("inter_fx_status");
+      const usdEl = document.getElementById("inter_fx_usd");
+      const usdWrap = document.getElementById("inter_fx_usd_wrap");
+
+      if(!BCB_FX_SUPPORTED.includes(cur)){
+        if(fxEl && fxEl.dataset.auto === "1"){ fxEl.value = ""; delete fxEl.dataset.auto; }
+        if(usdEl && usdEl.dataset.auto === "1"){ usdEl.value = ""; delete usdEl.dataset.auto; }
+        if(fxStatus) fxStatus.textContent = "Informar manualmente.";
+        return;
+      }
+
+      if(fxStatus) fxStatus.textContent = "Buscando câmbio...";
+      const data = await fetchOfficialFx(cur);
+      if(isStale()) return;
+      if(!data){
+        if(fxStatus) fxStatus.textContent = "Informar manualmente.";
+        return;
+      }
+
+      const willFill = fxEl && (!fxEl.value.trim() || fxEl.dataset.auto === "1");
+      if(willFill){
+        fxEl.value = fmtNumPT4(data.value);
+        fxEl.dataset.auto = "1";
+      }
+      if(fxStatus) fxStatus.textContent = willFill ? "Preenchimento automático." : "Valor mantido do rascunho — confira o câmbio.";
+
+      if(usdWrap && !usdWrap.classList.contains("hidden") && usdEl && (!usdEl.value.trim() || usdEl.dataset.auto === "1")){
+        const usdData = await fetchOfficialFx("USD");
+        if(isStale()) return;
+        if(usdData){ usdEl.value = fmtNumPT4(usdData.value); usdEl.dataset.auto = "1"; }
+      }
+    }
+
     function intVal(id){
       const v = parseInt(String(document.getElementById(id).value||"0").replace(/[^\d\-]/g,""),10);
       return Number.isFinite(v) ? v : 0;
@@ -2252,6 +2351,26 @@ const store = getPaxStore();
       }
 
       return errors;
+    }
+
+    // Avisos que NÃO bloqueiam a geração do e-mail — só chamam atenção antes de enviar.
+    function collectSoftWarnings(){
+      const warnings = [];
+      const cia = (document.getElementById("cia")?.value || "").trim();
+      const loc = (document.getElementById("loc")?.value || "").trim();
+      if(!cia) warnings.push("CIA não informada");
+      if(!loc) warnings.push("LOC não informado");
+
+      const mode = getActiveMode();
+      if(mode === "NAC"){
+        const c = calcNac();
+        if(Math.abs(c.totalBRL) < 0.005) warnings.push("total NAC em R$ 0,00");
+      }else{
+        const c = calcInter();
+        if(Math.abs(c.totalBRL) < 0.005) warnings.push("total INTER em R$ 0,00");
+        if(c.fx > 0 && (c.fx < 0.5 || c.fx > 15)) warnings.push(`câmbio ${fmtNumPT(c.fx)} parece fora do normal`);
+      }
+      return warnings;
     }
 
     function chunk4(s){
@@ -2604,6 +2723,13 @@ const store = getPaxStore();
 
     // ----- CRR4: mesmo conteúdo do CRR3, mas com chaves compactadas (reduz bem o tamanho) -----
     // Mapeia ids de campos -> índice base36 (ex.: "cia" -> "a") antes de compactar.
+    //
+    // ATENÇÃO — NÃO REORDENAR NEM REMOVER ITENS DESTA LISTA.
+    // A posição (índice) de cada string É a chave usada nos códigos CRR4/CRR5 já
+    // gerados e salvos (e-mails enviados, links compartilhados, cache do servidor).
+    // Remover, reordenar ou inserir no meio quebra a leitura de todo CRR4/CRR5
+    // já existente (o índice passa a apontar para outro campo).
+    // Só é seguro ADICIONAR itens novos no FINAL do array.
     const CRR4_KEYS = ["themeSel","rentab","op_rf","agencia","filial","rent_tipo_multa","rent_tipo_diftar","rent_tipo_diftax","rent_pago_cia_multa_adt","rent_pago_cia_multa_chd","rent_pago_cia_multa_inf","rent_cobrar_ag_multa","rent_lucro_multa","rent_pago_cia_diftar_adt","rent_pago_cia_diftar_chd","rent_pago_cia_diftar_inf","rent_cobrar_ag_diftar","rent_lucro_diftar","rent_pago_cia_diftax_adt","rent_pago_cia_diftax_chd","rent_pago_cia_diftax_inf","rent_cobrar_ag_diftax","rent_lucro_diftax","cia","prazo","loc","oac","novo_loc","paxq_adt","paxq_chd","paxq_inf","pax_json","familia","pax","tks","bag","parcelamento","nac_fp","nac_link","nac_qty_ADT","nac_old_ADT","nac_new_ADT","nac_tax_ADT","nac_du_ADT","nac_pen_ADT","nac_qty_CHD","nac_old_CHD","nac_new_CHD","nac_tax_CHD","nac_du_CHD","nac_pen_CHD","nac_qty_INF","nac_old_INF","nac_new_INF","nac_tax_INF","nac_du_INF","nac_pen_INF","nac_services_on","nac_services_brl","nac_folio_on","nac_folio_text","nac_voos","nac_regras","inter_cur","inter_cur_other","inter_fx","inter_fx_usd","inter_incentivo","inter_tipo","inter_fp","inter_link","inter_qty_ADT","inter_fare_ADT","inter_tax_ADT","inter_du_ADT","inter_pen_ADT","inter_fee_ADT","inter_qty_CHD","inter_fare_CHD","inter_tax_CHD","inter_du_CHD","inter_pen_CHD","inter_fee_CHD","inter_qty_INF","inter_fare_INF","inter_tax_INF","inter_du_INF","inter_pen_INF","inter_fee_INF","inter_original","inter_voos","inter_interno","rf_include_racode","rf_mask_numbers","rf_include_tks"];
     const CRR4_ID2K = {};
     const CRR4_K2ID = {};
@@ -2667,12 +2793,23 @@ function extractCRR5(text){
   return `CRR5-${mm[1].toLowerCase()}`;
 }
 
+const CRR5_TIMEOUT_MS = 6000;
+
 async function saveCRR5FromCRR4(crr4){
-  const r = await fetch(`${CRR5_API}/save`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ payload: String(crr4 || "") }),
-  });
+  const ctrl = new AbortController();
+  const timer = setTimeout(()=>ctrl.abort(), CRR5_TIMEOUT_MS);
+  let r;
+  try{
+    r = await fetch(`${CRR5_API}/save`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ payload: String(crr4 || "") }),
+      signal: ctrl.signal,
+    });
+  }catch(e){
+    if(e && e.name === "AbortError") throw new Error("Servidor CRR5 não respondeu a tempo");
+    throw new Error("Falha de conexão ao salvar CRR curto");
+  }finally{ clearTimeout(timer); }
   if(!r.ok) throw new Error("Falha ao salvar CRR curto");
   const data = await r.json().catch(()=>null);
   if(!data || !data.id) throw new Error("Resposta inválida do servidor");
@@ -2681,7 +2818,15 @@ async function saveCRR5FromCRR4(crr4){
 
 async function loadCRR5ToCRR4(crr5){
   const id = String(crr5 || "").trim().replace(/^CRR5-/i,"").toLowerCase();
-  const r = await fetch(`${CRR5_API}/load?id=${encodeURIComponent(id)}`);
+  const ctrl = new AbortController();
+  const timer = setTimeout(()=>ctrl.abort(), CRR5_TIMEOUT_MS);
+  let r;
+  try{
+    r = await fetch(`${CRR5_API}/load?id=${encodeURIComponent(id)}`, { signal: ctrl.signal });
+  }catch(e){
+    if(e && e.name === "AbortError") throw new Error("Servidor CRR5 não respondeu a tempo");
+    throw new Error("Falha de conexão ao carregar CRR curto");
+  }finally{ clearTimeout(timer); }
   if(!r.ok) throw new Error("CRR curto não encontrado (ou expirou)");
   const data = await r.json().catch(()=>null);
   if(!data || typeof data.payload !== "string") throw new Error("Resposta inválida do servidor");
@@ -2935,7 +3080,7 @@ async function ensureCRR5Current(){
     function getCommon(){
       return {
         cia: document.getElementById("cia").value.trim(),
-        prazo: (document.getElementById("prazo") ? document.getElementById("prazo").value.trim() : "Imediato"),
+        prazo: "Imediato",
         loc: document.getElementById("loc").value.trim().toUpperCase(),
         novo_loc: (document.getElementById("novo_loc") ? document.getElementById("novo_loc").value.trim().toUpperCase() : ""),
         pax: document.getElementById("pax").value.trim(),
@@ -3166,16 +3311,6 @@ const regrasExtra = regrasUser ? `<p style="margin:8px 0 0"><b>Observações:</b
 
       const isAzul = /(^|[\s,\/])(?:AD|AZUL)($|[\s,\/])/i.test(String(common.cia||"").trim());
       const azulMsg = "";
-
-
-      const servicesRow = (calc.servicesBRL && calc.servicesBRL > 0)
-        ? `
-            <tr>
-              <td colspan="8" style="text-align:right"><b>Serviços (abatimento)</b></td>
-              <td style="text-align:right"><b>-${fmtBRL(calc.servicesBRL)}</b></td>
-            </tr>
-          `
-        : "";
 
       const paxRows = calc.rows.map(r => `
         <tr>
@@ -3876,6 +4011,17 @@ ${endossoRow}
     }
     function switchTab(which){
       const nacOn = (which === "tabNac");
+      const wasNacOn = !document.getElementById("panelNac").classList.contains("hidden");
+      const modeChanged = (nacOn !== wasNacOn);
+      // ao trocar de fato entre Nacional/Internacional (não ao reclicar na mesma aba,
+      // nem na restauração inicial da última aba usada), zera as flags do fluxo guiado
+      // do Internacional — senão um cálculo INTER "concluído" fica marcado como pronto
+      // mesmo depois de ir para o Nacional e voltar, escondendo passos do wizard.
+      if(modeChanged){
+        window.__interFinalized = false;
+        window.__interPaxReady = false;
+        if(!nacOn) maybeAutofillFx();
+      }
       document.getElementById("tabNac").setAttribute("aria-selected", nacOn ? "true" : "false");
       document.getElementById("tabInter").setAttribute("aria-selected", nacOn ? "false" : "true");
       document.getElementById("panelNac").classList.toggle("hidden", !nacOn);
@@ -4045,7 +4191,7 @@ function updateAll(arg){
 
     function generateEmail(){
       const errs = validateBeforeGenerate();
-      if(errs.length){ setPill(false, "Atenção: revisar dados"); showToast(errs[0]); return ""; }
+      if(errs.length){ setPill(false, "Atenção: revisar dados"); showToast(errs.join(" | ")); return ""; }
 
       // garante que cálculos e ocultações estejam atualizados
       try{ updateAll(); }catch(e){}
@@ -4071,7 +4217,8 @@ function updateAll(arg){
         rfp.innerHTML = sicaHtml || "";
       }
 
-      showToast("Preview atualizado!");
+      const warnings = collectSoftWarnings();
+      showToast(warnings.length ? ("Preview atualizado — atenção: " + warnings.join(" | ")) : "Preview atualizado!");
       return html;
     }
 
@@ -4102,20 +4249,53 @@ document.getElementById("paxq_adt").value = "1";
       document.getElementById("paxq_chd").value = "0";
       document.getElementById("paxq_inf").value = "0";
       document.getElementById("pax_json").value = "";
-      const _fol = document.getElementById("nac_folio_on"); if(_fol) _fol.checked = false;
-      const _folAg = document.getElementById("nac_folio_agencia"); if(_folAg) _folAg.checked = false;
-      const _end = document.getElementById("inter_endosso_on"); if(_end) _end.checked = false;
-      const _endAg = document.getElementById("inter_endosso_agencia"); if(_endAg) _endAg.checked = false;
+
+      // reseta TODOS os checkboxes e selects para o valor padrão declarado no HTML
+      // (antes só 4 checkboxes específicos eram tratados; selects não eram tocados)
+      for(const cb of document.querySelectorAll('input[type="checkbox"]')){
+        cb.checked = cb.defaultChecked;
+      }
+      for(const sel of document.querySelectorAll("select")){
+        const opts = Array.from(sel.options);
+        const def = opts.find(o=>o.defaultSelected) || opts[0];
+        if(def) sel.value = def.value;
+      }
       const _endT = document.getElementById("inter_endosso_text"); if(_endT) _endT.value = "";
       window.__interFinalized = false;
       window.__interPaxReady = false;
+
+      // reseta o estado do wizard FXO (INTER Automático/Híbrido) — muta o objeto
+      // existente (não substitui a referência, que outras funções mantêm em closure)
+      if(window.__FXQ_WIZ){
+        const s = window.__FXQ_WIZ;
+        s.paxList = [];
+        s.pIndexToTypePos = {};
+        s.requiredTypes = [];
+        s.fxoOk = {ADT:false, CHD:false, INF:false};
+        s.bagByType = {ADT:null, CHD:null, INF:null};
+        s.familyByType = {ADT:null, CHD:null, INF:null};
+        s.bagAuto = false;
+        s.parseMeta = {warnings:[], segments:[], confidence:0, loc:""};
+      }
+      for(const id of ["fxqStatus","fxoBox_ADT_status","fxoBox_CHD_status","fxoBox_INF_status","ticketsStatus"]){
+        const el = document.getElementById(id);
+        if(el) el.textContent = "";
+      }
+      const _ticketsWrap = document.getElementById("ticketsWrap");
+      if(_ticketsWrap) _ticketsWrap.classList.add("hidden");
+      const _subjPill = document.getElementById("subjectPill");
+      if(_subjPill) _subjPill.textContent = "Assunto: —";
+      const _rfp = document.getElementById("rentFormPreview");
+      if(_rfp) _rfp.innerHTML = "";
+
       if(typeof window.__interApplyInterTipoUI === 'function') window.__interApplyInterTipoUI();
       updateAll();
       renderPaxFields();
+      try{ localStorage.removeItem("ra_reemissao_v3"); }catch(e){}
       if(!silent) showToast("Limpo!");
     }
 
-    function saveLocal(){
+    function saveLocal(silent){
       const data = {};
       for(const el of document.querySelectorAll("input, select, textarea")){
         if(!el.id) continue;
@@ -4127,12 +4307,12 @@ document.getElementById("paxq_adt").value = "1";
         }
       }
       localStorage.setItem("ra_reemissao_v3", JSON.stringify(data));
-      showToast("Salvo no navegador!");
+      if(!silent) showToast("Salvo no navegador!");
     }
 
-    function loadLocal(){
+    function loadLocal(silent){
       const raw = localStorage.getItem("ra_reemissao_v3");
-      if(!raw){ showToast("Nada salvo ainda."); return; }
+      if(!raw){ if(!silent) showToast("Nada salvo ainda."); return; }
       try{
         const data = JSON.parse(raw);
         for(const [k,v] of Object.entries(data)){
@@ -4143,11 +4323,23 @@ document.getElementById("paxq_adt").value = "1";
         }
         updateAll();
         renderPaxFields();
-        showToast("Carregado!");
+        if(!silent) showToast("Carregado!");
       }catch(e){
-        showToast("Erro ao carregar.");
+        if(!silent) showToast("Erro ao carregar.");
       }
     }
+
+    // ----- Autosave silencioso no navegador (rascunho local, não é o CRR) -----
+    // Salva o estado do formulário a cada alteração (com debounce) para não perder
+    // dados em caso de fechar a aba/recarregar por acidente. "Limpar" também limpa
+    // este rascunho (ver clearAll). Não interfere no CRR/CRR5 nem em cálculos.
+    let __autosaveTimer = null;
+    function __scheduleAutosave(){
+      clearTimeout(__autosaveTimer);
+      __autosaveTimer = setTimeout(()=>{ try{ saveLocal(true); }catch(e){} }, 800);
+    }
+    document.addEventListener("input", __scheduleAutosave);
+    document.addEventListener("change", __scheduleAutosave);
 
     // wire tabs
     document.getElementById("tabNac").addEventListener("click", ()=>switchTab("tabNac"));
@@ -4165,6 +4357,8 @@ document.getElementById("paxq_adt").value = "1";
       const lastOut = localStorage.getItem("ra_output_last_tab") || "agency";
       switchOutputTab(lastOut);
     }catch(e){ switchOutputTab("agency"); }
+    // restaura rascunho salvo automaticamente (se houver) — silencioso, sem toast
+    try{ loadLocal(true); }catch(e){}
 
     // NAC: seletor de cia (GOL/LATAM/AZUL)
     for(const btn of document.querySelectorAll("#ciaNacSelector .airBtn")){
@@ -4440,12 +4634,15 @@ document.getElementById("paxq_adt").value = "1";
         return true;
       }
 
+      // Restringe a moedas ISO 4217 conhecidas para não confundir com abreviações do GDS
+      // (ex.: "TKT 123", "ADT 1") que também casam no padrão "3 letras + número".
+      const ISO_CURRENCIES = new Set(["USD","EUR","GBP","BRL","CAD","CHF","JPY","AUD","ARS","CLP","MXN","COP","PEN","UYU","PYG","CNY","AED","SGD","NZD","ZAR"]);
       function parseCurrencyPairs(chunk){
         const pairs = [];
         for(const m of String(chunk||"").matchAll(/\b([A-Z]{3})\s+(-?\d+(?:\.\d{1,2})?)/g)){
           const cur = String(m[1]).toUpperCase();
           const amt = parseFloat(m[2]);
-          if(cur && Number.isFinite(amt)) pairs.push({cur, amt});
+          if(cur && ISO_CURRENCIES.has(cur) && Number.isFinite(amt)) pairs.push({cur, amt});
         }
         return pairs;
       }
@@ -4636,12 +4833,18 @@ document.getElementById("paxq_adt").value = "1";
 
         if(anyBRL && !(fx > 0)) return {canApply:false, needsFx:true, fx:0, inferred:false};
 
+        let curMismatch = false;
         function toWant(obj){
           if(!hasAny(obj)) return null;
           if(obj.cur === 'BRL' && wantCur !== 'BRL') return {cur:wantCur, amt:obj.amt / fx, srcCur:'BRL'};
+          // moeda do FXO diferente da selecionada e não é BRL (não convertemos, só avisamos):
+          // o valor é usado como está (mesmo comportamento de antes), mas agora sinalizado.
+          if(obj.cur !== wantCur) curMismatch = true;
           return {cur:obj.cur, amt:obj.amt, srcCur:obj.cur};
         }
-        return { canApply:true, needsFx:false, fx:fx||0, inferred, fare:toWant(parsed.fare), pen:toWant(parsed.pen), add:toWant(parsed.add), taxBal:toWant(parsed.taxBal), tktDiff:toWant(parsed.tktDiff) };
+        const result = { canApply:true, needsFx:false, fx:fx||0, inferred, fare:toWant(parsed.fare), pen:toWant(parsed.pen), add:toWant(parsed.add), taxBal:toWant(parsed.taxBal), tktDiff:toWant(parsed.tktDiff) };
+        result.curMismatch = curMismatch;
+        return result;
       }
 
 
@@ -4696,12 +4899,12 @@ document.getElementById("paxq_adt").value = "1";
         syncInternoFromBoxes();
         const wantCur = (typeof getInterCurrency === 'function') ? getInterCurrency() : 'USD';
         const resolved = resolveFxoCurrency(parsed, wantCur);
-        const fareEl = $(`inter_fare_${type}`), taxEl = $(`inter_tax_${type}`), penEl = $(`inter_pen_${type}`), duEl = $(`inter_du_${type}`), feeEl = $(`inter_fee_${type}`);
+        // inter_du_*/inter_fee_* não são preenchidos por este parser — não zerar,
+        // senão qualquer edição no FXO apaga silenciosamente o que foi digitado manualmente.
+        const fareEl = $(`inter_fare_${type}`), taxEl = $(`inter_tax_${type}`), penEl = $(`inter_pen_${type}`);
         if(fareEl) fareEl.value = '';
         if(taxEl) taxEl.value = '';
         if(penEl) penEl.value = '';
-        if(duEl) duEl.value = '';
-        if(feeEl) feeEl.value = '';
 
         if(!resolved.canApply){
           state.fxoOk[type] = false;
@@ -4738,6 +4941,7 @@ document.getElementById("paxq_adt").value = "1";
             const msg = [`OK — ${wantCur}`];
             if(resolved.fx>0 && (resolved.inferred || parseBRNumber($("inter_fx")?.value)>0)) msg.push(`câmbio ${fmtNumPT(resolved.fx)}${resolved.inferred?' (inferido)':''}`);
             if(parsed.confidence) msg.push(`confiança ${parsed.confidence}%`);
+            if(resolved.curMismatch) msg.push(`⚠ moeda do FXO diverge de ${wantCur} — confira antes de gerar`);
             if(parsed.warnings.length) msg.push(parsed.warnings.join(' | '));
             st.textContent = msg.join(' • ');
           }else{
@@ -5362,7 +5566,7 @@ document.getElementById("paxq_adt").value = "1";
       btn.disabled = true;
       try{
         try{ await ensureCRR5Current(); }
-        catch(e){ showToast((e && e.message) ? e.message : "Falha ao gerar CRR5."); return; }
+        catch(e){ showToast("CRR5 indisponível, usando código local (CRR4)."); }
         lastEmailHtml = generateEmail();
       } finally { btn.disabled = false; }
     });
@@ -5372,7 +5576,7 @@ document.getElementById("paxq_adt").value = "1";
       btn.disabled = true;
       try{
         try{ await ensureCRR5Current(); }
-        catch(e){ showToast((e && e.message) ? e.message : "Falha ao gerar CRR5."); return; }
+        catch(e){ showToast("CRR5 indisponível, usando código local (CRR4)."); }
         lastEmailHtml = generateEmail();
         if(!lastEmailHtml){ return; }
         const ok = await copyHtmlToClipboard(lastEmailHtml);
@@ -5383,7 +5587,7 @@ document.getElementById("paxq_adt").value = "1";
     document.getElementById("btnCopiarObs").addEventListener("click", async ()=>{
       const btn = document.getElementById("btnCopiarObs");
       const errs = validateBeforeGenerate();
-      if(errs.length){ setPill(false, "Atenção: revisar dados"); showToast(errs[0]); return; }
+      if(errs.length){ setPill(false, "Atenção: revisar dados"); showToast(errs.join(" | ")); return; }
       btn.disabled = true;
       try{
         const code = buildRfObsCode();
@@ -5398,6 +5602,8 @@ document.getElementById("paxq_adt").value = "1";
     });
     document.getElementById("btnCopiarRentForm").addEventListener("click", async ()=>{
       const btn = document.getElementById("btnCopiarRentForm");
+      const errs = validateBeforeGenerate();
+      if(errs.length){ setPill(false, "Atenção: revisar dados"); showToast(errs.join(" | ")); return; }
       const htmlForm = buildSicaFormHtml();
       if(!htmlForm){
         showToast("Nada para copiar no formulário de rentabilização.");
@@ -5414,17 +5620,6 @@ document.getElementById("paxq_adt").value = "1";
     });
 // CRR
     // (botão "Copiar CRR" removido)
-
-document.getElementById("btnGerarCRR5") && document.getElementById("btnGerarCRR5").addEventListener("click", async ()=>{
-      const btn = document.getElementById("btnGerarCRR5");
-      btn.disabled = true;
-      try{
-        const crr5 = await ensureCRR5Current();
-        try{ await navigator.clipboard.writeText(crr5); showToast("CRR5 copiado!"); }
-        catch(e){ showToast("CRR5 gerado. Copie do campo."); }
-      }catch(e){ showToast((e && e.message) ? e.message : "Falha ao gerar CRR5."); }
-      finally { btn.disabled = false; }
-    });
 
 document.getElementById("btnCarregarRACode").addEventListener("click", async ()=>{
       const code = (document.getElementById("raCode").value || "").trim();
@@ -5483,6 +5678,17 @@ document.getElementById("btnCarregarRACode").addEventListener("click", async ()=
       el.addEventListener("blur", ()=>{ el.value = (el.value||"").trim().toUpperCase(); });
     }
 
+    // câmbio oficial (BCB): busca automática ao trocar moeda; edição manual "solta" o campo
+    for(const id of ["inter_cur","inter_cur_other"]){
+      const el = document.getElementById(id);
+      if(el) el.addEventListener("change", ()=>maybeAutofillFx());
+    }
+    for(const id of ["inter_fx","inter_fx_usd"]){
+      const el = document.getElementById(id);
+      if(el) el.addEventListener("input", ()=>{ delete el.dataset.auto; });
+    }
+    if(getActiveMode() === "INTER") maybeAutofillFx();
+
     // init
 
     // dica aleatória (a cada abertura)
@@ -5502,7 +5708,7 @@ document.getElementById("btnCarregarRACode").addEventListener("click", async ()=
 
     const rentabEl = document.getElementById("rentab");
     if(rentabEl) rentabEl.addEventListener("change", ()=>{ toggleRentUI(); updateAll(); });
-    for(const id of ["rent_tipo_multa","rent_tipo_diftar","rent_tipo_diftax","rent_pago_cia","rent_cobrar_ag"]){
+    for(const id of ["rent_tipo_multa","rent_tipo_diftar","rent_tipo_diftax"]){
       const el = document.getElementById(id);
       if(!el) continue;
       el.addEventListener("input", ()=>{ invalidateCRR5OnEdit(); updateAll(); });
@@ -5578,6 +5784,5 @@ document.getElementById("btnCarregarRACode").addEventListener("click", async ()=
 
 </script>
 
-<div class="app-version-footer" id="appVersionFooter" aria-label="Versão da calculadora">Versão: 1.0.13-test</div>
 </body>
 </html>
