@@ -4650,23 +4650,23 @@ document.getElementById("paxq_adt").value = "1";
       function findLabelValue(text, label, preferCur){
         const src = normalizeGdsText(text).text;
         const labelsAnchor = '(?:OLD\\s+BASE\\s+FARE|NEW\\s+BASE\\s+FARE|FARE\\s+BALANCE|OLD\\s+TAX|NEW\\s+TAX|TAX\\s+BALANCE|TICKET\\s+DIFFERENCE|PENALTY|GRAND\\s+TOTAL|TOTAL\\s+ADD\\s+COLL|RESIDUAL\\s+VALUE)';
-        const lineRe = new RegExp('^\\s*' + label + '\\b.*$', 'im');
-        const mLine = src.match(lineRe);
-        if(mLine){
+        const lineRe = new RegExp('^\\s*' + label + '\\b.*$', 'gim');
+        for(const mLine of src.matchAll(lineRe)){
           const ownPairs = parseCurrencyPairs(mLine[0]);
-          if(ownPairs.length){
-            const exactOwn = preferCur ? ownPairs.find(p=>p.cur===preferCur) : null;
-            return exactOwn || ownPairs[ownPairs.length-1] || null;
-          }
+          if(!ownPairs.length) continue;
+          const exactOwn = preferCur ? ownPairs.find(p=>p.cur===preferCur) : null;
+          return exactOwn || ownPairs[ownPairs.length-1] || null;
         }
-        const blockRe = new RegExp('(?:^|\\n)\\s*' + label + '\\b([\\s\\S]*?)(?=\\n\\s*' + labelsAnchor + '\\b|$)', 'i');
-        const mBlock = src.match(blockRe);
-        if(!mBlock) return null;
-        const chunk = String(mBlock[0] || '') + '\\n' + String(mBlock[1] || '');
-        const pairs = parseCurrencyPairs(chunk);
-        if(!pairs.length) return null;
-        const exact = preferCur ? pairs.find(p=>p.cur===preferCur) : null;
-        return exact || pairs[pairs.length-1] || null;
+
+        const blockRe = new RegExp('(?:^|\\n)\\s*' + label + '\\b([\\s\\S]*?)(?=\\n\\s*' + labelsAnchor + '\\b|$)', 'gi');
+        for(const mBlock of src.matchAll(blockRe)){
+          const chunk = String(mBlock[0] || '') + '\\n' + String(mBlock[1] || '');
+          const pairs = parseCurrencyPairs(chunk);
+          if(!pairs.length) continue;
+          const exact = preferCur ? pairs.find(p=>p.cur===preferCur) : null;
+          return exact || pairs[pairs.length-1] || null;
+        }
+        return null;
       }
 
       function extractFxoSubBlock(text, wantType){
