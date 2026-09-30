@@ -2969,6 +2969,9 @@ async function ensureCRR5Current(){
         }
         if(["loc","novo_loc","oac","familia"].includes(k) && typeof v === "string"){ el.value = v.toUpperCase(); }
         else{ el.value = v; }
+        // o valor veio do CRR (fixo, já decidido) — não é auto-fill do câmbio
+        // do dia, então não deixa uma busca automática pendente sobrescrever.
+        if(el.dataset) delete el.dataset.auto;
       }
 
       // migração: CRR antigos (campos únicos) -> novo formato por tipo (preenche em ADT como padrão)
@@ -4293,7 +4296,11 @@ document.getElementById("paxq_adt").value = "1";
       renderPaxFields();
       // campo de câmbio foi zerado acima junto com os demais inputs — sem isso,
       // o câmbio automático só voltava a aparecer depois de recarregar a página.
-      if(getActiveMode() === "INTER") maybeAutofillFx();
+      // Só busca em clear "de verdade" (botão Limpar): loadCRRCode() chama
+      // clearAll(true) antes de aplicar os campos do CRR, e essa busca é
+      // assíncrona — se disparasse aqui, podia resolver DEPOIS do CRR já ter
+      // preenchido o câmbio salvo e sobrescrever com a cotação de hoje.
+      if(!silent && getActiveMode() === "INTER") maybeAutofillFx();
       try{ localStorage.removeItem("ra_reemissao_v3"); }catch(e){}
       if(!silent) showToast("Limpo!");
     }
