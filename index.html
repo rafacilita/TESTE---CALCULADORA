@@ -1339,6 +1339,10 @@ h1{ margin:0 0 6px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
         <div class="outputPanel is-active" id="outPanelAgency" data-output-panel="agency">
           <div class="muted small outTitle" style="margin-bottom:6px"><span class="tag tag--agency">AGÊNCIA</span> <b>1) Preview do e-mail (agência)</b> — gere/atualize antes de colar no Outlook.</div>
           <div class="muted small" style="margin-bottom:6px">Prévia sempre em fundo claro (como no Outlook)</div>
+          <label class="muted small" style="display:flex; align-items:center; gap:6px; margin-bottom:6px">
+            <input type="checkbox" id="agency_lang_en" />
+            Gerar em inglês (cliente de fora) — só os textos fixos do modelo; campos de texto livre continuam como digitados
+          </label>
           <div id="preview" class="preview" contenteditable="true" aria-label="Pré-visualização do e-mail"></div>
           <div class="btns" style="margin-top:10px">
             <button class="action primary calc" id="btnGerar">Gerar / Atualizar E-mail</button>
@@ -1901,8 +1905,8 @@ function updateRentComputed(mode, calc){
       const n = parseFloat(x);
       return Number.isFinite(n) ? n : 0;
     }
-    function fmtBRL(n){
-      return new Intl.NumberFormat("pt-BR", {style:"currency", currency:"BRL"}).format(n || 0);
+    function fmtBRL(n, useEn){
+      return new Intl.NumberFormat(useEn ? "en-US" : "pt-BR", {style:"currency", currency:"BRL"}).format(n || 0);
     }
     function safeCurrency(code){
       const c = String(code || "USD").toUpperCase().replace(/[^A-Z]/g,"").slice(0,3);
@@ -3097,21 +3101,23 @@ async function ensureCRR5Current(){
     }
 
     
-    function buildPaxTicketPairsHtml(common){
+    function buildPaxTicketPairsHtml(common, isEN){
       // Preferir o cadastro por PAX (Nome/Bilhete) para vincular corretamente.
       const store = getPaxStore();
       const ciaRaw = String(common?.cia || "");      const isNoTicket = /(^|[\s,\/])(?:AD|AZUL)($|[\s,\/])/i.test(ciaRaw.trim());
+      const noNameTxt = isEN ? AGENCY_EMAIL_I18N.en.noName : "(sem nome)";
+      const noTicketTxt = isEN ? AGENCY_EMAIL_I18N.en.noTicket : "(sem bilhete)";
       const pairs = [];
       function push(arr){
         for(const it of (arr || [])){
           const n = String(it?.name || "").trim();
           const t = String(it?.ticket || "").trim();
           if(!n && !t) continue;
-          const nn = n || "(sem nome)";
+          const nn = n || noNameTxt;
           if(isNoTicket){
             pairs.push(`${escapeHtml(nn)}`);
           } else {
-            const tt = t || "(sem bilhete)";
+            const tt = t || noTicketTxt;
             pairs.push(`${escapeHtml(nn)} — ${escapeHtml(tt)}`);
           }
         }
@@ -3168,6 +3174,8 @@ async function ensureCRR5Current(){
       `.trim();
     }
     function buildEmailHtmlNac(){
+      const isEN = isAgencyEmailEN();
+      const t = isEN ? AGENCY_EMAIL_I18N.en : AGENCY_EMAIL_I18N.pt;
       const common = getCommon();
       const calc = calcNac();
       const crr = getCRRCodeForEmail();
@@ -3178,7 +3186,7 @@ async function ensureCRR5Current(){
       const folioOn = !!(document.getElementById("nac_folio_on") && document.getElementById("nac_folio_on").checked);
       const folioAgencyOn = !!(document.getElementById("nac_folio_agencia") && document.getElementById("nac_folio_agencia").checked);
       const folio = (document.getElementById("nac_folio_text") ? document.getElementById("nac_folio_text").value.trim() : "");
-      const folioRow = (folioOn && folio && folioAgencyOn) ? `<tr><td style="background-color:#efe9f8; padding:6px 8px; border:1px solid #e6def3;"><b>Fólio</b></td><td style="background-color:#ffffff; padding:6px 8px; border:1px solid #e6def3;">${escapeHtml(folio)}</td></tr>` : "";
+      const folioRow = (folioOn && folio && folioAgencyOn) ? `<tr><td style="background-color:#efe9f8; padding:6px 8px; border:1px solid #e6def3;"><b>${t.folio}</b></td><td style="background-color:#ffffff; padding:6px 8px; border:1px solid #e6def3;">${escapeHtml(folio)}</td></tr>` : "";
 
       const regrasUserRaw = document.getElementById("nac_regras").value.trim();
       const isAzul = /(^|[\s,\/])(?:AD|AZUL)($|[\s,\/])/i.test(String(common.cia||"").trim());
@@ -3204,8 +3212,8 @@ async function ensureCRR5Current(){
 const servicesRow = (calc.servicesBRL && calc.servicesBRL > 0)
         ? `
             <tr>
-              <td colspan="8" style="text-align:right"><b>Serviços (abatimento)</b></td>
-              <td style="text-align:right"><b>-${fmtBRL(calc.servicesBRL)}</b></td>
+              <td colspan="8" style="text-align:right"><b>${t.servicesAbat}</b></td>
+              <td style="text-align:right"><b>-${fmtBRL(calc.servicesBRL, isEN)}</b></td>
             </tr>
           `
         : "";
@@ -3213,87 +3221,90 @@ const servicesRow = (calc.servicesBRL && calc.servicesBRL > 0)
       const paxRows = calc.rows.map(r => `
         <tr>
           <td><b>${r.t}</b> <span style="display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;background:#EDE9FE;border:1px solid #C4B5FD;color:#111827;font-size:12px;font-weight:700;line-height:18px;">x${r.qty}</span></td>
-          <td style="text-align:right">${fmtBRL(r.oldFare)}</td>
-          <td style="text-align:right">${fmtBRL(r.newFare)}</td>
-          <td style="text-align:right">${fmtBRL(r.diffFare)}</td>
-          <td style="text-align:right">${fmtBRL(r.diffTax)}</td>
-          <td style="text-align:right">${fmtBRL(r.du)}</td>
-          <td style="text-align:right">${fmtBRL(r.pen)}</td>
-          <td style="text-align:right"><b>${fmtBRL(r.perPax)}</b></td>
-          <td style="text-align:right"><b>${fmtBRL(r.totalTipo)}</b></td>
+          <td style="text-align:right">${fmtBRL(r.oldFare, isEN)}</td>
+          <td style="text-align:right">${fmtBRL(r.newFare, isEN)}</td>
+          <td style="text-align:right">${fmtBRL(r.diffFare, isEN)}</td>
+          <td style="text-align:right">${fmtBRL(r.diffTax, isEN)}</td>
+          <td style="text-align:right">${fmtBRL(r.du, isEN)}</td>
+          <td style="text-align:right">${fmtBRL(r.pen, isEN)}</td>
+          <td style="text-align:right"><b>${fmtBRL(r.perPax, isEN)}</b></td>
+          <td style="text-align:right"><b>${fmtBRL(r.totalTipo, isEN)}</b></td>
         </tr>
       `);
 
-      const payLabel = "Faturado ou Cartão de Crédito";
+      const payLabel = t.payLabel;
       const linkHref = link ? ( /^https?:\/\//i.test(link) ? link : `https://${link}` ) : "";
       const linkLine = `
-        <p style="margin:8px 0 0">Forma de pagamento: <b>${payLabel}</b></p>
-        ${link ? `<p style="margin:6px 0 0">Link de pagamento: <b><a href="${escapeHtml(linkHref)}" target="_blank" rel="noopener">${escapeHtml(link)}</a></b></p>` : ""}
+        <p style="margin:8px 0 0">${t.payMethod}: <b>${payLabel}</b></p>
+        ${link ? `<p style="margin:6px 0 0">${t.payLink} <b><a href="${escapeHtml(linkHref)}" target="_blank" rel="noopener">${escapeHtml(link)}</a></b></p>` : ""}
       `.trim();
 
-      const azulRuleLi = isAzul ? `<li>${escapeHtml(AZUL_RULE_TEXT)}</li>` : "";
-      const latamGolRuleLi = (isLatamGol && !isAzul) ? `<li>${escapeHtml(LATAM_GOL_RULE_TEXT)}</li>` : "";
+      const azulRuleLi = isAzul ? `<li>${escapeHtml(t.azulRule)}</li>` : "";
+      const latamGolRuleLi = (isLatamGol && !isAzul) ? `<li>${escapeHtml(t.latamGolRule)}</li>` : "";
       const regrasPadrao = `
         <ul style="margin:8px 0 0; padding-left:18px">
           ${azulRuleLi}
           ${latamGolRuleLi}
-<li>Solicitações com menos de <b>2h</b> do embarque original poderão acarretar em multa de <b>no show</b>.</li>
+<li>${t.noShowRule}</li>
         </ul>
       `;
-const regrasExtra = regrasUser ? `<p style="margin:8px 0 0"><b>Observações:</b><br/>${brToHtml(regrasUser)}</p>` : "";
+const regrasExtra = regrasUser ? `<p style="margin:8px 0 0"><b>${t.obs}</b><br/>${brToHtml(regrasUser)}</p>` : "";
+      const parcelamentoLabel = common.parcelamento === "Sim" ? t.yes : (common.parcelamento === "Não" ? t.no : common.parcelamento);
 
       return `
         <div style="font-family:Arial, sans-serif; font-size:13px; color:#0b0f17">
-          <p>Segue abaixo cálculo de reemissão conforme solicitado.</p>
-          
+          <p>${t.intro}</p>
+
 
           <table border="1" cellspacing="0" cellpadding="6" width="760" style="width:760px; max-width:760px; margin:0; mso-table-lspace:0pt; mso-table-rspace:0pt; border-collapse:collapse; border:1px solid #c7ced9">
-            <tr><td colspan="2" style="background-color:#d9cce3; font-weight:bold; text-align:center; padding:8px; font-size:14px;">CÁLCULO DE REEMISSÃO NACIONAL</td></tr>
-            <tr><td colspan="2" style="text-align:center; padding:8px;"><b>ATENÇÃO:</b> CONFIRA TODOS OS DADOS ANTES DE APROVAR A REEMISSÃO.<br/>VALORES SUJEITOS A ALTERAÇÃO</td></tr>
-            <tr><td style="width:32%"><b>Cia Aérea</b></td><td>${escapeHtml(ciaFullNameForAgency(common.cia))}</td></tr>
-            <tr><td><b>Prazo</b></td><td>${escapeHtml(common.prazo)}</td></tr>
-            <tr><td><b>Localizador</b></td><td>${escapeHtml(common.loc)}</td></tr>
-            ${common.novo_loc ? `<tr><td><b>Novo LOC</b></td><td>${escapeHtml(common.novo_loc)}</td></tr>` : ""}
-            <tr><td><b>Passageiro(s) / Bilhete(s)</b></td><td>${buildPaxTicketPairsHtml(common)}</td></tr>${common.oac ? `<tr><td><b>OAC</b></td><td>${escapeHtml(common.oac)}</td></tr>` : ``}
-            <tr><td><b>Família Tarifária</b></td><td>${escapeHtml(common.familia)}</td></tr>
-            <tr><td><b>Bagagem</b></td><td>${escapeHtml(common.bag)}</td></tr>
-<tr><td><b>Permite parcelamento?</b></td><td>${escapeHtml(common.parcelamento)}</td></tr>
+            <tr><td colspan="2" style="background-color:#d9cce3; font-weight:bold; text-align:center; padding:8px; font-size:14px;">${t.titleNac}</td></tr>
+            <tr><td colspan="2" style="text-align:center; padding:8px;"><b>${t.attention}</b><br/>${t.valuesSubject}</td></tr>
+            <tr><td style="width:32%"><b>${t.cia}</b></td><td>${escapeHtml(ciaFullNameForAgency(common.cia))}</td></tr>
+            <tr><td><b>${t.prazo}</b></td><td>${escapeHtml(t.prazoValue)}</td></tr>
+            <tr><td><b>${t.loc}</b></td><td>${escapeHtml(common.loc)}</td></tr>
+            ${common.novo_loc ? `<tr><td><b>${t.novoLoc}</b></td><td>${escapeHtml(common.novo_loc)}</td></tr>` : ""}
+            <tr><td><b>${t.paxTicket}</b></td><td>${buildPaxTicketPairsHtml(common, isEN)}</td></tr>${common.oac ? `<tr><td><b>${t.oac}</b></td><td>${escapeHtml(common.oac)}</td></tr>` : ``}
+            <tr><td><b>${t.familia}</b></td><td>${escapeHtml(common.familia)}</td></tr>
+            <tr><td><b>${t.bag}</b></td><td>${escapeHtml(common.bag)}</td></tr>
+<tr><td><b>${t.parcelamento}</b></td><td>${escapeHtml(parcelamentoLabel)}</td></tr>
           ${folioRow}
           </table>
 
-          <p style="margin:12px 0 6px"><b>Descritivo de valores (por pax)</b></p>
+          <p style="margin:12px 0 6px"><b>${t.descritivo}</b></p>
           <table border="1" cellspacing="0" cellpadding="6" width="760" style="width:760px; max-width:760px; margin:0; mso-table-lspace:0pt; mso-table-rspace:0pt; border-collapse:collapse; border:1px solid #c7ced9">
             <tr>
-              <th style="background-color:#a99ac5; color:white; text-align:left">Tipo</th>
-              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">Tarifa antiga</th>
-              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">Tarifa nova</th>
-              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">Dif. tarifa</th>
-              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">Dif. taxa</th>
-              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">DU/Rav</th>
-              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">Multa</th>
-              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">Total por pax</th>
-              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">Total (tipo)</th>
+              <th style="background-color:#a99ac5; color:white; text-align:left">${t.colType}</th>
+              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">${t.colOldFare}</th>
+              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">${t.colNewFare}</th>
+              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">${t.colDiffFare}</th>
+              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">${t.colDiffTax}</th>
+              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">${t.colDU}</th>
+              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">${t.colPen}</th>
+              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">${t.colPerPax}</th>
+              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">${t.colTotalTipo}</th>
             </tr>
-            ${paxRows.join("") || `<tr><td colspan="9">Sem valores informados.</td></tr>`}
+            ${paxRows.join("") || `<tr><td colspan="9">${t.noValues}</td></tr>`}
             ${servicesRow}
             <tr>
-              <td colspan="8" style="text-align:right; background-color:#d9cce3"><b>TOTAL A PAGAR (BRL)</b></td>
-              <td style="text-align:right; background-color:#d9cce3"><b>${fmtBRL(calc.totalBRL)}</b></td>
+              <td colspan="8" style="text-align:right; background-color:#d9cce3"><b>${t.totalToPay}</b></td>
+              <td style="text-align:right; background-color:#d9cce3"><b>${fmtBRL(calc.totalBRL, isEN)}</b></td>
             </tr>
           </table>
 
           ${linkLine}
-          <p style="margin:6px 0 0"><i>*Após o preenchimento, responda o e-mail para darmos continuidade ao processo</i></p>
-          <p style="margin:6px 0 0">Em respeito a LGPD, não é permitido trafegar informações que envolvam dados de cartão de crédito.</p>
+          <p style="margin:6px 0 0"><i>${t.replyNote}</i></p>
+          <p style="margin:6px 0 0">${t.lgpd}</p>
 
-          ${buildEmailSectionBlock("VOOS SIMULADOS", voos, { strong:true })}
-          ${buildEmailSectionBlock("REGRAS", `${regrasPadrao}${regrasExtra}`, { html:true, mono:false, bodyStyle:'padding:14px 16px;' })}
+          ${buildEmailSectionBlock(t.voosSimulados, voos, { strong:true })}
+          ${buildEmailSectionBlock(t.regras, `${regrasPadrao}${regrasExtra}`, { html:true, mono:false, bodyStyle:'padding:14px 16px;' })}
           <p style="margin:6px 0 0; font-size:9px; color:#999">${crrEmailHtml}</p>
         </div>
       `.trim();
     }
 
     function buildEmailHtmlInter(){
+      const isEN = isAgencyEmailEN();
+      const t = isEN ? AGENCY_EMAIL_I18N.en : AGENCY_EMAIL_I18N.pt;
       const common = getCommon();
       const calc = calcInter();
       const crr = getCRRCodeForEmail();
@@ -3310,7 +3321,7 @@ const regrasExtra = regrasUser ? `<p style="margin:8px 0 0"><b>Observações:</b
       const endossoOn = !!(document.getElementById("inter_endosso_on") && document.getElementById("inter_endosso_on").checked);
       const endossoAgencyOn = !!(document.getElementById("inter_endosso_agencia") && document.getElementById("inter_endosso_agencia").checked);
       const endosso = (document.getElementById("inter_endosso_text") ? document.getElementById("inter_endosso_text").value.trim() : "");
-      const endossoRow = (endossoOn && endosso && endossoAgencyOn) ? `<tr><td style="background-color:#efe9f8; padding:6px 8px; border:1px solid #e6def3;"><b>Endosso</b></td><td style="background-color:#ffffff; padding:6px 8px; border:1px solid #e6def3;">${escapeHtml(endosso)}</td></tr>` : "";
+      const endossoRow = (endossoOn && endosso && endossoAgencyOn) ? `<tr><td style="background-color:#efe9f8; padding:6px 8px; border:1px solid #e6def3;"><b>${t.endosso}</b></td><td style="background-color:#ffffff; padding:6px 8px; border:1px solid #e6def3;">${escapeHtml(endosso)}</td></tr>` : "";
 
       const isAzul = /(^|[\s,\/])(?:AD|AZUL)($|[\s,\/])/i.test(String(common.cia||"").trim());
       const azulMsg = "";
@@ -3328,67 +3339,71 @@ const regrasExtra = regrasUser ? `<p style="margin:8px 0 0"><b>Observações:</b
         </tr>
       `);
 
-      const payLabel = "Faturado ou Cartão de Crédito";
+      const payLabel = t.payLabel;
       const linkHref = link ? ( /^https?:\/\//i.test(link) ? link : `https://${link}` ) : "";
       const linkLine = `
-        <p style="margin:8px 0 0">Forma de pagamento: <b>${payLabel}</b></p>
-        ${link ? `<p style="margin:6px 0 0">Link de pagamento: <b><a href="${escapeHtml(linkHref)}" target="_blank" rel="noopener">${escapeHtml(link)}</a></b></p>` : ""}
+        <p style="margin:8px 0 0">${t.payMethod}: <b>${payLabel}</b></p>
+        ${link ? `<p style="margin:6px 0 0">${t.payLink} <b><a href="${escapeHtml(linkHref)}" target="_blank" rel="noopener">${escapeHtml(link)}</a></b></p>` : ""}
       `.trim();
 
       const fxLine = calc.fx > 0
-        ? `<p style="margin:6px 0 0"><b>Câmbio informado:</b> 1 ${escapeHtml(calc.cur)} = ${calc.fx.toFixed(4).replace(".",",")} BRL • <b>Total (BRL):</b> ${fmtBRL(calc.totalBRL)}</p>`
-        : `<p style="margin:6px 0 0; color:#6b4b00"><b>Atenção:</b> informe o câmbio (Moeda → BRL) para gerar o total em BRL.</p>`;
+        ? `<p style="margin:6px 0 0"><b>${t.fxInformado}</b> 1 ${escapeHtml(calc.cur)} = ${calc.fx.toFixed(4).replace(".", isEN ? "." : ",")} BRL • <b>${t.totalBrl}</b> ${fmtBRL(calc.totalBRL, isEN)}</p>`
+        : `<p style="margin:6px 0 0; color:#6b4b00"><b>${isEN ? "Attention:" : "Atenção:"}</b> ${t.fxMissing.replace(/^Atenção: |^Attention: /, "")}</p>`;
+
+      const incentivoLabel = incentivo === "Sim" ? t.yes : (incentivo === "Não" ? t.no : incentivo);
+      const parcelamentoLabel = common.parcelamento === "Sim" ? t.yes : (common.parcelamento === "Não" ? t.no : common.parcelamento);
+      const tipoLabel = t.tipoValue[tipo] || tipo;
 
       return `
         <div style="font-family:Arial, sans-serif; font-size:13px; color:#0b0f17">
-          <p>Segue abaixo cálculo de reemissão conforme solicitado.</p>
+          <p>${t.intro}</p>
           ${azulMsg}
 
           <table border="1" cellspacing="0" cellpadding="6" width="760" style="width:760px; max-width:760px; margin:0; mso-table-lspace:0pt; mso-table-rspace:0pt; border-collapse:collapse; border:1px solid #c7ced9">
-            <tr><td colspan="2" style="background-color:#d9cce3; font-weight:bold; text-align:center; padding:8px; font-size:14px;">CÁLCULO DE REEMISSÃO INTERNACIONAL</td></tr>
-            <tr><td colspan="2" style="text-align:center; padding:8px;"><b>ATENÇÃO:</b> CONFIRA TODOS OS DADOS ANTES DE APROVAR A REEMISSÃO.<br/>VALORES SUJEITOS A ALTERAÇÃO</td></tr>
-            <tr><td style="width:32%"><b>Cia Aérea</b></td><td>${escapeHtml(ciaFullNameForAgency(common.cia))}</td></tr>
-            <tr><td><b>Prazo</b></td><td>${escapeHtml(common.prazo)}</td></tr>
-            <tr><td><b>Localizador do Cálculo</b></td><td>${escapeHtml(common.loc)}</td></tr>
-            ${common.novo_loc ? `<tr><td><b>Novo LOC</b></td><td>${escapeHtml(common.novo_loc)}</td></tr>` : ""}
-            <tr><td><b>Passageiro(s) / Bilhete(s)</b></td><td>${buildPaxTicketPairsHtml(common)}</td></tr>
-            <tr><td><b>Família Tarifária</b></td><td>${escapeHtml(common.familia)}</td></tr>
-            <tr><td><b>Bagagem</b></td><td>${escapeHtml(common.bag)}</td></tr>
-            <tr><td><b>Permite parcelamento?</b></td><td>${escapeHtml(common.parcelamento)}</td></tr>
-            <tr><td><b>Moeda</b></td><td>${escapeHtml(calc.cur)}</td></tr>
-            <tr><td><b>Recuperação de incentivo?</b></td><td>${escapeHtml(incentivo)}</td></tr>
+            <tr><td colspan="2" style="background-color:#d9cce3; font-weight:bold; text-align:center; padding:8px; font-size:14px;">${t.titleInter}</td></tr>
+            <tr><td colspan="2" style="text-align:center; padding:8px;"><b>${t.attention}</b><br/>${t.valuesSubject}</td></tr>
+            <tr><td style="width:32%"><b>${t.cia}</b></td><td>${escapeHtml(ciaFullNameForAgency(common.cia))}</td></tr>
+            <tr><td><b>${t.prazo}</b></td><td>${escapeHtml(t.prazoValue)}</td></tr>
+            <tr><td><b>${t.locCalc}</b></td><td>${escapeHtml(common.loc)}</td></tr>
+            ${common.novo_loc ? `<tr><td><b>${t.novoLoc}</b></td><td>${escapeHtml(common.novo_loc)}</td></tr>` : ""}
+            <tr><td><b>${t.paxTicket}</b></td><td>${buildPaxTicketPairsHtml(common, isEN)}</td></tr>
+            <tr><td><b>${t.familia}</b></td><td>${escapeHtml(common.familia)}</td></tr>
+            <tr><td><b>${t.bag}</b></td><td>${escapeHtml(common.bag)}</td></tr>
+            <tr><td><b>${t.parcelamento}</b></td><td>${escapeHtml(parcelamentoLabel)}</td></tr>
+            <tr><td><b>${t.moeda}</b></td><td>${escapeHtml(calc.cur)}</td></tr>
+            <tr><td><b>${t.incentivo}</b></td><td>${escapeHtml(incentivoLabel)}</td></tr>
           ${endossoRow}
           </table>
 
-          <p style="margin:12px 0 6px"><b>Descritivo de valores (por pax) — ${escapeHtml(calc.cur)} <span style="font-weight:700; color:#475569">(RC em USD)</span></b></p>
+          <p style="margin:12px 0 6px"><b>${t.descritivo} — ${escapeHtml(calc.cur)} <span style="font-weight:700; color:#475569">${t.rcUsdNote}</span></b></p>
           <table border="1" cellspacing="0" cellpadding="6" width="760" style="width:760px; max-width:760px; margin:0; mso-table-lspace:0pt; mso-table-rspace:0pt; border-collapse:collapse; border:1px solid #c7ced9">
             <tr>
-              <th style="background-color:#a99ac5; color:white; text-align:left">Tipo</th>
-              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">Dif. tarifa</th>
-              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">Dif. taxa</th>
-              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">DU/Rav</th>
-              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">Multa</th>
-              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">RC (USD)</th>
-              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">Total por pax</th>
-              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">Total (tipo)</th>
+              <th style="background-color:#a99ac5; color:white; text-align:left">${t.colType}</th>
+              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">${t.colDiffFare}</th>
+              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">${t.colDiffTax}</th>
+              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">${t.colDU}</th>
+              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">${t.colPen}</th>
+              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">${t.colFeeUsd}</th>
+              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">${t.colPerPax}</th>
+              <th class="right" style="background-color:#a99ac5; color:white; text-align:right">${t.colTotalTipo}</th>
             </tr>
-            ${paxRows.join("") || `<tr><td colspan="8">Sem valores informados.</td></tr>`}
+            ${paxRows.join("") || `<tr><td colspan="8">${t.noValues}</td></tr>`}
             <tr>
-              <td colspan="7" style="text-align:right; background-color:#d9cce3"><b>TOTAL (${escapeHtml(calc.cur)})</b></td>
+              <td colspan="7" style="text-align:right; background-color:#d9cce3"><b>${t.totalCur(escapeHtml(calc.cur))}</b></td>
               <td style="text-align:right; background-color:#d9cce3"><b>${fmtCur(calc.totalCur)}</b></td>
             </tr>
           </table>
 
           ${fxLine}
-          <p style="margin:6px 0 0"><b>Tipo de cálculo:</b> ${escapeHtml(tipo)}</p>
+          <p style="margin:6px 0 0"><b>${t.tipoCalc}</b> ${escapeHtml(tipoLabel)}</p>
 
           ${linkLine}
-          <p style="margin:6px 0 0"><i>*Após o preenchimento, responda o e-mail para darmos continuidade ao processo</i></p>
-          <p style="margin:6px 0 0">Em respeito a LGPD, não é permitido trafegar informações que envolvam dados de cartão de crédito.</p>
+          <p style="margin:6px 0 0"><i>${t.replyNote}</i></p>
+          <p style="margin:6px 0 0">${t.lgpd}</p>
 
-          ${buildEmailSectionBlock("VOOS SIMULADOS", voos, { strong:true })}
-          ${buildEmailSectionBlock("CÁLCULO - USO INTERNO", interno)}
-          ${buildEmailSectionBlock("BILHETE ORIGINAL", original)}
+          ${buildEmailSectionBlock(t.voosSimulados, voos, { strong:true })}
+          ${buildEmailSectionBlock(isEN ? "CALCULATION - INTERNAL USE" : "CÁLCULO - USO INTERNO", interno)}
+          ${buildEmailSectionBlock(isEN ? "ORIGINAL TICKET" : "BILHETE ORIGINAL", original)}
           <p style="margin:6px 0 0; font-size:9px; color:#999">${crrEmailHtml}</p>
         </div>
       `.trim();
@@ -3917,12 +3932,14 @@ ${endossoRow}
 
     // ---------- subject ----------
     function suggestedSubject(){
+      const isEN = isAgencyEmailEN();
+      const t = isEN ? AGENCY_EMAIL_I18N.en : AGENCY_EMAIL_I18N.pt;
       const mode = getActiveMode();
       const loc = (document.getElementById("loc").value || "").trim();
       const cia = (document.getElementById("cia").value || "").trim();
-      if(mode === "NAC") return `Cálculo de reemissão NAC${loc ? " — " + loc : ""}${cia ? " — " + cia : ""}`.trim();
+      if(mode === "NAC") return t.subjectNac(loc, cia);
       const cur = getInterCurrency();
-      return `Cálculo de reemissão INTER (${cur})${loc ? " — " + loc : ""}${cia ? " — " + cia : ""}`.trim();
+      return t.subjectInter(cur, loc, cia);
     }
 
     // ---------- copy ----------
@@ -4074,6 +4091,86 @@ ${endossoRow}
     const AZUL_RULE_TEXT = "Em reemissões Azul, o serviço pago previamente será utilizado como crédito no recalculo de reemissão e é necessário a nova compra do mesmo.";
 const LATAM_GOL_RULE_TEXT = "Se reemitido através de um novo LOC, o localizador original deverá ser cancelado após a reemissão.";
 let __lastCiaForAzul = "";
+
+    // ----- E-mail Agência em inglês (opcional) -----
+    // Só troca o texto FIXO do template (rótulos, cabeçalhos, frases padrão).
+    // Campos de texto livre digitados pelo usuário (bagagem, regras, voos, nomes
+    // etc.) nunca são traduzidos automaticamente — ficam como foram digitados.
+    const AGENCY_EMAIL_I18N = {
+      pt: {
+        intro: "Segue abaixo cálculo de reemissão conforme solicitado.",
+        titleNac: "CÁLCULO DE REEMISSÃO NACIONAL",
+        titleInter: "CÁLCULO DE REEMISSÃO INTERNACIONAL",
+        attention: "ATENÇÃO: CONFIRA TODOS OS DADOS ANTES DE APROVAR A REEMISSÃO.",
+        valuesSubject: "VALORES SUJEITOS A ALTERAÇÃO",
+        cia: "Cia Aérea", prazo: "Prazo", prazoValue: "Imediato",
+        loc: "Localizador", locCalc: "Localizador do Cálculo", novoLoc: "Novo LOC",
+        paxTicket: "Passageiro(s) / Bilhete(s)", oac: "OAC",
+        familia: "Família Tarifária", bag: "Bagagem",
+        parcelamento: "Permite parcelamento?", yes: "Sim", no: "Não",
+        folio: "Fólio", endosso: "Endosso", moeda: "Moeda",
+        incentivo: "Recuperação de incentivo?",
+        descritivo: "Descritivo de valores (por pax)", rcUsdNote: "(RC em USD)",
+        colType: "Tipo", colOldFare: "Tarifa antiga", colNewFare: "Tarifa nova",
+        colDiffFare: "Dif. tarifa", colDiffTax: "Dif. taxa", colDU: "DU/Rav",
+        colPen: "Multa", colFeeUsd: "RC (USD)", colPerPax: "Total por pax",
+        colTotalTipo: "Total (tipo)", totalToPay: "TOTAL A PAGAR (BRL)",
+        totalCur: (cur)=>`TOTAL (${cur})`, noValues: "Sem valores informados.",
+        servicesAbat: "Serviços (abatimento)", payMethod: "Forma de pagamento",
+        payLabel: "Faturado ou Cartão de Crédito", payLink: "Link de pagamento:",
+        fxInformado: "Câmbio informado:", totalBrl: "Total (BRL):",
+        fxMissing: "Atenção: informe o câmbio (Moeda → BRL) para gerar o total em BRL.",
+        tipoCalc: "Tipo de cálculo:",
+        tipoValue: {"Manual":"Manual","Automático":"Automático","Automático com dados manuais":"Automático com dados manuais"},
+        replyNote: "*Após o preenchimento, responda o e-mail para darmos continuidade ao processo",
+        lgpd: "Em respeito a LGPD, não é permitido trafegar informações que envolvam dados de cartão de crédito.",
+        voosSimulados: "VOOS SIMULADOS", regras: "REGRAS", obs: "Observações:",
+        noShowRule: "Solicitações com menos de <b>2h</b> do embarque original poderão acarretar em multa de <b>no show</b>.",
+        azulRule: AZUL_RULE_TEXT, latamGolRule: LATAM_GOL_RULE_TEXT,
+        noName: "(sem nome)", noTicket: "(sem bilhete)",
+        subjectNac: (loc,cia)=> `Cálculo de reemissão NAC${loc?" — "+loc:""}${cia?" — "+cia:""}`.trim(),
+        subjectInter: (cur,loc,cia)=> `Cálculo de reemissão INTER (${cur})${loc?" — "+loc:""}${cia?" — "+cia:""}`.trim(),
+      },
+      en: {
+        intro: "Please find below the reissue calculation as requested.",
+        titleNac: "DOMESTIC REISSUE CALCULATION",
+        titleInter: "INTERNATIONAL REISSUE CALCULATION",
+        attention: "ATTENTION: PLEASE CHECK ALL DATA BEFORE APPROVING THE REISSUE.",
+        valuesSubject: "VALUES SUBJECT TO CHANGE",
+        cia: "Airline", prazo: "Deadline", prazoValue: "Immediate",
+        loc: "Locator", locCalc: "Calculation Locator", novoLoc: "New LOC",
+        paxTicket: "Passenger(s) / Ticket(s)", oac: "OAC",
+        familia: "Fare Family", bag: "Baggage",
+        parcelamento: "Installments allowed?", yes: "Yes", no: "No",
+        folio: "Folio", endosso: "Endorsement", moeda: "Currency",
+        incentivo: "Incentive recovery?",
+        descritivo: "Value breakdown (per pax)", rcUsdNote: "(RC in USD)",
+        colType: "Type", colOldFare: "Old fare", colNewFare: "New fare",
+        colDiffFare: "Fare diff.", colDiffTax: "Tax diff.", colDU: "DU/Rav",
+        colPen: "Penalty", colFeeUsd: "RC (USD)", colPerPax: "Total per pax",
+        colTotalTipo: "Total (type)", totalToPay: "TOTAL DUE (BRL)",
+        totalCur: (cur)=>`TOTAL (${cur})`, noValues: "No values informed.",
+        servicesAbat: "Services (deduction)", payMethod: "Payment method",
+        payLabel: "Invoiced or Credit Card", payLink: "Payment link:",
+        fxInformado: "Exchange rate used:", totalBrl: "Total (BRL):",
+        fxMissing: "Attention: please inform the exchange rate (Currency → BRL) to generate the BRL total.",
+        tipoCalc: "Calculation type:",
+        tipoValue: {"Manual":"Manual","Automático":"Automatic","Automático com dados manuais":"Automatic with manual data"},
+        replyNote: "*After filling in, please reply to this email so we can proceed",
+        lgpd: "In compliance with data protection regulations, credit card information must not be shared by email.",
+        voosSimulados: "SIMULATED FLIGHTS", regras: "RULES", obs: "Notes:",
+        noShowRule: "Requests made less than <b>2h</b> before the original departure may incur a <b>no-show</b> penalty.",
+        azulRule: "For Azul reissues, any service already paid will be used as credit in the reissue recalculation and must be purchased again.",
+        latamGolRule: "If reissued under a new LOC, the original locator must be cancelled after the reissue.",
+        noName: "(no name)", noTicket: "(no ticket)",
+        subjectNac: (loc,cia)=> `Reissue calculation NAC${loc?" — "+loc:""}${cia?" — "+cia:""}`.trim(),
+        subjectInter: (cur,loc,cia)=> `Reissue calculation INTER (${cur})${loc?" — "+loc:""}${cia?" — "+cia:""}`.trim(),
+      }
+    };
+    function isAgencyEmailEN(){
+      const el = document.getElementById("agency_lang_en");
+      return !!(el && el.checked);
+    }
 
 function normalizeCia(v){
   return String(v || "").trim().toUpperCase();
